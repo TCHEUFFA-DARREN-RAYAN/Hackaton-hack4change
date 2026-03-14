@@ -7,6 +7,142 @@
     <script src="/js/i18n.js"></script>
     <meta name="description" content="See what Moncton's homeless-serving organizations need and donate directly to those with the greatest need.">
     <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .org-list { display: flex; flex-direction: column; gap: .6rem; }
+
+        .org-row {
+            background: var(--color-surface);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .org-row.has-critical { border-left: 4px solid var(--color-critical); }
+        .org-row.has-high     { border-left: 4px solid var(--color-high); }
+
+        .org-row-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: .85rem 1.1rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .org-row-header:hover { background: var(--color-bg); }
+
+        .org-row-name  { font-weight: 600; font-size: 1rem; color: var(--color-text); flex: 1; }
+        .org-row-meta  { font-size: .8rem; color: var(--color-text-muted); margin-top: .15rem; }
+
+        .org-row-badges { display: flex; align-items: center; gap: .4rem; flex-shrink: 0; }
+
+        .need-count-badge {
+            display: inline-flex; align-items: center; gap: .25rem;
+            font-size: .78rem; font-weight: 600;
+            padding: .2rem .55rem; border-radius: 999px;
+            background: var(--color-bg); border: 1.5px solid var(--color-border);
+            color: var(--color-text-muted);
+        }
+        .need-count-badge.has-critical { background: var(--color-critical-bg); border-color: var(--color-critical); color: var(--color-critical); }
+        .need-count-badge.has-high     { background: #fff8e6; border-color: var(--color-high); color: var(--color-high); }
+
+        .chevron {
+            width: 18px; height: 18px; flex-shrink: 0;
+            color: var(--color-text-muted);
+            transition: transform .2s ease;
+        }
+        .org-row.open .chevron { transform: rotate(180deg); }
+
+        .org-row-needs {
+            display: none;
+            border-top: 1px solid var(--color-border-lt);
+            padding: .6rem 1.1rem .85rem;
+            background: var(--color-bg);
+        }
+        .org-row.open .org-row-needs { display: block; }
+
+        .need-row {
+            display: flex; align-items: center; gap: .65rem;
+            padding: .45rem 0;
+            border-bottom: 1px solid var(--color-border-lt);
+        }
+        .need-row:last-child { border-bottom: none; }
+        .need-row-name  { flex: 1; font-size: .92rem; color: var(--color-text); }
+        .need-row-qty   { font-size: .82rem; color: var(--color-text-muted); white-space: nowrap; }
+        .need-row-notes { font-size: .78rem; color: var(--color-text-muted); margin-top: .15rem; }
+
+        .org-row-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-top: .75rem; padding-top: .6rem;
+            border-top: 1px solid var(--color-border-lt);
+        }
+
+        /* Filter bar */
+        .filters-bar {
+            background: var(--color-surface);
+            border-bottom: 1px solid var(--color-border-lt);
+            position: sticky; top: 56px; z-index: 50;
+        }
+        .filters-inner {
+            max-width: 900px; margin: 0 auto;
+            padding: .65rem 1rem;
+            display: flex; flex-wrap: wrap; gap: .5rem; align-items: center;
+        }
+        .filters-inner input[type="search"],
+        .filters-inner select,
+        .filters-inner .sort-btn {
+            height: 38px;
+            padding: 0 .75rem;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: var(--color-bg);
+            font-size: .9rem; font-family: var(--font-sans);
+            color: var(--color-text); outline: none; cursor: pointer;
+        }
+        .filters-inner input[type="search"] { flex: 1; min-width: 180px; }
+        .filters-inner input[type="search"]:focus,
+        .filters-inner select:focus,
+        .filters-inner .sort-btn:hover { border-color: var(--color-primary); }
+        .filters-inner .sort-btn.active {
+            border-color: var(--color-primary);
+            background: var(--color-primary-lt);
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .results-count {
+            font-size: .85rem; color: var(--color-text-muted);
+            margin-left: auto; white-space: nowrap;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex; align-items: center; justify-content: center;
+            gap: .4rem; padding: 1.5rem 0 .5rem;
+        }
+        .page-btn {
+            min-width: 36px; height: 36px; padding: 0 .6rem;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            background: var(--color-surface);
+            color: var(--color-text-muted);
+            font-size: .9rem; font-family: var(--font-sans);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background .15s, border-color .15s, color .15s;
+        }
+        .page-btn:hover:not(:disabled) { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-lt); }
+        .page-btn.active { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+        .page-btn:disabled { opacity: .38; cursor: not-allowed; }
+        .page-info { font-size: .85rem; color: var(--color-text-muted); padding: 0 .25rem; }
+
+        .org-list-wrap { max-width: 900px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+
+        @media (max-width: 600px) {
+            .org-row-header  { flex-wrap: wrap; gap: .5rem; padding: .75rem .85rem; }
+            .org-row-footer  { flex-direction: column; align-items: flex-start; gap: .5rem; }
+            .filters-inner   { gap: .4rem; }
+            .filters-inner input[type="search"] { min-width: 130px; }
+        }
+    </style>
 </head>
 <body>
 
@@ -14,8 +150,7 @@
     <div class="nav-inner">
         <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span data-i18n="navBrand">GMHSC Network</span></a>
         <div class="nav-actions">
-            <a href="/donate" class="btn btn-ghost btn-sm" style="margin-right:0.5rem" data-i18n="navDonate">Donate</a>
-            <a href="/all-needs" class="btn btn-ghost btn-sm" style="margin-right:0.5rem" data-i18n="seeAllNeeds">See all needs</a>
+            <a href="/donate" class="btn btn-ghost btn-sm" data-i18n="navDonate">Donate</a>
             <button type="button" class="btn btn-ghost btn-sm" onclick="i18n.switchLocale()" title="EN / FR">EN / FR</button>
             <a href="/login" class="btn btn-ghost btn-sm" data-i18n="navStaffLogin">Staff login</a>
         </div>
@@ -28,36 +163,63 @@
         <h1 data-i18n="pageTitle">Community Needs Board</h1>
         <p data-i18n="pageDescription">28 Greater Moncton organizations. One coordinated platform.</p>
         <div class="hero-actions">
-            <a href="/donate" class="btn btn-hero btn-lg" data-i18n="heroCta">Donate now</a>
+            <a href="/give" class="btn btn-hero btn-lg" data-i18n="heroCta">Donate now</a>
         </div>
     </div>
 </div>
 
-<div class="container" style="padding: 1.5rem 1rem 2.5rem">
-    <div class="org-grid" id="urgent-needs">
-        <div class="org-card">
-            <div class="org-card-header">
-                <div><div class="skeleton skeleton-text wide"></div><div class="skeleton skeleton-text short" style="margin-top:.5rem"></div></div>
-            </div>
-            <div class="skeleton skeleton-block"></div>
-        </div>
-        <div class="org-card">
-            <div class="org-card-header">
-                <div><div class="skeleton skeleton-text wide"></div><div class="skeleton skeleton-text short" style="margin-top:.5rem"></div></div>
-            </div>
-            <div class="skeleton skeleton-block"></div>
-        </div>
-        <div class="org-card">
-            <div class="org-card-header">
-                <div><div class="skeleton skeleton-text wide"></div><div class="skeleton skeleton-text short" style="margin-top:.5rem"></div></div>
-            </div>
-            <div class="skeleton skeleton-block"></div>
-        </div>
-    </div>
+<div class="filters-bar">
+    <div class="filters-inner">
+        <input type="search" id="search" placeholder="Search organizations or items..." autocomplete="off" aria-label="Search">
 
-    <div class="urgent-actions">
-        <a href="/all-needs" class="btn btn-outline btn-lg" data-i18n="seeAllNeeds">See all needs</a>
+        <select id="filter-urgency" aria-label="Filter by urgency">
+            <option value="">All urgency levels</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+        </select>
+
+        <select id="filter-category" aria-label="Filter by type">
+            <option value="">All org types</option>
+            <option value="shelter_housing">Shelter &amp; Housing</option>
+            <option value="food_nutrition">Food &amp; Nutrition</option>
+            <option value="goods_essentials">Goods &amp; Essentials</option>
+            <option value="mental_health">Mental Health</option>
+            <option value="outreach">Outreach</option>
+        </select>
+
+        <button class="sort-btn active" id="sort-btn" onclick="toggleSort()" title="Sort by date" aria-label="Toggle date sort">
+            <span id="sort-label">&#8593; Newest</span>
+        </button>
+
+        <span class="results-count" id="results-count"></span>
     </div>
+</div>
+
+<div class="org-list-wrap">
+    <div class="org-list" id="org-list">
+        <!-- skeletons -->
+        <div class="org-row has-critical">
+            <div class="org-row-header">
+                <div style="flex:1"><div class="skeleton skeleton-text wide"></div><div class="skeleton skeleton-text short" style="margin-top:.4rem;width:55%"></div></div>
+                <div class="skeleton" style="width:70px;height:24px;border-radius:999px"></div>
+            </div>
+        </div>
+        <div class="org-row">
+            <div class="org-row-header">
+                <div style="flex:1"><div class="skeleton skeleton-text" style="width:65%"></div><div class="skeleton skeleton-text short" style="margin-top:.4rem;width:45%"></div></div>
+                <div class="skeleton" style="width:60px;height:24px;border-radius:999px"></div>
+            </div>
+        </div>
+        <div class="org-row">
+            <div class="org-row-header">
+                <div style="flex:1"><div class="skeleton skeleton-text" style="width:72%"></div><div class="skeleton skeleton-text short" style="margin-top:.4rem;width:50%"></div></div>
+                <div class="skeleton" style="width:65px;height:24px;border-radius:999px"></div>
+            </div>
+        </div>
+    </div>
+    <div class="pagination" id="pagination" style="display:none"></div>
 </div>
 
 <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
@@ -66,72 +228,221 @@
 <script src="/js/utils.js"></script>
 <script>
     i18n.apply();
-    const CAT_LABELS = i18n.CAT_LABELS();
+    const CAT_LABELS    = i18n.CAT_LABELS();
     const URGENCY_LABELS = i18n.URGENCY_LABELS();
-    const URGENCY_RANK = { critical: 0, high: 1, medium: 2, low: 3 };
-    const TOP_URGENT_COUNT = 3;
+    const URGENCY_RANK  = { critical: 0, high: 1, medium: 2, low: 3 };
+    const PAGE_SIZE     = 5;
 
-    function getTopUrgentNeeds(orgs) {
-        const flat = [];
-        for (const org of orgs) {
-            for (const n of (org.top_needs || [])) {
-                if (n.urgency === 'critical' || n.urgency === 'high') {
-                    flat.push({ ...n, org });
-                }
-            }
-        }
-        flat.sort((a, b) => (URGENCY_RANK[a.urgency] ?? 4) - (URGENCY_RANK[b.urgency] ?? 4));
-        return flat.slice(0, TOP_URGENT_COUNT);
+    let allOrgs      = [];
+    let filteredOrgs = [];
+    let currentPage  = 1;
+    let sortNewest   = true;   // true = newest first, false = oldest first
+    const openOrgs   = new Set();
+
+    // --- Sorting helpers ---
+
+    function topUrgency(org) {
+        if (!org.top_needs.length) return null;
+        return org.top_needs.reduce((best, n) =>
+            (URGENCY_RANK[n.urgency] ?? 4) < (URGENCY_RANK[best.urgency] ?? 4) ? n : best
+        ).urgency;
     }
 
-    function renderUrgentNeeds(needs) {
-        const el = document.getElementById('urgent-needs');
-        if (!needs.length) {
-            el.innerHTML = `<div style="grid-column:1/-1"><div class="empty-state"><span class="empty-icon">&#10003;</span><h3>${i18n.t('noActiveNeedsPosted')}</h3></div></div>`;
+    function orgDate(org) {
+        // Use the most recently created need date as the "last activity" date
+        const ts = org.top_needs.length
+            ? org.top_needs.reduce((latest, n) => {
+                const d = new Date(n.created_at || 0).getTime();
+                return d > latest ? d : latest;
+            }, 0)
+            : new Date(org.updated_at || 0).getTime();
+        return ts;
+    }
+
+    function sortOrgs(orgs) {
+        return [...orgs].sort((a, b) => {
+            const urgA = a.top_needs.length ? Math.min(...a.top_needs.map(n => URGENCY_RANK[n.urgency] ?? 3)) : 4;
+            const urgB = b.top_needs.length ? Math.min(...b.top_needs.map(n => URGENCY_RANK[n.urgency] ?? 3)) : 4;
+            // Primary: urgency
+            if (urgA !== urgB) return urgA - urgB;
+            // Secondary: date sort toggle
+            const dA = orgDate(a);
+            const dB = orgDate(b);
+            return sortNewest ? dB - dA : dA - dB;
+        });
+    }
+
+    function toggleSort() {
+        sortNewest = !sortNewest;
+        document.getElementById('sort-label').textContent = sortNewest ? '↑ Newest' : '↓ Oldest';
+        currentPage = 1;
+        applyFilters();
+    }
+
+    // --- Rendering ---
+
+    function toggleOrg(id) {
+        if (openOrgs.has(id)) openOrgs.delete(id);
+        else openOrgs.add(id);
+        renderPage();
+    }
+
+    function renderPage() {
+        const el         = document.getElementById('org-list');
+        const pagination = document.getElementById('pagination');
+
+        if (!filteredOrgs.length) {
+            el.innerHTML = `
+                <div class="empty-state">
+                    <span class="empty-icon">&#10003;</span>
+                    <h3>No organizations match your filters</h3>
+                    <p>Try adjusting or clearing the filters above.</p>
+                </div>`;
+            pagination.style.display = 'none';
             return;
         }
-        el.innerHTML = needs.map(n => {
-            const org = n.org;
-            const needHtml = `
-                <div class="need-item">
+
+        const totalPages = Math.ceil(filteredOrgs.length / PAGE_SIZE);
+        if (currentPage > totalPages) currentPage = 1;
+
+        const pageOrgs = filteredOrgs.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+        el.innerHTML = pageOrgs.map(org => {
+            const urgency  = topUrgency(org);
+            const isOpen   = openOrgs.has(org.id);
+            const hasCrit  = urgency === 'critical';
+            const hasHigh  = urgency === 'high';
+            const borderCls = hasCrit ? 'has-critical' : hasHigh ? 'has-high' : '';
+
+            const needCount = org.top_needs.length;
+            let badgeCls = hasCrit ? 'has-critical' : hasHigh ? 'has-high' : '';
+            const countBadge = `<span class="need-count-badge ${badgeCls}">${needCount} need${needCount !== 1 ? 's' : ''}</span>`;
+            const catBadge   = `<span class="badge badge-${escHtml(org.category)}">${escHtml(CAT_LABELS[org.category] || org.category)}</span>`;
+
+            const sortedNeeds = [...org.top_needs].sort((a, b) =>
+                (URGENCY_RANK[a.urgency] ?? 4) - (URGENCY_RANK[b.urgency] ?? 4)
+            );
+
+            const needsHtml = sortedNeeds.map(n => `
+                <div class="need-row">
                     <span class="badge badge-${escHtml(n.urgency)}" style="flex-shrink:0">${escHtml(URGENCY_LABELS[n.urgency] || n.urgency)}</span>
-                    <span class="need-name">${escHtml(n.item_name)}</span>
-                    <span class="need-qty">${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</span>
-                </div>`;
-            return `
-                <div class="org-card has-critical">
-                    <div class="org-card-header">
-                        <div>
-                            <div class="org-card-name">${escHtml(org.name)}</div>
-                            <div class="org-card-meta">${escHtml(org.address || '')}</div>
-                        </div>
-                        <span class="badge badge-${escHtml(org.category)}">${escHtml(CAT_LABELS[org.category] || org.category)}</span>
+                    <div style="flex:1">
+                        <div class="need-row-name">${escHtml(n.item_name)}</div>
+                        ${n.notes ? `<div class="need-row-notes">${escHtml(n.notes)}</div>` : ''}
                     </div>
-                    <div class="needs-list">${needHtml}</div>
-                    <div class="org-card-footer">
-                        <span class="updated">${i18n.t('updated')} ${timeAgo(org.updated_at)}</span>
-                        <a href="/donate?org=${encodeURIComponent(org.id)}" class="btn btn-primary btn-sm">${i18n.t('donate')}</a>
+                    <span class="need-row-qty">${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</span>
+                </div>`).join('');
+
+            const dateLabel = org.updated_at
+                ? `Updated ${timeAgo(org.updated_at)}`
+                : '';
+
+            return `
+                <div class="org-row ${borderCls}${isOpen ? ' open' : ''}" id="org-row-${escHtml(org.id)}">
+                    <div class="org-row-header" onclick="toggleOrg('${escHtml(org.id)}')">
+                        <div style="flex:1;min-width:0">
+                            <div class="org-row-name">${escHtml(org.name)}</div>
+                            ${org.address ? `<div class="org-row-meta">${escHtml(org.address)}</div>` : ''}
+                        </div>
+                        <div class="org-row-badges">
+                            ${countBadge}
+                            ${catBadge}
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                    </div>
+                    <div class="org-row-needs">
+                        ${needsHtml}
+                        <div class="org-row-footer">
+                            <span class="text-xs text-muted">${escHtml(dateLabel)}</span>
+                            <a href="/give?org=${encodeURIComponent(org.id)}" class="btn btn-primary btn-sm">Donate &rarr;</a>
+                        </div>
                     </div>
                 </div>`;
         }).join('');
+
+        renderPagination(totalPages);
     }
 
-    async function loadUrgentNeeds() {
+    function renderPagination(totalPages) {
+        const el = document.getElementById('pagination');
+        if (totalPages <= 1) { el.style.display = 'none'; return; }
+        el.style.display = 'flex';
+
+        let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">&#8592;</button>`;
+
+        const delta = 2;
+        const range = [];
+        for (let i = Math.max(1, currentPage - delta); i <= Math.min(totalPages, currentPage + delta); i++) range.push(i);
+
+        if (range[0] > 1) {
+            html += `<button class="page-btn" onclick="goToPage(1)">1</button>`;
+            if (range[0] > 2) html += `<span class="page-info">…</span>`;
+        }
+        range.forEach(p => {
+            html += `<button class="page-btn${p === currentPage ? ' active' : ''}" onclick="goToPage(${p})">${p}</button>`;
+        });
+        if (range[range.length - 1] < totalPages) {
+            if (range[range.length - 1] < totalPages - 1) html += `<span class="page-info">…</span>`;
+            html += `<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`;
+        }
+
+        html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">&#8594;</button>`;
+        html += `<span class="page-info">${currentPage} / ${totalPages}</span>`;
+
+        el.innerHTML = html;
+    }
+
+    function goToPage(p) {
+        currentPage = p;
+        renderPage();
+        window.scrollTo({ top: document.querySelector('.filters-bar').offsetTop - 70, behavior: 'smooth' });
+    }
+
+    // --- Filtering ---
+
+    function applyFilters() {
+        const search  = document.getElementById('search').value.toLowerCase().trim();
+        const urgency = document.getElementById('filter-urgency').value;
+        const orgCat  = document.getElementById('filter-category').value;
+
+        let result = allOrgs.filter(o => o.top_needs.length > 0); // only orgs with needs
+
+        if (orgCat)  result = result.filter(o => o.category === orgCat);
+        if (urgency) result = result.filter(o => o.top_needs.some(n => n.urgency === urgency));
+        if (search) {
+            result = result.filter(o =>
+                o.name.toLowerCase().includes(search) ||
+                o.top_needs.some(n => n.item_name.toLowerCase().includes(search))
+            );
+        }
+
+        filteredOrgs = sortOrgs(result);
+        currentPage  = 1;
+
+        const count = filteredOrgs.length;
+        document.getElementById('results-count').textContent =
+            count + ' ' + (count !== 1 ? 'organizations' : 'organization');
+
+        renderPage();
+    }
+
+    async function loadBoard() {
         try {
             const res = await pub.orgsWithNeeds();
-            const orgs = res.data || [];
-            const top = getTopUrgentNeeds(orgs);
-            renderUrgentNeeds(top);
+            allOrgs = res.data || [];
+            applyFilters();
         } catch {
-            document.getElementById('urgent-needs').innerHTML = `
-                <div style="grid-column:1/-1">
-                    <div class="inline-notice error">${i18n.t('failedToLoad')}</div>
-                </div>`;
+            document.getElementById('org-list').innerHTML =
+                `<div class="inline-notice error">Failed to load the needs board. Please refresh.</div>`;
         }
     }
 
-    loadUrgentNeeds();
-    setInterval(loadUrgentNeeds, 30000);
+    document.getElementById('search').addEventListener('input', applyFilters);
+    document.getElementById('filter-urgency').addEventListener('change', applyFilters);
+    document.getElementById('filter-category').addEventListener('change', applyFilters);
+
+    loadBoard();
+    setInterval(loadBoard, 30000);
 </script>
 
 </body>

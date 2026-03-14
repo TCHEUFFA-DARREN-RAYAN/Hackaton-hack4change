@@ -30,6 +30,9 @@ const pub = {
 
 const staff = {
     org:                  ()        => api('/staff/org'),
+    chatThreads:          ()        => api('/staff/chat/threads'),
+    chatMessages:        (threadId)=> api(`/staff/chat/threads/${threadId}/messages`),
+    sendChatMessage:     (threadId, content) => api(`/staff/chat/threads/${threadId}/messages`, { method: 'POST', body: JSON.stringify({ content }) }),
     inventory:            ()        => api('/staff/inventory'),
     addInventory:         (data)    => api('/staff/inventory',      { method: 'POST',  body: JSON.stringify(data) }),
     updateInventory:      (id, data)=> api(`/staff/inventory/${id}`,{ method: 'PATCH', body: JSON.stringify(data) }),
@@ -69,8 +72,19 @@ const coordinator = {
     transfers:            (params) => api('/coordinator/transfers?' + new URLSearchParams(params || {})),
     createTransfer:       (data)   => api('/coordinator/transfers', { method: 'POST', body: JSON.stringify(data) }),
     updateTransferStatus: (id, status) => api(`/coordinator/transfers/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
-    exportNeeds:          ()        => window.open('/api/coordinator/export/needs'),
-    exportInventory:      ()        => window.open('/api/coordinator/export/inventory')
+    analytics:             (params)  => api('/coordinator/analytics?' + new URLSearchParams(params || {})),
+    exportNeeds:           (params)  => window.open('/api/coordinator/export/needs?' + new URLSearchParams(params || {})),
+    exportInventory:       (params)  => window.open('/api/coordinator/export/inventory?' + new URLSearchParams(params || {})),
+    exportDonations:       (params)  => window.open('/api/coordinator/export/donations?' + new URLSearchParams(params || {})),
+    exportOrganizations:   ()        => window.open('/api/coordinator/export/organizations'),
+    exportStaff:           (params)  => window.open('/api/coordinator/export/staff?' + new URLSearchParams(params || {})),
+    exportSurplusRequests: (params)  => window.open('/api/coordinator/export/surplus-requests?' + new URLSearchParams(params || {})),
+    exportTransfers:       (params)  => window.open('/api/coordinator/export/transfers?' + new URLSearchParams(params || {})),
+    exportMeetingReport:   (params)  => window.open('/api/coordinator/export/meeting-report?' + new URLSearchParams(params || {})),
+    chatThreads:          ()        => api('/coordinator/chat/threads'),
+    chatMessages:         (threadId)=> api(`/coordinator/chat/threads/${threadId}/messages`),
+    createDirectThread:   (staffId) => api('/coordinator/chat/threads', { method: 'POST', body: JSON.stringify({ staff_id: staffId }) }),
+    sendChatMessage:      (threadId, content) => api(`/coordinator/chat/threads/${threadId}/messages`, { method: 'POST', body: JSON.stringify({ content }) })
 };
 
 const aiApi = {

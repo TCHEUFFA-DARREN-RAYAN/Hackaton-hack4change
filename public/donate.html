@@ -7,24 +7,21 @@
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/i18n.js"></script>
     <style>
-        /* Donate page: video bg + transparent form */
         .donate-page { position: relative; min-height: 100vh; }
-        .donate-video-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; -webkit-transform: translateZ(0); transform: translateZ(0); }
+        .donate-video-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
         .donate-video-bg video {
-            position: absolute; min-width: 100%; min-height: 100%; width: auto; height: auto;
+            position: absolute; min-width: 100%; min-height: 100%;
             object-fit: cover; object-position: center;
         }
         .donate-video-bg .overlay { position: absolute; inset: 0; background: rgba(0,0,0,.35); z-index: 1; }
         .donate-content { position: relative; z-index: 10; min-height: 100vh; }
 
-        /* Nav: slightly transparent, professional */
         .donate-content .site-nav {
             background: rgba(255,255,255,.88);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             border-bottom-color: rgba(0,0,0,.08);
         }
 
-        /* Form card: transparent so video shows through, but readable */
         .donate-content .step-form-wrap .card {
             background: rgba(255,255,255,.82);
             backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
@@ -42,16 +39,6 @@
             color: var(--color-text);
         }
         .donate-content .step-form-wrap .form-control::placeholder { color: var(--color-text-muted); opacity: .9; }
-        .donate-content .step-form-wrap .match-card {
-            background: rgba(255,255,255,.78);
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-        }
-        .donate-content .step-form-wrap .match-card .match-org,
-        .donate-content .step-form-wrap .match-card .match-reasoning { color: var(--color-text); }
-        .donate-content .step-form-wrap .match-card.selected {
-            background: rgba(232,248,236,.92);
-            border-color: var(--color-accent);
-        }
         .donate-content .step-form-wrap .confirm-box {
             background: rgba(232,248,236,.85);
             backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
@@ -60,9 +47,24 @@
             background: rgba(255,255,255,.85);
             backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
         }
-        .donate-content .step-progress { background: transparent; }
 
-        /* Mobile: ensure video + form work well */
+        /* Need picker */
+        .need-pick-btn {
+            display: flex; align-items: center; gap: .65rem;
+            padding: .6rem .85rem;
+            background: rgba(255,255,255,.7);
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            cursor: pointer; text-align: left;
+            font-family: var(--font-sans);
+            transition: border-color .15s, background .15s;
+            width: 100%;
+        }
+        .need-pick-btn:hover { border-color: var(--color-primary); background: rgba(232,242,255,.85); }
+        .need-pick-btn.selected { border-color: var(--color-primary); background: rgba(232,242,255,.9); }
+        .need-pick-name { flex: 1; font-size: .93rem; font-weight: 500; color: var(--color-text); }
+        .need-pick-qty  { font-size: .8rem; color: var(--color-text-muted); white-space: nowrap; }
+
         @media (max-width: 768px) {
             .donate-content .step-form-wrap .card { background: rgba(255,255,255,.88); }
             .donate-content .step-form-wrap { padding: 1rem .75rem 2rem; margin: 1rem auto; }
@@ -72,12 +74,8 @@
             .donate-content .step-form-wrap { padding: .75rem .5rem 1.5rem; }
             .donate-content .step-form-wrap h1 { font-size: 1.35rem; }
             .donate-content .step-form-wrap h2 { font-size: 1.1rem; }
-            .step-progress { flex-wrap: wrap; gap: .5rem; }
-            .step-item { min-width: 55px; flex: 0 1 auto; }
-            .step-label { font-size: .65rem; }
             .step-nav { flex-wrap: wrap; gap: .5rem; }
             .step-nav .btn { flex: 1 1 auto; min-width: 100px; }
-            .match-card { padding: .75rem .85rem; }
         }
     </style>
 </head>
@@ -91,192 +89,145 @@
         <div class="overlay"></div>
     </div>
     <div class="donate-content">
-<nav class="site-nav">
-    <div class="nav-inner">
-        <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span data-i18n="navBrand">GMHSC Network</span></a>
-        <div class="nav-links">
-            <a href="/" data-i18n="navNeedsBoard">Needs Board</a>
-            <a href="/donate" class="active" data-i18n="navDonate">Donate</a>
-        </div>
-        <div class="nav-actions">
-            <button type="button" class="btn btn-ghost btn-sm" onclick="i18n.switchLocale()" title="EN / FR" style="margin-right:0.5rem">EN / FR</button>
-            <a href="/login" class="btn btn-ghost btn-sm" data-i18n="navStaffLogin">Staff login</a>
-        </div>
-    </div>
-</nav>
 
-<div class="step-form-wrap">
-    <h1 style="margin-bottom:.35rem" data-i18n="donateTitle">Make a donation</h1>
-    <p class="text-muted text-sm" style="margin-bottom:1.75rem" data-i18n="donateSubtitle">Your donation will be matched to the organization with the greatest need.</p>
+        <nav class="site-nav">
+            <div class="nav-inner">
+                <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span data-i18n="navBrand">GMHSC Network</span></a>
+                <div class="nav-links">
+                    <a href="/" data-i18n="navNeedsBoard">Needs Board</a>
+                    <a href="/give" class="active" data-i18n="navDonate">Donate</a>
+                </div>
+                <div class="nav-actions">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="i18n.switchLocale()" title="EN / FR" style="margin-right:.5rem">EN / FR</button>
+                    <a href="/login" class="btn btn-ghost btn-sm" data-i18n="navStaffLogin">Staff login</a>
+                </div>
+            </div>
+        </nav>
 
-    <!-- Step progress -->
-    <div class="step-progress" role="list">
-        <div class="step-item active" id="step-indicator-1" role="listitem">
-            <div class="step-num">1</div>
-            <div class="step-label" data-i18n-html="step1Label">What are<br>you donating?</div>
-        </div>
-        <div class="step-item" id="step-indicator-2" role="listitem">
-            <div class="step-num">2</div>
-            <div class="step-label" data-i18n-html="step2Label">Your<br>contact info</div>
-        </div>
-        <div class="step-item" id="step-indicator-3" role="listitem">
-            <div class="step-num">3</div>
-            <div class="step-label" data-i18n-html="step3Label">Match<br>preview</div>
-        </div>
-        <div class="step-item" id="step-indicator-4" role="listitem">
-            <div class="step-num">4</div>
-            <div class="step-label" data-i18n="step4Label">Confirmation</div>
-        </div>
-    </div>
+        <div class="step-form-wrap">
+            <h1 style="margin-bottom:.35rem" data-i18n="donateTitle">Make a donation</h1>
+            <p class="text-muted text-sm" style="margin-bottom:1.75rem" data-i18n="donateSubtitle">Your donation will be matched to the organization with the greatest need.</p>
 
-    <!-- Step 1: Item details -->
-    <div class="step-panel active card" id="step-1">
-        <h2 data-i18n="whatDonating">What are you donating?</h2>
-        <div class="form-group">
-            <label class="form-label" for="item-name"><span data-i18n="itemDesc">Item description</span> <span class="req">*</span></label>
-            <input type="text" id="item-name" class="form-control" data-i18n-placeholder="itemPlaceholder" placeholder="e.g. Men's winter jackets, canned soup, sleeping bags" autocomplete="off">
-            <div class="form-error" id="err-item-name" data-i18n="errItem">Please describe the item.</div>
-        </div>
-        <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
-            <div class="form-group">
-                <label class="form-label" for="category"><span data-i18n="category">Category</span> <span class="req">*</span></label>
-                <select id="category" class="form-control">
-                    <option value="" data-i18n="selectCategory">Select a category</option>
-                    <option value="clothing" data-i18n="clothing">Clothing</option>
-                    <option value="bedding" data-i18n="bedding">Bedding &amp; Linens</option>
-                    <option value="food" data-i18n="food">Food &amp; Beverages</option>
-                    <option value="hygiene" data-i18n="hygiene">Hygiene Products</option>
-                    <option value="baby_supplies" data-i18n="babySupplies">Baby Supplies</option>
-                    <option value="goods" data-i18n="goods">Household Goods</option>
-                    <option value="furniture" data-i18n="furniture">Furniture</option>
-                    <option value="other" data-i18n="other">Other</option>
-                </select>
-                <div class="form-error" id="err-category" data-i18n="errCategory">Please select a category.</div>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="condition"><span data-i18n="condition">Condition</span> <span class="req">*</span></label>
-                <select id="condition" class="form-control">
-                    <option value="new" data-i18n="newCondition">New</option>
-                    <option value="good" selected data-i18n="goodCondition">Good</option>
-                    <option value="fair" data-i18n="fairCondition">Fair</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
-            <div class="form-group">
-                <label class="form-label" for="quantity"><span data-i18n="quantity">Quantity</span> <span class="req">*</span></label>
-                <input type="number" id="quantity" class="form-control" placeholder="1" min="1" value="1">
-                <div class="form-error" id="err-quantity" data-i18n="errQuantity">Please enter a quantity.</div>
-            </div>
-            <div class="form-group">
-                <label class="form-label" for="unit" data-i18n="unit">Unit</label>
-                <select id="unit" class="form-control">
-                    <option value="items" data-i18n="items">Items</option>
-                    <option value="pairs" data-i18n="pairs">Pairs</option>
-                    <option value="bags" data-i18n="bags">Bags</option>
-                    <option value="boxes" data-i18n="boxes">Boxes</option>
-                    <option value="cans" data-i18n="cans">Cans</option>
-                    <option value="bottles" data-i18n="bottles">Bottles</option>
-                    <option value="packs" data-i18n="packs">Packs</option>
-                    <option value="kg" data-i18n="kg">Kilograms</option>
-                    <option value="sets" data-i18n="sets">Sets</option>
-                </select>
-            </div>
-        </div>
-        <div class="step-nav">
-            <span></span>
-            <button class="btn btn-primary" onclick="goToStep(2)" data-i18n="nextBtn">Next</button>
-        </div>
-    </div>
+            <!-- Step 1: Item details -->
+            <div class="step-panel active card" id="step-1">
+                <h2 data-i18n="whatDonating">What are you donating?</h2>
 
-    <!-- Step 2: Contact info -->
-    <div class="step-panel card" id="step-2">
-        <h2 data-i18n="contactInfo">Your contact information</h2>
-        <div class="inline-notice info" style="margin-bottom:1.25rem" data-i18n="contactNotice">
-            Your contact details are only shared with the matched organization to arrange pickup or drop-off.
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="donor-name"><span data-i18n="fullName">Full name</span> <span class="req">*</span></label>
-            <input type="text" id="donor-name" class="form-control" data-i18n-placeholder="yourNamePlaceholder" placeholder="Your name" autocomplete="name">
-            <div class="form-error" id="err-donor-name" data-i18n="errName">Please enter your name.</div>
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="donor-email"><span data-i18n="emailAddress">Email address</span> <span class="req">*</span></label>
-            <input type="email" id="donor-email" class="form-control" data-i18n-placeholder="emailPlaceholder" placeholder="you@email.com" autocomplete="email">
-            <div class="form-error" id="err-donor-email" data-i18n="errEmail">Please enter a valid email address.</div>
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="donor-phone"><span data-i18n="phoneNumber">Phone number</span> <span class="text-muted" data-i18n="optional">(optional)</span></label>
-            <input type="tel" id="donor-phone" class="form-control" data-i18n-placeholder="phonePlaceholder" placeholder="506-000-0000" autocomplete="tel">
-        </div>
-        <div class="form-group">
-            <label class="form-label" for="preferred-org"><span data-i18n="preferredOrg">Preferred organization</span> <span class="text-muted" data-i18n="optional">(optional)</span></label>
-            <select id="preferred-org" class="form-control">
-                <option value="" data-i18n="letSystemMatch">Let the system find the best match</option>
-            </select>
-            <div class="form-hint" data-i18n="contactHint">Leave blank to have the system match your donation to the organization with the greatest need.</div>
-        </div>
-        <div class="step-nav">
-            <button class="btn btn-ghost" onclick="goToStep(1)" data-i18n="backBtn">Back</button>
-            <button class="btn btn-primary" onclick="goToStep(3)" data-i18n="nextSeeMatch">Next — see match</button>
-        </div>
-    </div>
+                <!-- Org needs picker — shown when arriving with ?org= -->
+                <div id="org-needs-picker" style="display:none;margin-bottom:1.25rem">
+                    <div class="inline-notice info" style="margin-bottom:.85rem">
+                        <strong id="org-needs-org-name"></strong> is currently looking for these items. Select one to pre-fill the form, or describe your own below.
+                    </div>
+                    <div id="org-needs-list" style="display:flex;flex-direction:column;gap:.45rem"></div>
+                </div>
 
-    <!-- Step 3: Match preview -->
-    <div class="step-panel card" id="step-3">
-        <h2 data-i18n="whereDonationGoes">Where your donation goes</h2>
-        <div id="match-loading" style="display:none">
-            <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
-            <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
-            <div class="skeleton skeleton-block" style="height:80px"></div>
-            <p class="text-muted text-sm" style="margin-top:.75rem;text-align:center" data-i18n="findingMatch">Finding the best match for your donation...</p>
-        </div>
-        <div id="match-results" style="display:none">
-            <p class="text-sm text-muted" style="margin-bottom:.75rem" data-i18n="topMatches">Based on current needs across the network, here are the top matches for your donation. Select one to proceed.</p>
-            <div class="match-cards" id="match-cards"></div>
-            <div id="custom-org-row" style="margin-top:.75rem;display:none">
-                <label class="form-label" for="custom-org-select" data-i18n="orChooseDifferent">Or choose a different organization</label>
-                <select id="custom-org-select" class="form-control">
-                    <option value="" data-i18n="selectOrg">Select an organization</option>
-                </select>
+                <div class="form-group">
+                    <label class="form-label" for="item-name"><span data-i18n="itemDesc">Item description</span> <span class="req">*</span></label>
+                    <input type="text" id="item-name" class="form-control" data-i18n-placeholder="itemPlaceholder" placeholder="e.g. Men's winter jackets, canned soup, sleeping bags" autocomplete="off">
+                    <div class="form-error" id="err-item-name" data-i18n="errItem">Please describe the item.</div>
+                </div>
+                <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+                    <div class="form-group">
+                        <label class="form-label" for="category"><span data-i18n="category">Category</span> <span class="req">*</span></label>
+                        <select id="category" class="form-control">
+                            <option value="" data-i18n="selectCategory">Select a category</option>
+                            <option value="clothing" data-i18n="clothing">Clothing</option>
+                            <option value="bedding" data-i18n="bedding">Bedding &amp; Linens</option>
+                            <option value="food" data-i18n="food">Food &amp; Beverages</option>
+                            <option value="hygiene" data-i18n="hygiene">Hygiene Products</option>
+                            <option value="baby_supplies" data-i18n="babySupplies">Baby Supplies</option>
+                            <option value="goods" data-i18n="goods">Household Goods</option>
+                            <option value="furniture" data-i18n="furniture">Furniture</option>
+                            <option value="other" data-i18n="other">Other</option>
+                        </select>
+                        <div class="form-error" id="err-category" data-i18n="errCategory">Please select a category.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="condition"><span data-i18n="condition">Condition</span> <span class="req">*</span></label>
+                        <select id="condition" class="form-control">
+                            <option value="new" data-i18n="newCondition">New</option>
+                            <option value="good" selected data-i18n="goodCondition">Good</option>
+                            <option value="fair" data-i18n="fairCondition">Fair</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+                    <div class="form-group">
+                        <label class="form-label" for="quantity"><span data-i18n="quantity">Quantity</span> <span class="req">*</span></label>
+                        <input type="number" id="quantity" class="form-control" placeholder="1" min="1" value="1">
+                        <div class="form-error" id="err-quantity" data-i18n="errQuantity">Please enter a quantity.</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="unit" data-i18n="unit">Unit</label>
+                        <select id="unit" class="form-control">
+                            <option value="items" data-i18n="items">Items</option>
+                            <option value="pairs" data-i18n="pairs">Pairs</option>
+                            <option value="bags" data-i18n="bags">Bags</option>
+                            <option value="boxes" data-i18n="boxes">Boxes</option>
+                            <option value="cans" data-i18n="cans">Cans</option>
+                            <option value="bottles" data-i18n="bottles">Bottles</option>
+                            <option value="packs" data-i18n="packs">Packs</option>
+                            <option value="kg" data-i18n="kg">Kilograms</option>
+                            <option value="sets" data-i18n="sets">Sets</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="step-nav">
+                    <a href="/give" class="btn btn-ghost" data-i18n="backBtn">Back</a>
+                    <button class="btn btn-primary" onclick="goToStep(2)" data-i18n="nextBtn">Next</button>
+                </div>
             </div>
-            <div style="margin-top:.6rem">
-                <button class="btn btn-ghost btn-sm" id="show-all-orgs-btn" onclick="toggleCustomOrg()" data-i18n="chooseDifferentInstead">Choose a different organization instead</button>
-            </div>
-        </div>
-        <div id="match-error" style="display:none">
-            <div class="inline-notice warning" data-i18n="noMatchingNeeds">
-                No matching needs found. Please select an organization manually below.
-            </div>
-            <div class="form-group" style="margin-top:1rem">
-                <label class="form-label" for="fallback-org"><span data-i18n="selectOrgRequired">Select an organization</span> <span class="req">*</span></label>
-                <select id="fallback-org" class="form-control">
-                    <option value="" data-i18n="selectOrg">Select an organization</option>
-                </select>
-            </div>
-        </div>
-        <div class="step-nav">
-            <button class="btn btn-ghost" onclick="goToStep(2)" data-i18n="backBtn">Back</button>
-            <button class="btn btn-primary" id="confirm-match-btn" onclick="confirmMatch()" disabled data-i18n="confirmMatch">Confirm this match</button>
-        </div>
-    </div>
 
-    <!-- Step 4: Confirmation -->
-    <div class="step-panel card" id="step-4">
-        <h2 data-i18n="donationSubmitted">Your donation has been submitted</h2>
-        <div class="inline-notice success" style="margin-bottom:1.25rem" data-i18n="thankYou">
-            Thank you. The organization has been notified and will be in touch to arrange collection.
+            <!-- Step 2: Contact info + submit -->
+            <div class="step-panel card" id="step-2">
+                <h2 data-i18n="contactInfo">Your contact information</h2>
+                <div class="inline-notice info" style="margin-bottom:1.25rem" data-i18n="contactNotice">
+                    Your contact details are only shared with the matched organization to arrange pickup or drop-off.
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="donor-name"><span data-i18n="fullName">Full name</span> <span class="req">*</span></label>
+                    <input type="text" id="donor-name" class="form-control" data-i18n-placeholder="yourNamePlaceholder" placeholder="Your name" autocomplete="name">
+                    <div class="form-error" id="err-donor-name" data-i18n="errName">Please enter your name.</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="donor-email"><span data-i18n="emailAddress">Email address</span> <span class="req">*</span></label>
+                    <input type="email" id="donor-email" class="form-control" data-i18n-placeholder="emailPlaceholder" placeholder="you@email.com" autocomplete="email">
+                    <div class="form-error" id="err-donor-email" data-i18n="errEmail">Please enter a valid email address.</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="donor-phone"><span data-i18n="phoneNumber">Phone number</span> <span class="text-muted" data-i18n="optional">(optional)</span></label>
+                    <input type="tel" id="donor-phone" class="form-control" data-i18n-placeholder="phonePlaceholder" placeholder="506-000-0000" autocomplete="tel">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="preferred-org"><span data-i18n="preferredOrg">Preferred organization</span> <span class="text-muted" data-i18n="optional">(optional)</span></label>
+                    <select id="preferred-org" class="form-control">
+                        <option value="" data-i18n="letSystemMatch">Let the system find the best match</option>
+                    </select>
+                    <div class="form-hint" data-i18n="contactHint">Leave blank to have the system match your donation to the organization with the greatest need.</div>
+                </div>
+                <div class="step-nav">
+                    <button class="btn btn-ghost" onclick="goToStep(1)" data-i18n="backBtn">Back</button>
+                    <button class="btn btn-primary" id="submit-btn" onclick="submitDonation()">Submit donation</button>
+                </div>
+            </div>
+
+            <!-- Confirmation -->
+            <div class="step-panel card" id="step-confirm" style="display:none">
+                <h2 data-i18n="donationSubmitted">Your donation has been submitted</h2>
+                <div class="inline-notice success" style="margin-bottom:1.25rem" data-i18n="thankYou">
+                    Thank you. The organization has been notified and will be in touch to arrange collection.
+                </div>
+                <div class="confirm-box" id="confirm-box"></div>
+                <div class="mt-3">
+                    <h3 style="font-size:.95rem;margin-bottom:.5rem" data-i18n="nextSteps">Next steps</h3>
+                    <p class="text-sm text-muted" data-i18n="nextStepsDesc">The organization's staff will review your donation and contact you at the email or phone number you provided to arrange pickup or drop-off.</p>
+                    <p class="text-sm text-muted mt-1" data-i18n="questionsContact">Questions? Contact the organization directly using the details above.</p>
+                </div>
+                <div class="step-nav" style="margin-top:1.75rem;justify-content:center">
+                    <a href="/" class="btn btn-primary" data-i18n="backToNeedsBoard">Back to needs board</a>
+                </div>
+            </div>
         </div>
-        <div class="confirm-box" id="confirm-box"></div>
-        <div class="mt-3">
-            <h3 style="font-size:.95rem;margin-bottom:.5rem" data-i18n="nextSteps">Next steps</h3>
-            <p class="text-sm text-muted" data-i18n="nextStepsDesc">The organization's staff will review your donation and contact you at the email or phone number you provided to arrange pickup or drop-off.</p>
-            <p class="text-sm text-muted mt-1" data-i18n="questionsContact">Questions? Contact the organization directly using the details above.</p>
-        </div>
-        <div class="step-nav" style="margin-top:1.75rem">
-            <a href="/" class="btn btn-outline" data-i18n="backToNeedsBoard">Back to needs board</a>
-            <a href="/donate" class="btn btn-primary" onclick="resetForm()" data-i18n="donateAnother">Donate another item</a>
-        </div>
+
     </div>
 </div>
 
@@ -284,76 +235,46 @@
 <script src="/js/utils.js"></script>
 <script>
     i18n.apply();
-    let currentStep = 1;
-    let donationId = null;
-    let selectedOrgId = null;
-    let selectedOrgName = null;
-    let selectedReasoning = null;
-    let allOrgs = [];
 
-    // Pre-fill preferred org from URL
-    const urlParams = new URLSearchParams(window.location.search);
+    let allOrgs = [];
+    const urlParams    = new URLSearchParams(window.location.search);
     const prefilledOrgId = urlParams.get('org');
 
-    async function loadOrganizations() {
-        try {
-            const res = await pub.organizations();
-            allOrgs = res.data || [];
-            const prefSelect = document.getElementById('preferred-org');
-            const customSelect = document.getElementById('custom-org-select');
-            const fallbackSelect = document.getElementById('fallback-org');
-
-            allOrgs.forEach(org => {
-                const opt = (val, label) => { const o = new Option(label, val); return o; };
-                prefSelect.appendChild(opt(org.id, org.name));
-                customSelect.appendChild(opt(org.id, org.name));
-                fallbackSelect.appendChild(opt(org.id, org.name));
-            });
-
-            if (prefilledOrgId) {
-                prefSelect.value = prefilledOrgId;
-            }
-        } catch {
-            // Non-critical, continue
-        }
-    }
-
-    function updateStepIndicators(step) {
-        for (let i = 1; i <= 4; i++) {
-            const el = document.getElementById(`step-indicator-${i}`);
-            el.classList.toggle('active', i === step);
-            el.classList.toggle('done', i < step);
-        }
-    }
-
-    const DONATE_STEP_VIDEOS = [
+    const URGENCY_RANK_D = { critical: 0, high: 1, medium: 2, low: 3 };
+    const CAT_TO_VALUE   = {
+        clothing: 'clothing', bedding: 'bedding', food: 'food', hygiene: 'hygiene',
+        baby_supplies: 'baby_supplies', goods: 'goods', furniture: 'furniture', other: 'other'
+    };
+    const STEP_VIDEOS = [
         '/assets/videos/community/donations/businessman-sharing-food.mp4',
         '/assets/videos/community/donations/young-man-helping-homeless.mp4',
-        '/assets/videos/community/donations/passerby-giving-money.mp4',
         '/assets/videos/community/food-bank/volunteer-bread-hungry.mp4'
     ];
-    function updateDonateVideo(step) {
+
+    function setVideo(idx) {
         const vid = document.getElementById('donate-video');
-        if (vid && DONATE_STEP_VIDEOS[step - 1]) {
-            vid.querySelector('source').src = DONATE_STEP_VIDEOS[step - 1];
-            vid.load();
-            vid.play().catch(() => {});
+        if (vid && STEP_VIDEOS[idx]) {
+            vid.querySelector('source').src = STEP_VIDEOS[idx];
+            vid.load(); vid.play().catch(() => {});
         }
     }
+
+    // --- Step navigation ---
 
     function goToStep(step) {
         if (step === 2 && !validateStep1()) return;
-        if (step === 3 && !validateStep2()) return;
-
-        document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
-        document.getElementById(`step-${step}`).classList.add('active');
-        updateStepIndicators(step);
-        currentStep = step;
-        updateDonateVideo(step);
+        document.querySelectorAll('.step-panel').forEach(p => {
+            p.classList.remove('active');
+            p.style.display = 'none';
+        });
+        const panel = document.getElementById(`step-${step}`);
+        panel.style.display = '';
+        panel.classList.add('active');
+        setVideo(step - 1);
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        if (step === 3) loadMatchPreview();
     }
+
+    // --- Validation ---
 
     function validateStep1() {
         const item = document.getElementById('item-name');
@@ -361,30 +282,14 @@
         const qty  = document.getElementById('quantity');
         let ok = true;
 
-        if (!item.value.trim()) {
-            item.classList.add('error');
-            document.getElementById('err-item-name').classList.add('visible');
-            ok = false;
-        } else {
-            item.classList.remove('error');
-            document.getElementById('err-item-name').classList.remove('visible');
-        }
-        if (!cat.value) {
-            cat.classList.add('error');
-            document.getElementById('err-category').classList.add('visible');
-            ok = false;
-        } else {
-            cat.classList.remove('error');
-            document.getElementById('err-category').classList.remove('visible');
-        }
-        if (!qty.value || parseInt(qty.value) < 1) {
-            qty.classList.add('error');
-            document.getElementById('err-quantity').classList.add('visible');
-            ok = false;
-        } else {
-            qty.classList.remove('error');
-            document.getElementById('err-quantity').classList.remove('visible');
-        }
+        const check = (el, errId, condition) => {
+            if (condition) { el.classList.add('error'); document.getElementById(errId).classList.add('visible'); ok = false; }
+            else           { el.classList.remove('error'); document.getElementById(errId).classList.remove('visible'); }
+        };
+
+        check(item, 'err-item-name', !item.value.trim());
+        check(cat,  'err-category',  !cat.value);
+        check(qty,  'err-quantity',  !qty.value || parseInt(qty.value) < 1);
         return ok;
     }
 
@@ -393,217 +298,152 @@
         const email = document.getElementById('donor-email');
         let ok = true;
 
-        if (!name.value.trim()) {
-            name.classList.add('error');
-            document.getElementById('err-donor-name').classList.add('visible');
-            ok = false;
-        } else {
-            name.classList.remove('error');
-            document.getElementById('err-donor-name').classList.remove('visible');
-        }
+        const check = (el, errId, condition) => {
+            if (condition) { el.classList.add('error'); document.getElementById(errId).classList.add('visible'); ok = false; }
+            else           { el.classList.remove('error'); document.getElementById(errId).classList.remove('visible'); }
+        };
 
-        const emailVal = email.value.trim();
-        const emailOk  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
-        if (!emailOk) {
-            email.classList.add('error');
-            document.getElementById('err-donor-email').classList.add('visible');
-            ok = false;
-        } else {
-            email.classList.remove('error');
-            document.getElementById('err-donor-email').classList.remove('visible');
-        }
+        check(name,  'err-donor-name',  !name.value.trim());
+        check(email, 'err-donor-email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()));
         return ok;
     }
 
-    async function loadMatchPreview() {
-        const loading  = document.getElementById('match-loading');
-        const results  = document.getElementById('match-results');
-        const errBlock = document.getElementById('match-error');
+    // --- Submit: auto-match then confirm ---
 
-        loading.style.display = 'block';
-        results.style.display = 'none';
-        errBlock.style.display = 'none';
-        document.getElementById('confirm-match-btn').disabled = true;
+    async function submitDonation() {
+        if (!validateStep2()) return;
 
-        const preferred = document.getElementById('preferred-org').value;
-        if (preferred) {
-            // Donor picked an org — skip AI
-            const org = allOrgs.find(o => o.id === preferred);
-            selectedOrgId   = org ? org.id : null;
-            selectedOrgName = org ? org.name : '';
-            selectedReasoning = i18n.t('selectedDirectly');
-            loading.style.display = 'none';
-            renderManualMatch(org);
-            return;
-        }
-
-        try {
-            const data = {
-                item_name: document.getElementById('item-name').value.trim(),
-                category:  document.getElementById('category').value,
-                quantity:  parseInt(document.getElementById('quantity').value),
-                condition: document.getElementById('condition').value
-            };
-            const res = await aiApi.matchDonation(data);
-            const matches = res.data.matches || [];
-
-            loading.style.display = 'none';
-
-            if (!matches.length) {
-                errBlock.style.display = 'block';
-                populateFallbackOrgs();
-                return;
-            }
-
-            results.style.display = 'block';
-            renderMatchCards(matches);
-
-            // Populate custom org select
-            const customSelect = document.getElementById('custom-org-select');
-        } catch {
-            loading.style.display = 'none';
-            errBlock.style.display = 'block';
-            populateFallbackOrgs();
-        }
-    }
-
-    function renderMatchCards(matches) {
-        const container = document.getElementById('match-cards');
-        container.innerHTML = matches.map((m, i) => `
-            <div class="match-card${i === 0 ? ' selected' : ''}" id="match-${i}" onclick="selectMatch(${i}, '${escHtml(m.org_id)}', '${escHtml(m.org_name).replace(/'/g, "\\'")}', '${escHtml(m.reasoning).replace(/'/g, "\\'")}')">
-                <div class="gap-row" style="margin-bottom:.3rem">
-                    <div class="match-org">${escHtml(m.org_name)}</div>
-                    <span class="badge badge-${escHtml(m.urgency)}">${escHtml(m.urgency)}</span>
-                </div>
-                <div class="match-reasoning">${escHtml(m.reasoning)}</div>
-            </div>`).join('');
-
-        // Auto-select first
-        if (matches.length) {
-            selectedOrgId   = matches[0].org_id;
-            selectedOrgName = matches[0].org_name;
-            selectedReasoning = matches[0].reasoning;
-            document.getElementById('confirm-match-btn').disabled = false;
-        }
-    }
-
-    function renderManualMatch(org) {
-        if (!org) return;
-        document.getElementById('match-results').style.display = 'block';
-        document.getElementById('match-cards').innerHTML = `
-            <div class="match-card selected">
-                <div class="match-org">${escHtml(org.name)}</div>
-                <div class="match-reasoning">${escHtml(i18n.t('selectedByYou'))}</div>
-            </div>`;
-        document.getElementById('confirm-match-btn').disabled = false;
-    }
-
-    function selectMatch(idx, orgId, orgName, reasoning) {
-        document.querySelectorAll('.match-card').forEach((el, i) => {
-            el.classList.toggle('selected', i === idx);
-        });
-        selectedOrgId   = orgId;
-        selectedOrgName = orgName;
-        selectedReasoning = reasoning;
-        document.getElementById('confirm-match-btn').disabled = false;
-    }
-
-    function toggleCustomOrg() {
-        const row = document.getElementById('custom-org-row');
-        const btn = document.getElementById('show-all-orgs-btn');
-        const showing = row.style.display !== 'none';
-        row.style.display = showing ? 'none' : 'block';
-        btn.textContent = showing ? i18n.t('chooseDifferentInstead') : i18n.t('useSystemRecommendation');
-        if (!showing) {
-            // Reset to first match selection
-        }
-    }
-
-    function populateFallbackOrgs() {
-        const sel = document.getElementById('fallback-org');
-        sel.addEventListener('change', function () {
-            const org = allOrgs.find(o => o.id === this.value);
-            if (org) {
-                selectedOrgId   = org.id;
-                selectedOrgName = org.name;
-                selectedReasoning = i18n.t('manuallySelected');
-                document.getElementById('confirm-match-btn').disabled = false;
-            }
-        });
-    }
-
-    async function confirmMatch() {
-        if (!selectedOrgId) { toast(i18n.t('pleaseSelectOrg'), 'error'); return; }
-
-        const btn = document.getElementById('confirm-match-btn');
+        const btn = document.getElementById('submit-btn');
         btn.disabled = true;
-        btn.textContent = i18n.t('submitting');
+        btn.textContent = 'Submitting…';
 
         try {
-            // Submit donation
+            const preferredOrgId = document.getElementById('preferred-org').value || null;
+            const itemName       = document.getElementById('item-name').value.trim();
+            const category       = document.getElementById('category').value;
+            const quantity       = parseInt(document.getElementById('quantity').value);
+            const unit           = document.getElementById('unit').value;
+            const condition      = document.getElementById('condition').value;
+
+            // 1. Create the donation record
             const donationData = {
                 donor_name:       document.getElementById('donor-name').value.trim(),
                 donor_email:      document.getElementById('donor-email').value.trim(),
                 donor_phone:      document.getElementById('donor-phone').value.trim() || null,
-                item_name:        document.getElementById('item-name').value.trim(),
-                category:         document.getElementById('category').value,
-                quantity:         parseInt(document.getElementById('quantity').value),
-                unit:             document.getElementById('unit').value,
-                condition:        document.getElementById('condition').value,
-                preferred_org_id: document.getElementById('preferred-org').value || null
+                item_name:        itemName,
+                category, quantity, unit, condition,
+                preferred_org_id: preferredOrgId
             };
-            const res = await pub.submitDonation(donationData);
-            donationId = res.data.id;
+            const res        = await pub.submitDonation(donationData);
+            const donationId = res.data.id;
 
-            // Apply match
-            await pub.applyMatch(donationId, selectedOrgId, selectedReasoning);
+            // 2. Auto-match: use preferred org directly, or run AI match
+            let matchedOrgId   = preferredOrgId;
+            let matchReasoning = 'Selected directly by donor.';
 
-            showConfirmation();
+            if (!matchedOrgId) {
+                try {
+                    const matchRes = await aiApi.matchDonation({ item_name: itemName, category, quantity, condition });
+                    const top      = (matchRes.data.matches || [])[0];
+                    if (top) { matchedOrgId = top.org_id; matchReasoning = top.reasoning; }
+                } catch {}
+            }
+
+            if (matchedOrgId) {
+                await pub.applyMatch(donationId, matchedOrgId, matchReasoning);
+            }
+
+            // 3. Show confirmation
+            showConfirmation(matchedOrgId, matchReasoning, itemName, quantity, unit, condition);
+
         } catch (err) {
-            toast(err.message || i18n.t('submissionFailed'), 'error');
+            toast(err.message || 'Submission failed. Please try again.', 'error');
             btn.disabled = false;
-            btn.textContent = i18n.t('confirmMatch');
+            btn.textContent = 'Submit donation';
         }
     }
 
-    function showConfirmation() {
-        const org = allOrgs.find(o => o.id === selectedOrgId);
+    function showConfirmation(orgId, reasoning, itemName, quantity, unit, condition) {
+        const org = allOrgs.find(o => o.id === orgId);
+
         document.getElementById('confirm-box').innerHTML = `
-            <h3>${i18n.t('matchedTo')} ${escHtml(selectedOrgName)}</h3>
-            <div class="detail"><strong>${i18n.t('item')}</strong> ${escHtml(document.getElementById('item-name').value.trim())} &mdash; ${escHtml(document.getElementById('quantity').value)} ${escHtml(document.getElementById('unit').value)} (${escHtml(document.getElementById('condition').value)})</div>
-            <div class="detail"><strong>${i18n.t('yourName')}</strong> ${escHtml(document.getElementById('donor-name').value.trim())}</div>
-            <div class="detail"><strong>${i18n.t('yourEmail')}</strong> ${escHtml(document.getElementById('donor-email').value.trim())}</div>
-            ${org && org.contact_email ? `<div class="detail" style="margin-top:.75rem"><strong>${i18n.t('orgContact')}</strong> ${escHtml(org.contact_email)}</div>` : ''}
-            ${org && org.address ? `<div class="detail"><strong>${i18n.t('address')}</strong> ${escHtml(org.address)}</div>` : ''}
+            ${org ? `<h3 style="margin-bottom:.75rem">Matched to: <strong>${escHtml(org.name)}</strong></h3>` : ''}
+            <div class="detail"><strong>Item:</strong> ${escHtml(itemName)} &mdash; ${escHtml(String(quantity))} ${escHtml(unit)} (${escHtml(condition)})</div>
+            <div class="detail"><strong>Your name:</strong> ${escHtml(document.getElementById('donor-name').value.trim())}</div>
+            <div class="detail"><strong>Your email:</strong> ${escHtml(document.getElementById('donor-email').value.trim())}</div>
+            ${org && org.contact_email ? `<div class="detail" style="margin-top:.65rem"><strong>Org contact:</strong> ${escHtml(org.contact_email)}</div>` : ''}
+            ${org && org.address ? `<div class="detail"><strong>Address:</strong> ${escHtml(org.address)}</div>` : ''}
         `;
-        goToStep(4);
+
+        // Hide all step panels, show confirmation
+        document.querySelectorAll('.step-panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+        const confirm = document.getElementById('step-confirm');
+        confirm.style.display = '';
+        confirm.classList.add('active');
+        setVideo(2);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function resetForm() {
-        document.querySelectorAll('input, select, textarea').forEach(el => {
-            if (el.tagName === 'SELECT') el.selectedIndex = 0;
-            else el.value = '';
-            el.classList.remove('error');
-        });
-        document.querySelectorAll('.form-error').forEach(el => el.classList.remove('visible'));
-        donationId = selectedOrgId = selectedOrgName = selectedReasoning = null;
+    // --- Org needs picker ---
+
+    async function loadOrgNeeds(orgId) {
+        try {
+            const res = await pub.orgsWithNeeds();
+            const org = (res.data || []).find(o => o.id === orgId);
+            if (!org || !org.top_needs || !org.top_needs.length) return;
+
+            const needs = [...org.top_needs].sort((a, b) =>
+                (URGENCY_RANK_D[a.urgency] ?? 4) - (URGENCY_RANK_D[b.urgency] ?? 4)
+            );
+
+            document.getElementById('org-needs-org-name').textContent = org.name;
+            document.getElementById('org-needs-list').innerHTML = needs.map(n => `
+                <button type="button" class="need-pick-btn" onclick="selectOrgNeed(this, '${escHtml(n.item_name).replace(/'/g,"\\'")}', '${escHtml(n.category)}', ${n.quantity_needed}, '${escHtml(n.unit)}')">
+                    <span class="badge badge-${escHtml(n.urgency)}" style="flex-shrink:0">${escHtml(n.urgency)}</span>
+                    <span class="need-pick-name">${escHtml(n.item_name)}</span>
+                    <span class="need-pick-qty">Need ${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</span>
+                </button>`).join('');
+
+            document.getElementById('org-needs-picker').style.display = 'block';
+        } catch {}
     }
 
-    // Custom org select change
-    document.getElementById('custom-org-select').addEventListener('change', function () {
-        const org = allOrgs.find(o => o.id === this.value);
-        if (org) {
-            selectedOrgId   = org.id;
-            selectedOrgName = org.name;
-            selectedReasoning = 'Manually selected by donor.';
-            document.querySelectorAll('.match-card').forEach(el => el.classList.remove('selected'));
-            document.getElementById('confirm-match-btn').disabled = false;
+    function selectOrgNeed(btn, itemName, category, qty, unit) {
+        document.querySelectorAll('.need-pick-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+
+        document.getElementById('item-name').value = itemName;
+        const catSel = document.getElementById('category');
+        if (CAT_TO_VALUE[category]) catSel.value = CAT_TO_VALUE[category];
+        document.getElementById('quantity').value = qty || 1;
+        const unitSel = document.getElementById('unit');
+        for (const opt of unitSel.options) {
+            if (opt.value === unit) { unitSel.value = unit; break; }
         }
-    });
+        document.getElementById('item-name').classList.remove('error');
+        document.getElementById('err-item-name').classList.remove('visible');
+        catSel.classList.remove('error');
+        document.getElementById('err-category').classList.remove('visible');
+    }
+
+    // --- Init ---
+
+    async function loadOrganizations() {
+        try {
+            const res = await pub.organizations();
+            allOrgs = res.data || [];
+            const prefSelect = document.getElementById('preferred-org');
+            allOrgs.forEach(org => prefSelect.appendChild(new Option(org.name, org.id)));
+            if (prefilledOrgId) {
+                prefSelect.value = prefilledOrgId;
+                loadOrgNeeds(prefilledOrgId);
+            }
+        } catch {}
+    }
 
     loadOrganizations();
     setActiveNav();
-    updateDonateVideo(1);
+    setVideo(0);
 </script>
 
     </div>

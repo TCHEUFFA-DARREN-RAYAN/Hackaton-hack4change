@@ -11,17 +11,29 @@ const DonationModel = require('../models/donation.model');
 const OrganizationModel = require('../models/organization.model');
 const SurplusRequestModel = require('../models/surplusRequest.model');
 const SurplusTransferModel = require('../models/surplusTransfer.model');
+const ChatThreadModel = require('../models/chatThread.model');
+const ChatMessageModel = require('../models/chatMessage.model');
 
 // All staff routes require authentication
 router.use(authenticateToken);
 
 // Middleware: ensure the user is a staff member (not coordinator-only)
+// For chat, staff-only: coordinator uses /api/coordinator/chat
 router.use((req, res, next) => {
     if (req.user.role !== 'staff' && req.user.role !== 'coordinator') {
         return res.status(403).json({ success: false, message: 'Staff access required' });
     }
     next();
 });
+
+// Chat: staff-only (coordinator uses coordinator routes)
+const staffOnlyChat = (req, res, next) => {
+    if (req.path.startsWith('/chat') && req.user.role !== 'staff') {
+        return res.status(403).json({ success: false, message: 'Staff chat access only' });
+    }
+    next();
+};
+router.use(staffOnlyChat);
 
 // GET /api/staff/org — current org info
 router.get('/org', async (req, res) => {
@@ -252,6 +264,55 @@ router.get('/expiring', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, message: 'Failed to load expiring items' });
+    }
+});
+
+// --- Chat ---
+router.get('/chat/threads', async (req, res) => {
+    try {
+        // Ensure staff has org channel and direct thread (lazy-create direct)
+        await ChatThreadModel.findOrCreateOrgChannel(req.user.orgId);
+        await ChatThreadModel.findOrCreateDirectThread(req.user.id);
+        const threads = await ChatThreadModel.findForStaff(req.user.orgId, req.user.id);
+        res.json({ success: true, data: threads });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load chat threads' });
+    }
+});
+
+router.get('/chat/threads/:id/messages', async (req, res) => {
+    try {
+        const threads = await ChatThreadModel.findForStaff(req.user.orgId, req.user.id);
+        const allowed = threads.some(t => t.id === req.params.id);
+        if (!allowed) return res.status(404).json({ success: false, message: 'Thread not found' });
+        const messages = await ChatMessageModel.findByThread(req.params.id);
+        res.json({ success: true, data: messages });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load messages' });
+    }
+});
+
+router.post('/chat/threads/:id/messages', async (req, res) => {
+    try {
+        const { content } = req.body;
+        if (!content || !String(content).trim()) {
+            return res.status(400).json({ success: false, message: 'Message content is required' });
+        }
+        const threads = await ChatThreadModel.findForStaff(req.user.orgId, req.user.id);
+        const allowed = threads.some(t => t.id === req.params.id);
+        if (!allowed) return res.status(404).json({ success: false, message: 'Thread not found' });
+        const msg = await ChatMessageModel.create({
+            thread_id: req.params.id,
+            sender_type: 'staff',
+            sender_id: req.user.id,
+            content: String(content).trim()
+        });
+        res.status(201).json({ success: true, data: msg });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to send message' });
     }
 });
 

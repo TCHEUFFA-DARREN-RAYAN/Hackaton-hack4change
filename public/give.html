@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Give — CommonGround</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/i18n.js"></script>
+    <style>
+        .give-page { position: relative; min-height: 100vh; display: flex; flex-direction: column; }
+
+        .give-video-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+        .give-video-bg video {
+            position: absolute; min-width: 100%; min-height: 100%;
+            object-fit: cover; object-position: center;
+        }
+        .give-video-bg .overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(160deg, rgba(0,0,0,.52) 0%, rgba(0,0,0,.38) 100%);
+            z-index: 1;
+        }
+
+        .give-content {
+            position: relative; z-index: 10;
+            flex: 1; display: flex; flex-direction: column;
+        }
+
+        /* Nav */
+        .give-content .site-nav {
+            background: rgba(255,255,255,.12);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            border-bottom-color: rgba(255,255,255,.15);
+        }
+        .give-content .site-nav .nav-brand span,
+        .give-content .site-nav .nav-links a,
+        .give-content .site-nav .nav-actions a { color: #fff; }
+        .give-content .site-nav .btn-ghost { border-color: rgba(255,255,255,.35); color: #fff; }
+        .give-content .site-nav .btn-ghost:hover { background: rgba(255,255,255,.15); }
+
+        /* Main layout */
+        .give-main {
+            flex: 1; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            padding: 3rem 1.25rem 4rem;
+            text-align: center;
+        }
+
+        .give-eyebrow {
+            font-size: .8rem; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: rgba(255,255,255,.65);
+            margin-bottom: .65rem;
+        }
+
+        .give-heading {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700; color: #fff;
+            line-height: 1.15; margin-bottom: .75rem;
+            text-shadow: 0 2px 12px rgba(0,0,0,.3);
+        }
+
+        .give-subtext {
+            font-size: 1.05rem; color: rgba(255,255,255,.82);
+            max-width: 540px; line-height: 1.6;
+            margin: 0 auto 2.75rem;
+        }
+
+        /* Choice cards */
+        .give-choices {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            width: 100%;
+            max-width: 680px;
+        }
+
+        .give-card {
+            background: rgba(255,255,255,.13);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border: 1.5px solid rgba(255,255,255,.22);
+            border-radius: 16px;
+            padding: 2rem 1.5rem 1.75rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex; flex-direction: column; align-items: center;
+            transition: background .2s, border-color .2s, transform .18s;
+            color: #fff;
+        }
+        .give-card:hover {
+            background: rgba(255,255,255,.22);
+            border-color: rgba(255,255,255,.45);
+            transform: translateY(-3px);
+        }
+        .give-card:active { transform: translateY(0); }
+
+        .give-card-icon {
+            font-size: 2.4rem;
+            margin-bottom: .9rem;
+            line-height: 1;
+        }
+
+        .give-card-title {
+            font-size: 1.2rem; font-weight: 700;
+            color: #fff; margin-bottom: .45rem;
+        }
+
+        .give-card-desc {
+            font-size: .88rem; color: rgba(255,255,255,.75);
+            line-height: 1.55; text-align: center;
+        }
+
+        .give-card-cta {
+            margin-top: 1.25rem;
+            display: inline-block;
+            font-size: .88rem; font-weight: 600;
+            padding: .5rem 1.1rem;
+            border-radius: 999px;
+            border: 1.5px solid rgba(255,255,255,.5);
+            color: #fff;
+            transition: background .15s, border-color .15s;
+        }
+        .give-card:hover .give-card-cta {
+            background: rgba(255,255,255,.2);
+            border-color: #fff;
+        }
+
+        /* Highlight the resources card slightly */
+        .give-card.primary {
+            background: rgba(0,122,255,.3);
+            border-color: rgba(0,122,255,.55);
+        }
+        .give-card.primary:hover {
+            background: rgba(0,122,255,.45);
+            border-color: rgba(0,122,255,.8);
+        }
+        .give-card.primary .give-card-cta {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        /* If org context is shown */
+        .give-org-context {
+            margin-bottom: 2rem;
+            background: rgba(255,255,255,.14);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,.22);
+            border-radius: 10px;
+            padding: .65rem 1.1rem;
+            font-size: .9rem; color: rgba(255,255,255,.9);
+            display: none;
+        }
+        .give-org-context strong { color: #fff; }
+
+        @media (max-width: 520px) {
+            .give-choices { grid-template-columns: 1fr; max-width: 360px; }
+            .give-card { padding: 1.5rem 1.25rem 1.35rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="give-page">
+    <div class="give-video-bg">
+        <video autoplay loop muted playsinline>
+            <source src="/assets/videos/community/donations/businessman-sharing-food.mp4" type="video/mp4">
+        </video>
+        <div class="overlay"></div>
+    </div>
+
+    <div class="give-content">
+        <nav class="site-nav">
+            <div class="nav-inner">
+                <a href="/" class="nav-brand">
+                    <img src="/assets/images/logo.png" alt="Common Ground">
+                    <span>GMHSC Network</span>
+                </a>
+                <div class="nav-actions">
+                    <button type="button" class="btn btn-ghost btn-sm" onclick="i18n.switchLocale()" title="EN / FR">EN / FR</button>
+                    <a href="/login" class="btn btn-ghost btn-sm">Staff login</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="give-main">
+            <div class="give-eyebrow">CommonGround &mdash; GMHSC Network</div>
+            <h1 class="give-heading">How would you like to help?</h1>
+            <p class="give-subtext">Every contribution makes a difference. Choose the way that works best for you.</p>
+
+            <div class="give-org-context" id="org-context">
+                Donating to: <strong id="org-context-name"></strong>
+            </div>
+
+            <div class="give-choices">
+
+                <!-- Donate money -->
+                <a href="#" class="give-card" id="money-card" onclick="handleMoney(event)">
+                    <div class="give-card-icon">💳</div>
+                    <div class="give-card-title">Give Money</div>
+                    <div class="give-card-desc">Make a financial contribution. Funds go directly to organizations to purchase what they need most.</div>
+                    <span class="give-card-cta">Donate funds &rarr;</span>
+                </a>
+
+                <!-- Donate resources -->
+                <a href="/donate" class="give-card primary" id="resources-card">
+                    <div class="give-card-icon">📦</div>
+                    <div class="give-card-title">Give Resources</div>
+                    <div class="give-card-desc">Donate clothing, food, hygiene products, bedding, or other essential items directly to a shelter.</div>
+                    <span class="give-card-cta">Donate items &rarr;</span>
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Money modal — simple info screen since no payment system is wired up -->
+<div id="money-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem">
+    <div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:2rem;box-shadow:0 8px 40px rgba(0,0,0,.2);position:relative">
+        <button onclick="closeMoney()" style="position:absolute;top:.75rem;right:.85rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--color-text-muted)">&times;</button>
+        <div style="font-size:2rem;margin-bottom:.75rem">💳</div>
+        <h2 style="font-size:1.3rem;font-weight:700;margin-bottom:.5rem">Financial Donations</h2>
+        <p style="font-size:.92rem;color:var(--color-text-muted);line-height:1.6;margin-bottom:1.25rem">
+            To make a monetary donation to Greater Moncton's homeless-serving organizations, please contact the organization directly using the information below.
+        </p>
+        <div style="background:var(--color-bg);border-radius:10px;padding:1rem 1.1rem;margin-bottom:1.25rem">
+            <div style="font-weight:600;margin-bottom:.3rem">GMHSC Network Coordinator</div>
+            <div style="font-size:.88rem;color:var(--color-text-muted)">📧 info@gmhsc.ca</div>
+            <div style="font-size:.88rem;color:var(--color-text-muted)">📞 506-877-3000</div>
+            <div style="font-size:.88rem;color:var(--color-text-muted);margin-top:.4rem">95 Foundry St, Moncton, NB E1C 5H7</div>
+        </div>
+        <p style="font-size:.82rem;color:var(--color-text-muted);line-height:1.55">
+            All financial donations are managed directly by the receiving organization and are used to purchase items from their current needs list.
+        </p>
+        <div style="margin-top:1.5rem;display:flex;gap:.75rem;justify-content:flex-end">
+            <button class="btn btn-ghost" onclick="closeMoney()">Close</button>
+            <a href="/" class="btn btn-outline">View needs board</a>
+        </div>
+    </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/utils.js"></script>
+<script>
+    i18n.apply();
+
+    // Preserve ?org= param when navigating to donate
+    const urlParams   = new URLSearchParams(window.location.search);
+    const prefilledOrg = urlParams.get('org');
+
+    if (prefilledOrg) {
+        // Update the resources card link to carry the org param
+        const resourcesCard = document.getElementById('resources-card');
+        resourcesCard.href = '/donate?org=' + encodeURIComponent(prefilledOrg);
+
+        // Show org context pill if we can get the name
+        loadOrgName(prefilledOrg);
+    }
+
+    async function loadOrgName(orgId) {
+        try {
+            const res = await pub.organizations();
+            const org = (res.data || []).find(o => o.id === orgId);
+            if (org) {
+                document.getElementById('org-context-name').textContent = org.name;
+                document.getElementById('org-context').style.display = 'block';
+            }
+        } catch {}
+    }
+
+    function handleMoney(e) {
+        e.preventDefault();
+        const modal = document.getElementById('money-modal');
+        modal.style.display = 'flex';
+    }
+
+    function closeMoney() {
+        document.getElementById('money-modal').style.display = 'none';
+    }
+
+    document.getElementById('money-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeMoney();
+    });
+</script>
+
+</body>
+</html>

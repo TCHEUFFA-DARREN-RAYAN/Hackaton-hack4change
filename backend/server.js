@@ -7,7 +7,8 @@ const rateLimit = require('express-rate-limit');
 
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
-const { testConnection } = require('./config/database');
+const { testConnection, pool, promisePool } = require('./config/database');
+const logger = require('./utils/logger');
 const { sanitizeInput, blockSQLInjection, setSecurityHeaders } = require('./middleware/security.middleware');
 
 const authRoutes = require('./routes/auth.routes');
@@ -63,8 +64,20 @@ app.use(sanitizeInput);
 app.use(blockSQLInjection);
 
 // API routes
-app.get('/api/health', (req, res) => {
-    res.json({ success: true, app: 'CommonGround', timestamp: new Date().toISOString() });
+app.get('/api/health', async (req, res) => {
+    const basic = { success: true, app: 'CommonGround', timestamp: new Date().toISOString() };
+    if (req.query.deep === 'true' || req.query.deep === '1') {
+        try {
+            const conn = await promisePool.getConnection();
+            conn.release();
+            res.json({ ...basic, db: 'ok' });
+        } catch (err) {
+            logger.error('Health check DB ping failed', { error: err.message });
+            res.status(503).json({ ...basic, db: 'error' });
+        }
+    } else {
+        res.json(basic);
+    }
 });
 
 app.use('/api/auth', authRoutes);
@@ -77,9 +90,15 @@ app.use('/api/ai', aiRoutes);
 const publicPath = path.join(__dirname, '../public');
 app.use(express.static(publicPath, { index: false }));
 
+// Redirect legacy admin/auth routes to coordinator login
+app.get('/admin', (req, res) => res.redirect(302, '/coordinator'));
+app.get('/admin/*', (req, res) => res.redirect(302, '/coordinator'));
+app.get('/auth', (req, res) => res.sendFile(path.join(publicPath, 'auth.html')));
+
 const pages = {
     '/': 'index.html',
     '/all-needs': 'all-needs.html',
+    '/give': 'give.html',
     '/donate': 'donate.html',
     '/staff': 'staff.html',
     '/coordinator': 'coordinator.html',
@@ -98,22 +117,42 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error(err);
+    logger.error(err.message || 'Server error', { stack: err.stack });
     res.status(500).json({ success: false, message: err.message || 'Server error' });
 });
 
 const start = async () => {
     const ok = await testConnection();
     if (!ok) {
-        console.error('Database connection failed. Run: npm run migrate');
+        logger.error('Database connection failed. Run: npm run migrate');
         process.exit(1);
     }
-    app.listen(PORT, process.env.HOST || '0.0.0.0', () => {
+    const server = app.listen(PORT, process.env.HOST || '0.0.0.0', () => {
         console.log(`CommonGround running at http://localhost:${PORT}`);
     });
+
+    const shutdown = async (signal) => {
+        logger.info(`Received ${signal}, shutting down gracefully`);
+        server.close(async () => {
+            try {
+                await pool.end();
+                logger.info('Database pool closed');
+            } catch (err) {
+                logger.error('Error closing pool', { error: err.message });
+            }
+            process.exit(0);
+        });
+        setTimeout(() => {
+            logger.error('Forced shutdown after timeout');
+            process.exit(1);
+        }, 10000);
+    };
+
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
+    process.on('SIGINT', () => shutdown('SIGINT'));
 };
 
 start().catch(err => {
-    console.error(err);
+    logger.error(err.message || 'Startup failed', { stack: err.stack });
     process.exit(1);
 });

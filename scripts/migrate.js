@@ -36,6 +36,8 @@ const run = async () => {
         console.log('Running schema...');
 
         await conn.query(`SET FOREIGN_KEY_CHECKS = 0`);
+        await conn.query(`DROP TABLE IF EXISTS chat_messages`);
+        await conn.query(`DROP TABLE IF EXISTS chat_threads`);
         await conn.query(`DROP TABLE IF EXISTS surplus_requests`);
         await conn.query(`DROP TABLE IF EXISTS surplus_transfers`);
         await conn.query(`DROP TABLE IF EXISTS donations`);
@@ -147,6 +149,34 @@ const run = async () => {
         `);
 
         await conn.query(`
+            CREATE TABLE chat_threads (
+                id CHAR(36) PRIMARY KEY,
+                type ENUM('org_channel', 'direct') NOT NULL,
+                org_id CHAR(36) NULL,
+                staff_id CHAR(36) NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+                FOREIGN KEY (staff_id) REFERENCES staff_members(id) ON DELETE CASCADE,
+                CONSTRAINT chk_thread_type CHECK (
+                    (type = 'org_channel' AND org_id IS NOT NULL AND staff_id IS NULL) OR
+                    (type = 'direct' AND staff_id IS NOT NULL AND org_id IS NULL)
+                )
+            )
+        `);
+
+        await conn.query(`
+            CREATE TABLE chat_messages (
+                id CHAR(36) PRIMARY KEY,
+                thread_id CHAR(36) NOT NULL,
+                sender_type ENUM('coordinator', 'staff') NOT NULL,
+                sender_id CHAR(36) NOT NULL,
+                content TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (thread_id) REFERENCES chat_threads(id) ON DELETE CASCADE
+            )
+        `);
+
+        await conn.query(`
             CREATE TABLE surplus_requests (
                 id CHAR(36) PRIMARY KEY,
                 requesting_org_id CHAR(36) NOT NULL,
@@ -254,20 +284,28 @@ const run = async () => {
         }
         console.log(`  ${staffSeeds.length} staff members created`);
 
+        for (const orgId of orgIds) {
+            await conn.query(
+                `INSERT INTO chat_threads (id, type, org_id) VALUES (?, 'org_channel', ?)`,
+                [randomUUID(), orgId]
+            );
+        }
+        console.log(`  ${orgIds.length} org chat channels created`);
+
         // idx: 0=Harvest House, 2=Crossroads, 7=Food Bank, 8=Salvation Army, 9=YWCA, 25=GMHS, 26=CFC, 22=Maison, 19=Dobson
         const inventoryData = [
             [orgIds[0], "Men's winter jackets", 'clothing', 12, 'items', 'available', null],
             [orgIds[0], 'Sleeping bags', 'bedding', 3, 'items', 'critical', null],
-            [orgIds[0], 'Canned soup', 'food', 48, 'cans', 'surplus', '2025-12-01'],
+            [orgIds[0], 'Canned soup', 'food', 48, 'cans', 'surplus', '2026-12-01'],
             [orgIds[0], 'Toothbrushes', 'hygiene', 8, 'items', 'low', null],
             [orgIds[2], "Women's clothing (size M)", 'clothing', 25, 'items', 'available', null],
-            [orgIds[2], 'Baby formula', 'food', 2, 'cans', 'critical', '2025-09-15'],
+            [orgIds[2], 'Baby formula', 'food', 2, 'cans', 'critical', '2026-03-25'],
             [orgIds[2], 'Diapers (size 2)', 'baby_supplies', 30, 'packs', 'low', null],
             [orgIds[2], 'Shampoo', 'hygiene', 15, 'bottles', 'available', null],
             [orgIds[7], 'Pasta', 'food', 200, 'kg', 'surplus', '2026-06-01'],
-            [orgIds[7], 'Canned vegetables', 'food', 350, 'cans', 'surplus', '2026-03-01'],
+            [orgIds[7], 'Canned vegetables', 'food', 350, 'cans', 'surplus', '2026-03-28'],
             [orgIds[7], 'Rice', 'food', 150, 'kg', 'available', '2026-08-01'],
-            [orgIds[7], 'Cooking oil', 'food', 12, 'litres', 'low', '2025-11-01'],
+            [orgIds[7], 'Cooking oil', 'food', 12, 'litres', 'low', '2026-03-20'],
             [orgIds[8], 'Blankets', 'bedding', 40, 'items', 'surplus', null],
             [orgIds[8], "Men's boots (size 9-11)", 'clothing', 6, 'pairs', 'available', null],
             [orgIds[8], 'Backpacks', 'goods', 18, 'items', 'available', null],
@@ -277,8 +315,8 @@ const run = async () => {
             [orgIds[25], 'Towels', 'bedding', 20, 'items', 'available', null],
             [orgIds[25], 'Bar soap', 'hygiene', 60, 'bars', 'surplus', null],
             [orgIds[25], "Men's socks", 'clothing', 4, 'pairs', 'critical', null],
-            [orgIds[26], 'Bread loaves', 'food', 30, 'loaves', 'available', '2025-08-05'],
-            [orgIds[26], 'Fresh vegetables', 'food', 45, 'kg', 'available', '2025-08-03'],
+            [orgIds[26], 'Bread loaves', 'food', 30, 'loaves', 'available', '2026-03-18'],
+            [orgIds[26], 'Fresh vegetables', 'food', 45, 'kg', 'available', '2026-03-16'],
             [orgIds[19], 'Hot meal portions', 'food', 80, 'portions', 'available', null],
             [orgIds[19], 'Coffee', 'food', 3, 'kg', 'low', null],
             [orgIds[22], "Women's winter coats", 'clothing', 4, 'items', 'critical', null],
@@ -348,6 +386,47 @@ const run = async () => {
             );
         }
         console.log(`  ${donationsData.length} donations created`);
+
+        // Get inventory item IDs for surplus items (blankets from Salvation Army, pasta/canned veg from Food Bank, bar soap from GMHS)
+        const [invRows] = await conn.query(
+            `SELECT id, org_id, item_name FROM inventory_items WHERE status = 'surplus' OR (status = 'low' AND item_name LIKE '%formula%') LIMIT 20`
+        );
+        const blanketsItem = invRows.find(r => r.item_name === 'Blankets');
+        const pastaItem = invRows.find(r => r.item_name === 'Pasta');
+        const cansItem = invRows.find(r => r.item_name === 'Canned vegetables');
+        const soapItem = invRows.find(r => r.item_name === 'Bar soap');
+
+        // Surplus request: Harvest House requesting blankets from Salvation Army (pending — coordinator to approve)
+        if (blanketsItem) {
+            await conn.query(
+                `INSERT INTO surplus_requests (id, requesting_org_id, from_org_id, inventory_item_id, quantity_requested, notes, status) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [randomUUID(), orgIds[0], orgIds[8], blanketsItem.id, 15, 'For men sleeping in the lounge — critical need this week.', 'pending']
+            );
+        }
+        // Surplus request: YWCA requesting canned vegetables from Food Bank (approved)
+        if (cansItem) {
+            await conn.query(
+                `INSERT INTO surplus_requests (id, requesting_org_id, from_org_id, inventory_item_id, quantity_requested, notes, status, responded_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+                [randomUUID(), orgIds[9], orgIds[7], cansItem.id, 50, 'For our weekly communal dinner program.', 'approved']
+            );
+        }
+        console.log('  Surplus requests created');
+
+        // Surplus transfer: Coordinator moving pasta from Food Bank to John Howard Society (in_transit)
+        if (pastaItem) {
+            await conn.query(
+                `INSERT INTO surplus_transfers (id, from_org_id, to_org_id, inventory_item_id, quantity, status, coordinator_notes) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [randomUUID(), orgIds[7], orgIds[5], pastaItem.id, 50, 'in_transit', 'Food Bank has 200kg surplus pasta. John Howard Society needs food boxes for client support packages.']
+            );
+        }
+        // Surplus transfer: Bar soap from GMHS to Maison Notre-Dame (completed — shows network activity)
+        if (soapItem) {
+            await conn.query(
+                `INSERT INTO surplus_transfers (id, from_org_id, to_org_id, inventory_item_id, quantity, status, coordinator_notes, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+                [randomUUID(), orgIds[25], orgIds[22], soapItem.id, 20, 'completed', 'GMHS had 60-bar surplus. Maison needed hygiene supplies for new residents.', null]
+            );
+        }
+        console.log('  Surplus transfers created');
 
         console.log('\nMigration complete.');
         console.log('  Coordinator login: ' + adminEmail + ' / ' + adminPass);

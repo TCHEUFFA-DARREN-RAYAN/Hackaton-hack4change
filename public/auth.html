@@ -28,7 +28,7 @@
       if (!email || !password) { document.getElementById('auth-msg').textContent = 'Email and password required'; return; }
       try {
         await auth.login(email, password, true);
-        location.href = '/admin/dashboard';
+        location.href = '/login?next=/coordinator';
       } catch (err) {
         document.getElementById('auth-msg').textContent = err.message || 'Login failed';
       }

@@ -12,6 +12,7 @@ class NeedsModel {
         if (filters.urgency) { sql += ' AND n.urgency = ?'; params.push(filters.urgency); }
         if (filters.category) { sql += ' AND n.category = ?'; params.push(filters.category); }
         if (filters.orgCategory) { sql += ' AND o.category = ?'; params.push(filters.orgCategory); }
+        if (filters.org_id) { sql += ' AND n.org_id = ?'; params.push(filters.org_id); }
         if (filters.search) {
             sql += ' AND (n.item_name LIKE ? OR o.name LIKE ?)';
             params.push(`%${filters.search}%`, `%${filters.search}%`);
