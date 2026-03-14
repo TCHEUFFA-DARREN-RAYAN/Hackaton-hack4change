@@ -2,22 +2,23 @@
   "common": {
     "signIn": "Connexion",
     "donate": "Donner",
+    "donateNow": "Donner maintenant",
     "needsBoard": "Tableau des besoins",
     "staffLogin": "Connexion personnel",
     "commonGround": "CommonGround",
     "gmhscNetwork": "Réseau GMHSC"
   },
   "login": {
-    "title": "NexusGate",
-    "tagline": "Votre univers de jeu vous attend",
-    "pressEnter": "[Appuyez sur Entrée pour rejoindre l'aventure]",
+    "title": "CommonGround",
+    "tagline": "Réseau de coordination des dons GMHSC",
+    "pressEnter": "[Appuyez sur Entrée pour vous connecter]",
     "emailPlaceholder": "Adresse courriel",
     "passwordPlaceholder": "Mot de passe",
     "showPassword": "Afficher le mot de passe",
     "hidePassword": "Masquer le mot de passe",
     "rememberMe": "Se souvenir de moi",
     "forgotPassword": "Mot de passe oublié?",
-    "submitButton": "Entrer dans NexusGate",
+    "submitButton": "Connexion",
     "loggingIn": "Connexion en cours...",
     "quickAccess": "accès rapide via",
     "noAccount": "Vous n'avez pas de compte?",
@@ -30,7 +31,7 @@
     "requestFailed": "Échec de la requête"
   },
   "footer": {
-    "copyright": "© 2025 NexusGate. Tous droits réservés."
+    "copyright": "CommonGround. Tous droits réservés."
   },
   "language": {
     "switchToEnglish": "Switch to English",

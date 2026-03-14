@@ -92,6 +92,26 @@ p  { margin-top: .5rem; font-weight: 400; }
     z-index: 100;
     box-shadow: var(--shadow-sm);
 }
+/* Dark nav variant (index, matches login page) */
+.site-nav--dark {
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom-color: rgba(255,255,255,.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,.2);
+}
+.site-nav--dark .nav-brand { color: #fff; }
+.site-nav--dark .nav-brand span { color: rgba(255,255,255,.85); }
+.site-nav--dark .nav-brand:hover { color: rgba(255,255,255,.95); }
+.site-nav--dark .btn-ghost {
+    color: rgba(255,255,255,.8);
+    border: 1px solid rgba(255,255,255,.2);
+}
+.site-nav--dark .btn-ghost:hover {
+    background: rgba(255,255,255,.1);
+    color: #fff;
+    border-color: rgba(255,255,255,.35);
+}
 .site-nav .nav-inner {
     max-width: 1200px;
     margin: 0 auto;

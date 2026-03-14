@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Eye, EyeOff, Mail, Lock, Chrome, Twitter, Gamepad2 } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 
 interface LoginFormProps {
     onSubmit: (email: string, password: string, remember: boolean) => void;
@@ -18,11 +18,6 @@ interface FormInputProps {
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     required?: boolean;
-}
-
-interface SocialButtonProps {
-    icon: React.ReactNode;
-    name: string;
 }
 
 interface ToggleSwitchProps {
@@ -47,15 +42,6 @@ const FormInput: React.FC<FormInputProps> = ({ icon, type, placeholder, value, o
                 className="w-full pl-10 pr-3 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/60 focus:outline-none focus:border-purple-500/50 transition-colors"
             />
         </div>
-    );
-};
-
-// SocialButton Component
-const SocialButton: React.FC<SocialButtonProps> = ({ icon }) => {
-    return (
-        <button type="button" className="flex items-center justify-center p-2 bg-white/5 border border-white/10 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors">
-            {icon}
-        </button>
     );
 };
 
@@ -134,6 +120,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
     return (
         <div className="p-8 rounded-2xl backdrop-blur-sm bg-black/50 border border-white/10">
             <div className="mb-8 text-center">
+                <img src="/assets/images/logo.png" alt={t('common.commonGround')} className="mx-auto mb-4 h-16 w-auto object-contain" />
                 <h2 className="text-3xl font-bold mb-2 relative group">
                     <span className="absolute -inset-1 bg-gradient-to-r from-purple-600/30 via-pink-500/30 to-blue-500/30 blur-xl opacity-75 group-hover:opacity-100 transition-all duration-500 animate-pulse"></span>
                     <span className="relative inline-block text-3xl font-bold mb-2 text-white">
@@ -149,11 +136,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                     <span className="text-xs text-white/50 animate-pulse">
                         {t('login.pressEnter')}
                     </span>
-                    <div className="flex space-x-2 text-xs text-white/40">
-                        <span className="animate-pulse">⚔️</span>
-                        <span className="animate-bounce">🎮</span>
-                        <span className="animate-pulse">🏆</span>
-                    </div>
                 </p>
             </div>
 
@@ -186,26 +168,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                     </button>
                 </div>
 
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                        <div onClick={() => setRemember(!remember)} className="cursor-pointer">
-                            <ToggleSwitch
-                                checked={remember}
-                                onChange={() => setRemember(!remember)}
-                                id="remember-me"
-                            />
-                        </div>
-                        <label
-                            htmlFor="remember-me"
-                            className="text-sm text-white/80 cursor-pointer hover:text-white transition-colors"
-                            onClick={() => setRemember(!remember)}
-                        >
-                            {t('login.rememberMe')}
-                        </label>
+                <div className="flex items-center space-x-2">
+                    <div onClick={() => setRemember(!remember)} className="cursor-pointer">
+                        <ToggleSwitch
+                            checked={remember}
+                            onChange={() => setRemember(!remember)}
+                            id="remember-me"
+                        />
                     </div>
-                    <a href="#" className="text-sm text-white/80 hover:text-white transition-colors">
-                        {t('login.forgotPassword')}
-                    </a>
+                    <label
+                        htmlFor="remember-me"
+                        className="text-sm text-white/80 cursor-pointer hover:text-white transition-colors"
+                        onClick={() => setRemember(!remember)}
+                    >
+                        {t('login.rememberMe')}
+                    </label>
                 </div>
 
                 <button
@@ -219,21 +196,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
                     {isSubmitting ? t('login.loggingIn') : t('login.submitButton')}
                 </button>
             </form>
-
-            <div className="mt-8">
-                <div className="relative flex items-center justify-center">
-                    <div className="border-t border-white/10 absolute w-full"></div>
-                    <div className="bg-transparent px-4 relative text-white/60 text-sm">
-                        {t('login.quickAccess')}
-                    </div>
-                </div>
-
-                <div className="mt-6 grid grid-cols-3 gap-3">
-                    <SocialButton icon={<Chrome size={18} />} name="Chrome" />
-                    <SocialButton icon={<Twitter size={18} />} name="X" />
-                    <SocialButton icon={<Gamepad2 size={18} />} name="Steam" />
-                </div>
-            </div>
 
             <p className="mt-8 text-center text-sm text-white/60">
                 {t('login.noAccount')}{' '}

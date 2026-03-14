@@ -1,14 +1,16 @@
 # LOCAL VIDEOS (downloaded - use these!)
 # Paths are relative to public/ when served by Express
 
-# Food bank / meal distribution (volunteer giving bread - perfect for CommonGround)
+# Food bank (volunteer giving bread - login & donate step 4)
 /assets/videos/community/food-bank/volunteer-bread-hungry.mp4
 /assets/videos/community/food-bank/volunteer-gives-bread.mp4
 
-# Community volunteers
-/assets/videos/community/volunteers/hands-work-team.mp4
-/assets/videos/community/volunteers/volunteers-recycling.mp4
+# Donations / giving (donate page steps 1–3)
+/assets/videos/community/donations/businessman-sharing-food.mp4
+/assets/videos/community/donations/young-man-helping-homeless.mp4
+/assets/videos/community/donations/passerby-giving-money.mp4
+/assets/videos/community/donations/man-giving-food-homeless.mp4
+/assets/videos/community/donations/businessman-with-homeless.mp4
 
-# Shelter / community
-/assets/videos/community/shelter-housing/community-group-hug.mp4
-/assets/videos/community/shelter-housing/apartments-community-gardens.mp4
+# Volunteers
+/assets/videos/community/volunteers/hands-work-team.mp4

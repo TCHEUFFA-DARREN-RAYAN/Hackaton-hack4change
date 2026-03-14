@@ -6,9 +6,91 @@
     <title>Donate — CommonGround</title>
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/i18n.js"></script>
+    <style>
+        /* Donate page: video bg + transparent form */
+        .donate-page { position: relative; min-height: 100vh; }
+        .donate-video-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; -webkit-transform: translateZ(0); transform: translateZ(0); }
+        .donate-video-bg video {
+            position: absolute; min-width: 100%; min-height: 100%; width: auto; height: auto;
+            object-fit: cover; object-position: center;
+        }
+        .donate-video-bg .overlay { position: absolute; inset: 0; background: rgba(0,0,0,.35); z-index: 1; }
+        .donate-content { position: relative; z-index: 10; min-height: 100vh; }
+
+        /* Nav: slightly transparent, professional */
+        .donate-content .site-nav {
+            background: rgba(255,255,255,.88);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom-color: rgba(0,0,0,.08);
+        }
+
+        /* Form card: transparent so video shows through, but readable */
+        .donate-content .step-form-wrap .card {
+            background: rgba(255,255,255,.82);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,.5);
+            box-shadow: 0 4px 24px rgba(0,0,0,.12);
+        }
+        .donate-content .step-form-wrap h1,
+        .donate-content .step-form-wrap h2,
+        .donate-content .step-form-wrap .form-label { color: var(--color-text); }
+        .donate-content .step-form-wrap h1,
+        .donate-content .step-form-wrap h2 { text-shadow: 0 1px 3px rgba(255,255,255,.95); }
+        .donate-content .step-form-wrap .form-control {
+            background: rgba(255,255,255,.92);
+            border-color: rgba(0,0,0,.14);
+            color: var(--color-text);
+        }
+        .donate-content .step-form-wrap .form-control::placeholder { color: var(--color-text-muted); opacity: .9; }
+        .donate-content .step-form-wrap .match-card {
+            background: rgba(255,255,255,.78);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+        }
+        .donate-content .step-form-wrap .match-card .match-org,
+        .donate-content .step-form-wrap .match-card .match-reasoning { color: var(--color-text); }
+        .donate-content .step-form-wrap .match-card.selected {
+            background: rgba(232,248,236,.92);
+            border-color: var(--color-accent);
+        }
+        .donate-content .step-form-wrap .confirm-box {
+            background: rgba(232,248,236,.85);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+        }
+        .donate-content .step-form-wrap .inline-notice {
+            background: rgba(255,255,255,.85);
+            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+        }
+        .donate-content .step-progress { background: transparent; }
+
+        /* Mobile: ensure video + form work well */
+        @media (max-width: 768px) {
+            .donate-content .step-form-wrap .card { background: rgba(255,255,255,.88); }
+            .donate-content .step-form-wrap { padding: 1rem .75rem 2rem; margin: 1rem auto; }
+            .donate-content .form-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 480px) {
+            .donate-content .step-form-wrap { padding: .75rem .5rem 1.5rem; }
+            .donate-content .step-form-wrap h1 { font-size: 1.35rem; }
+            .donate-content .step-form-wrap h2 { font-size: 1.1rem; }
+            .step-progress { flex-wrap: wrap; gap: .5rem; }
+            .step-item { min-width: 55px; flex: 0 1 auto; }
+            .step-label { font-size: .65rem; }
+            .step-nav { flex-wrap: wrap; gap: .5rem; }
+            .step-nav .btn { flex: 1 1 auto; min-width: 100px; }
+            .match-card { padding: .75rem .85rem; }
+        }
+    </style>
 </head>
 <body>
 
+<div class="donate-page">
+    <div class="donate-video-bg">
+        <video id="donate-video" autoplay loop muted playsinline>
+            <source src="/assets/videos/community/donations/businessman-sharing-food.mp4" type="video/mp4">
+        </video>
+        <div class="overlay"></div>
+    </div>
+    <div class="donate-content">
 <nav class="site-nav">
     <div class="nav-inner">
         <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span data-i18n="navBrand">GMHSC Network</span></a>
@@ -55,7 +137,7 @@
             <input type="text" id="item-name" class="form-control" data-i18n-placeholder="itemPlaceholder" placeholder="e.g. Men's winter jackets, canned soup, sleeping bags" autocomplete="off">
             <div class="form-error" id="err-item-name" data-i18n="errItem">Please describe the item.</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+        <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
             <div class="form-group">
                 <label class="form-label" for="category"><span data-i18n="category">Category</span> <span class="req">*</span></label>
                 <select id="category" class="form-control">
@@ -80,7 +162,7 @@
                 </select>
             </div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
+        <div class="form-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
             <div class="form-group">
                 <label class="form-label" for="quantity"><span data-i18n="quantity">Quantity</span> <span class="req">*</span></label>
                 <input type="number" id="quantity" class="form-control" placeholder="1" min="1" value="1">
@@ -244,6 +326,21 @@
         }
     }
 
+    const DONATE_STEP_VIDEOS = [
+        '/assets/videos/community/donations/businessman-sharing-food.mp4',
+        '/assets/videos/community/donations/young-man-helping-homeless.mp4',
+        '/assets/videos/community/donations/passerby-giving-money.mp4',
+        '/assets/videos/community/food-bank/volunteer-bread-hungry.mp4'
+    ];
+    function updateDonateVideo(step) {
+        const vid = document.getElementById('donate-video');
+        if (vid && DONATE_STEP_VIDEOS[step - 1]) {
+            vid.querySelector('source').src = DONATE_STEP_VIDEOS[step - 1];
+            vid.load();
+            vid.play().catch(() => {});
+        }
+    }
+
     function goToStep(step) {
         if (step === 2 && !validateStep1()) return;
         if (step === 3 && !validateStep2()) return;
@@ -252,6 +349,7 @@
         document.getElementById(`step-${step}`).classList.add('active');
         updateStepIndicators(step);
         currentStep = step;
+        updateDonateVideo(step);
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         if (step === 3) loadMatchPreview();
@@ -505,7 +603,10 @@
 
     loadOrganizations();
     setActiveNav();
+    updateDonateVideo(1);
 </script>
 
+    </div>
+</div>
 </body>
 </html>

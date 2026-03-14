@@ -16,7 +16,7 @@
       // Index / Needs board
       pageTitle: 'What shelters need right now',
       pageDescription: "28 organizations in the Greater Moncton area, coordinated in one place. See what's urgently needed and donate directly.",
-      heroCta: 'I have something to donate',
+      heroCta: 'Donate now',
       searchPlaceholder: 'Search by item or organization...',
       filterUrgency: 'All urgency levels',
       filterCategory: 'All organizations',
@@ -139,7 +139,7 @@
       // Index / Needs board
       pageTitle: 'Ce dont les refuges ont besoin maintenant',
       pageDescription: '28 organismes de la région du Grand Moncton, coordonnés en un seul endroit. Voyez ce qui est urgent et donnez directement.',
-      heroCta: "J'ai quelque chose à donner",
+      heroCta: 'Donner maintenant',
       searchPlaceholder: 'Rechercher par article ou organisme...',
       filterUrgency: 'Tous les niveaux d\'urgence',
       filterCategory: 'Tous les organismes',

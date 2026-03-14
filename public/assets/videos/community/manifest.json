@@ -63,8 +63,38 @@
         }
       ]
     },
+    "donations_giving": {
+      "title": "Donations / Giving / Charity",
+      "videos": [
+        {
+          "id": "man-giving-food",
+          "title": "Man in suit giving food to homeless",
+          "file": "donations/man-giving-food-homeless.mp4"
+        },
+        {
+          "id": "businessman-sharing-food",
+          "title": "Businessman sharing food to homeless",
+          "file": "donations/businessman-sharing-food.mp4"
+        },
+        {
+          "id": "young-man-helping",
+          "title": "Young business man helping homeless in the street",
+          "file": "donations/young-man-helping-homeless.mp4"
+        },
+        {
+          "id": "passerby-giving-money",
+          "title": "Passerby giving money to homeless",
+          "file": "donations/passerby-giving-money.mp4"
+        },
+        {
+          "id": "businessman-with-homeless",
+          "title": "Businessman with homeless on the street",
+          "file": "donations/businessman-with-homeless.mp4"
+        }
+      ]
+    },
     "shelter_housing_support": {
-      "title": "Shelter / Housing Support",
+      "title": "Shelter / Housing Support (replaced with donations)",
       "videos": [
         {
           "id": "pexels-6646687-shelter",

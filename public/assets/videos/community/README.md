@@ -6,12 +6,14 @@
 
 | File | Category | Description |
 |------|----------|-------------|
-| `food-bank/volunteer-bread-hungry.mp4` | Food bank | Hands of volunteer giving bread to hungry people |
+| `food-bank/volunteer-bread-hungry.mp4` | Food bank | Hands of volunteer giving bread to hungry people ✓ (login, donate step 4) |
 | `food-bank/volunteer-gives-bread.mp4` | Food bank | Volunteer gives bread to a person |
 | `volunteers/hands-work-team.mp4` | Volunteers | Hands in the middle of a work team |
-| `volunteers/volunteers-recycling.mp4` | Volunteers | Group of volunteers recycling and cleaning |
-| `shelter-housing/community-group-hug.mp4` | Community | Cheerful young people giving each other a group hug |
-| `shelter-housing/apartments-community-gardens.mp4` | Community | Apartments and community gardens |
+| `donations/businessman-sharing-food.mp4` | Donations | Businessman sharing food to homeless (donate step 1) |
+| `donations/young-man-helping-homeless.mp4` | Donations | Young man helping homeless (donate step 2) |
+| `donations/passerby-giving-money.mp4` | Donations | Passerby giving money to homeless (donate step 3) |
+| `donations/man-giving-food-homeless.mp4` | Donations | Man in suit giving food to homeless |
+| `donations/businessman-with-homeless.mp4` | Donations | Businessman with homeless on the street |
 
 ## Using in the App
 
