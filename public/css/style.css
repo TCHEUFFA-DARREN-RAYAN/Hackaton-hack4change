@@ -361,6 +361,23 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     padding: 3rem 1rem 2.5rem;
     text-align: center;
 }
+/* Hero with shader animation background */
+.hero-with-shader {
+    position: relative;
+    overflow: hidden;
+    min-height: 280px;
+}
+.hero-shader-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+.hero-with-shader .hero-content {
+    position: relative;
+    z-index: 1;
+}
 .hero h1 { font-size: 2.15rem; font-weight: 700; margin-bottom: .5rem; letter-spacing: -0.02em; }
 .hero p { font-size: 1.1rem; font-weight: 400; opacity: .92; max-width: 560px; margin: .25rem auto 0; line-height: 1.5; }
 .hero .hero-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
@@ -368,6 +385,69 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .btn-hero:hover { background: #eef1f5; }
 .btn-hero-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.6); }
 .btn-hero-outline:hover { background: rgba(255,255,255,.12); }
+
+/* ---- Urgent needs (index minimal) ---- */
+.urgent-section {
+    padding: 2.5rem 1rem 3rem;
+    max-width: 720px;
+    margin: 0 auto;
+}
+.urgent-heading {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: .35rem;
+}
+.urgent-subtext {
+    font-size: .95rem;
+    color: var(--color-text-muted);
+    margin-bottom: 1.5rem;
+}
+.urgent-needs-list {
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+}
+.urgent-need-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-critical);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .75rem 1rem;
+}
+.urgent-need-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem .75rem;
+}
+.urgent-need-item {
+    font-weight: 600;
+    color: var(--color-text);
+}
+.urgent-need-qty {
+    font-size: .9rem;
+    color: var(--color-text-muted);
+}
+.urgent-need-org {
+    font-size: .9rem;
+    color: var(--color-text-muted);
+    width: 100%;
+}
+.urgent-need-card .btn { margin-left: auto; }
+.urgent-skeleton { padding: 1rem; }
+.urgent-empty { padding: 2rem; text-align: center; color: var(--color-text-muted); }
+.urgent-actions {
+    margin-top: 2rem;
+    text-align: center;
+}
 
 /* ---- Filters bar ---- */
 .filters-bar {

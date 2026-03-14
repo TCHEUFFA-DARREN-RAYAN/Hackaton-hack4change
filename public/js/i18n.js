@@ -9,13 +9,14 @@
     en: {
       // Nav
       navBrand: 'GMHSC Network',
+      navHome: 'Home',
       navNeedsBoard: 'Needs Board',
       navDonate: 'Donate',
       navStaffLogin: 'Staff login',
 
       // Index / Needs board
-      pageTitle: 'What shelters need right now',
-      pageDescription: "28 organizations in the Greater Moncton area, coordinated in one place. See what's urgently needed and donate directly.",
+      pageTitle: 'Community Needs Board',
+      pageDescription: '28 Greater Moncton organizations. One coordinated platform.',
       heroCta: 'Donate now',
       searchPlaceholder: 'Search by item or organization...',
       filterUrgency: 'All urgency levels',
@@ -39,6 +40,10 @@
       prev: 'Prev',
       next: 'Next',
       failedToLoad: 'Failed to load the needs board. Please refresh the page.',
+      urgentNeedsHeading: '3 urgent needs right now',
+      urgentNeedsSubtext: 'These are the most critical items needed across our network.',
+      seeAllNeeds: 'See all needs',
+      seeAllNeedsDesc: 'Browse and filter the full list of donation needs.',
 
       // Donate page
       donateTitle: 'Make a donation',
@@ -132,13 +137,14 @@
     fr: {
       // Nav
       navBrand: 'Réseau GMHSC',
+      navHome: 'Accueil',
       navNeedsBoard: 'Tableau des besoins',
       navDonate: 'Donner',
       navStaffLogin: 'Connexion personnel',
 
       // Index / Needs board
-      pageTitle: 'Ce dont les refuges ont besoin maintenant',
-      pageDescription: '28 organismes de la région du Grand Moncton, coordonnés en un seul endroit. Voyez ce qui est urgent et donnez directement.',
+      pageTitle: 'Tableau des besoins communautaires',
+      pageDescription: '28 organismes du Grand Moncton. Une plateforme coordonnée.',
       heroCta: 'Donner maintenant',
       searchPlaceholder: 'Rechercher par article ou organisme...',
       filterUrgency: 'Tous les niveaux d\'urgence',
@@ -162,6 +168,10 @@
       prev: 'Préc.',
       next: 'Suiv.',
       failedToLoad: 'Échec du chargement du tableau. Veuillez actualiser la page.',
+      urgentNeedsHeading: '3 besoins urgents en ce moment',
+      urgentNeedsSubtext: 'Voici les articles les plus critiques demandés par notre réseau.',
+      seeAllNeeds: 'Voir tous les besoins',
+      seeAllNeedsDesc: 'Parcourir et filtrer la liste complète des besoins.',
 
       // Donate page
       donateTitle: 'Faire un don',

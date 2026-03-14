@@ -23,7 +23,7 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
             scriptSrcAttr: ["'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
             imgSrc: ["'self'", 'data:', 'https:'],
@@ -79,6 +79,7 @@ app.use(express.static(publicPath, { index: false }));
 
 const pages = {
     '/': 'index.html',
+    '/all-needs': 'all-needs.html',
     '/donate': 'donate.html',
     '/staff': 'staff.html',
     '/coordinator': 'coordinator.html',
