@@ -118,6 +118,8 @@ router.post('/needs', async (req, res) => {
         const need = await NeedsModel.create({
             org_id: req.user.orgId, item_name, category, quantity_needed, unit, urgency, notes
         });
+        const io = req.app.get('io');
+        if (io) io.emit('need:new', { item_name, urgency, org_name: req.user.orgName });
         res.status(201).json({ success: true, data: need });
     } catch (err) {
         console.error(err);
@@ -140,6 +142,8 @@ router.post('/needs/:id/fulfill', async (req, res) => {
     try {
         const need = await NeedsModel.markFulfilled(req.params.id, req.user.orgId);
         if (!need) return res.status(404).json({ success: false, message: 'Need not found' });
+        const io = req.app.get('io');
+        if (io) io.emit('need:fulfilled', { org_name: req.user.orgName });
         res.json({ success: true, data: need });
     } catch (err) {
         console.error(err);
