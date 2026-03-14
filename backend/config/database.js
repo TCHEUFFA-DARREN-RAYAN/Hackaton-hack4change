@@ -37,7 +37,8 @@ const testConnection = async () => {
         connection.release();
         return true;
     } catch (error) {
-        console.error('❌ Database connection failed:', error.message);
+        console.error('❌ Database connection failed:', error.message || error.code || String(error));
+        console.error('Check: DB_HOST, DB_PORT, DB_NAME, DB_SSL_ENABLED, DB_CA_CERT_PATH, Aiven IP allowlist');
         return false;
     }
 };

@@ -96,10 +96,11 @@ Create a one-off job in Render that runs `npm run migrate` with the same env var
 
 ## 5. Troubleshooting
 
-**"Database connection failed"**
-- Check `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`
-- Ensure `DB_SSL_ENABLED=true`
-- Confirm Aiven service is running and the IP allowlist includes Render (or is set to allow all)
+**"Database connection failed" (most common: Aiven IP allowlist)**
+1. **Aiven IP allowlist** — In Aiven dashboard → your MySQL service → Settings → "Allowed IP addresses". Add `0.0.0.0/0` to allow connections from anywhere (Render uses dynamic IPs). Without this, Render cannot connect.
+2. Check `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` are set in Render Environment
+3. Use `DB_NAME=defaultdb` (Aiven's default) unless you created another database
+4. Ensure `DB_SSL_ENABLED=true` and `DB_CA_CERT_PATH=ca.pem`
 
 **"SSL connection error"**
 - Set `DB_SSL_ENABLED=true`
