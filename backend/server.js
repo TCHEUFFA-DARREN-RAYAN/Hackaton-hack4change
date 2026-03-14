@@ -27,6 +27,7 @@ app.use(helmet({
             scriptSrcAttr: ["'unsafe-inline'"],
             styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
             imgSrc: ["'self'", 'data:', 'https:'],
+            mediaSrc: ["'self'", 'https://videos.pexels.com'],
             connectSrc: ["'self'"],
             fontSrc: ["'self'", 'https://fonts.gstatic.com']
         }
@@ -39,7 +40,9 @@ allowedOrigins.push(`http://localhost:${PORT}`, `http://127.0.0.1:${PORT}`);
 
 app.use(cors({
     origin: (origin, cb) => {
-        if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+        if (!origin) return cb(null, true);
+        if (allowedOrigins.includes(origin)) return cb(null, true);
+        if (process.env.NODE_ENV === 'development') return cb(null, true);
         cb(new Error('Not allowed by CORS'));
     },
     credentials: true
@@ -79,7 +82,7 @@ const pages = {
     '/donate': 'donate.html',
     '/staff': 'staff.html',
     '/coordinator': 'coordinator.html',
-    '/login': 'login.html'
+    '/login': 'login-build/index.html'
 };
 
 for (const [route, file] of Object.entries(pages)) {

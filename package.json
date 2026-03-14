@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon --delay 500ms backend/server.js",
     "start": "node backend/server.js",
-    "migrate": "node scripts/migrate.js"
+    "migrate": "node scripts/migrate.js",
+    "build:login": "cd frontend && npm run build",
+    "dev:login": "cd frontend && npm run dev"
   },
   "keywords": [
     "homelessness",
@@ -32,6 +34,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "nodemon": "^3.1.11"
   }
 }
