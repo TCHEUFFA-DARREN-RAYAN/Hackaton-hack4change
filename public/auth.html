@@ -3,36 +3,186 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CommonGround — Admin Sign in</title>
+  <title>Sign In — CommonGround</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { background: var(--color-bg); }
+    .login-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .login-box {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem 2rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-md);
+    }
+    .login-logo { text-align: center; margin-bottom: 1.75rem; }
+    .login-logo img { height: 56px; width: auto; margin: 0 auto 0.75rem; }
+    .login-logo h1 { font-size: 1.45rem; color: var(--color-primary); margin-bottom: .2rem; }
+    .login-logo p { font-size: .9rem; color: var(--color-text-muted); margin-top: .25rem; }
+    .role-tabs {
+      display: flex;
+      gap: .3rem;
+      background: var(--color-bg);
+      border-radius: var(--radius-sm);
+      padding: .25rem;
+      margin-bottom: 1.5rem;
+    }
+    .role-tab {
+      flex: 1;
+      text-align: center;
+      padding: .55rem .5rem;
+      border-radius: 6px;
+      font-size: .9rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      border: none;
+      background: transparent;
+      transition: background .2s, color .2s, box-shadow .2s;
+      font-family: var(--font-sans);
+    }
+    .role-tab.active {
+      background: var(--color-surface);
+      color: var(--color-primary);
+      box-shadow: var(--shadow-sm);
+      font-weight: 600;
+    }
+    .role-tab:hover:not(.active) { color: var(--color-text); }
+    .login-form .form-group { margin-bottom: 1.1rem; }
+    .login-form .form-label { font-size: .875rem; font-weight: 500; }
+    .login-form .form-control { font-size: 1rem; padding: .7rem 1rem; }
+    .login-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--color-border-lt);
+    }
+    .login-footer a { font-size: .9rem; color: var(--color-primary); }
+    #login-error {
+      display: none;
+      padding: .65rem .85rem;
+      border-radius: var(--radius-sm);
+      font-size: .875rem;
+      background: var(--color-critical-bg);
+      color: var(--color-critical);
+      border: 1px solid rgba(255,59,48,.2);
+      margin-bottom: 1rem;
+    }
+    #login-error.visible { display: block; }
+  </style>
 </head>
 <body>
-  <div class="preview-entry" style="justify-content: flex-start; padding-top: 48px;">
-    <a href="/" style="position:absolute;top:20px;left:20px;color:var(--primary);text-decoration:none;">← Back</a>
-    <h1>CommonGround</h1>
-    <p>Admin sign in — manage resources, users & messages</p>
-    <div class="auth-form">
-      <div id="form-login">
-        <input type="email" id="email" placeholder="Admin email" required>
-        <input type="password" id="password" placeholder="Password" required> 
-        <button type="button" class="btn-primary" id="btn-login" style="width:100%;">Sign in</button>
+  <div class="login-page">
+    <div class="login-box">
+      <div class="login-logo">
+        <img src="/assets/images/logo.png" alt="CommonGround">
+        <h1>CommonGround</h1>
+        <p>Sign in to manage your organization</p>
       </div>
-      <p id="auth-msg" style="margin-top:12px;color:var(--warning);font-size:0.9rem;"></p>
+
+      <div class="role-tabs" id="role-tabs">
+        <button class="role-tab active" data-role="staff" onclick="switchRole('staff', this)">Organization Staff</button>
+        <button class="role-tab" data-role="coordinator" onclick="switchRole('coordinator', this)">Coordinator</button>
+      </div>
+
+      <div id="login-error"></div>
+
+      <form class="login-form" id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label class="form-label" for="email">Email address</label>
+          <input type="email" id="email" class="form-control" placeholder="you@organization.ca" required autocomplete="email" autofocus>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input type="password" id="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login">Sign in</button>
+      </form>
+
+      <div class="login-footer">
+        <a href="/">&larr; Back to Community Board</a>
+      </div>
     </div>
   </div>
-  <script src="js/api.js"></script>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
   <script>
-    document.getElementById('btn-login').onclick = async () => {
+    let selectedRole = 'staff';
+
+    function switchRole(role, btn) {
+      selectedRole = role;
+      document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      hideError();
+      document.getElementById('email').focus();
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('login-error');
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+    function hideError() {
+      document.getElementById('login-error').classList.remove('visible');
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
-      if (!email || !password) { document.getElementById('auth-msg').textContent = 'Email and password required'; return; }
+      if (!email || !password) { showError('Please enter your email and password.'); return; }
+
+      const btn = document.getElementById('btn-login');
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+      hideError();
+
       try {
-        await auth.login(email, password, true);
-        location.href = '/login?next=/coordinator';
+        const isAdmin = selectedRole === 'coordinator';
+        await auth.login(email, password, isAdmin);
+
+        const params = new URLSearchParams(window.location.search);
+        const next = params.get('next');
+        if (next && next.startsWith('/')) {
+          window.location.href = next;
+        } else {
+          window.location.href = isAdmin ? '/coordinator' : '/staff';
+        }
       } catch (err) {
-        document.getElementById('auth-msg').textContent = err.message || 'Login failed';
+        showError(err.message || 'Invalid email or password. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Sign in';
       }
-    };
+    }
+
+    (async function checkIfAlreadyLoggedIn() {
+      try {
+        const res = await auth.me();
+        if (res.data) {
+          const params = new URLSearchParams(window.location.search);
+          const next = params.get('next');
+          if (next && next.startsWith('/')) {
+            window.location.href = next;
+          } else if (res.data.isAdmin) {
+            window.location.href = '/coordinator';
+          } else {
+            window.location.href = '/staff';
+          }
+        }
+      } catch {}
+    })();
   </script>
 </body>
 </html>
