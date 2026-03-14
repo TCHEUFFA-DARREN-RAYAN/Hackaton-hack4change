@@ -25,9 +25,11 @@
             <span class="sidebar-label">Dashboard</span>
             <a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">Overview</a>
             <a href="#" data-section="organizations" onclick="showSection('organizations', this)">Organizations</a>
+            <a href="#" data-section="staff" onclick="showSection('staff', this)">Staff</a>
         </div>
         <div class="sidebar-section">
             <span class="sidebar-label">Coordination</span>
+            <a href="#" data-section="inventory" onclick="showSection('inventory', this)">Inventory</a>
             <a href="#" data-section="needs" onclick="showSection('needs', this)">All Needs</a>
             <a href="#" data-section="donations" onclick="showSection('donations', this)">Donations Pipeline</a>
             <a href="#" data-section="surplus-requests" onclick="showSection('surplus-requests', this)">Surplus Requests</a>
@@ -100,6 +102,7 @@
         <div id="section-organizations" style="display:none">
             <div class="portal-header">
                 <h1>Organizations</h1>
+                <button class="btn btn-primary btn-sm" onclick="openAddOrg()">Add organization</button>
             </div>
             <div class="table-wrap">
                 <table class="data-table">
@@ -111,12 +114,82 @@
                             <th>Total Needs</th>
                             <th>Surplus Items</th>
                             <th>Last Updated</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="orgs-tbody">
-                        <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
-                        <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:70%"></div></td></tr>
-                        <tr><td colspan="6"><div class="skeleton skeleton-text" style="width:55%"></div></td></tr>
+                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        <tr><td colspan="7"><div class="skeleton skeleton-text" style="width:70%"></div></td></tr>
+                        <tr><td colspan="7"><div class="skeleton skeleton-text" style="width:55%"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Staff section -->
+        <div id="section-staff" style="display:none">
+            <div class="portal-header">
+                <h1>Staff Management</h1>
+                <button class="btn btn-primary btn-sm" onclick="openAddStaff()">Add staff</button>
+            </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
+                <select id="staff-org-filter" class="form-control" style="max-width:240px" onchange="loadStaff()">
+                    <option value="">All organizations</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Organization</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staff-tbody">
+                        <tr><td colspan="5"><div class="skeleton skeleton-text wide"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Inventory section -->
+        <div id="section-inventory" style="display:none">
+            <div class="portal-header">
+                <h1>Network Inventory</h1>
+                <button class="btn btn-outline btn-sm" onclick="coordinator.exportInventory()">Export CSV</button>
+            </div>
+            <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
+                <select id="inventory-org-filter" class="form-control" style="max-width:220px" onchange="loadInventory()">
+                    <option value="">All organizations</option>
+                </select>
+                <select id="inventory-status-filter" class="form-control" style="max-width:140px" onchange="loadInventory()">
+                    <option value="">All statuses</option>
+                    <option value="available">Available</option>
+                    <option value="low">Low</option>
+                    <option value="critical">Critical</option>
+                    <option value="surplus">Surplus</option>
+                </select>
+                <input type="search" id="inventory-search" class="form-control" placeholder="Search items..." style="max-width:200px" oninput="debounceInventorySearch()">
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Organization</th>
+                            <th>Item</th>
+                            <th>Category</th>
+                            <th>Qty</th>
+                            <th>Unit</th>
+                            <th>Status</th>
+                            <th>Expires</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-tbody">
+                        <tr><td colspan="8"><div class="skeleton skeleton-text wide"></div></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -310,6 +383,94 @@
     </main>
 </div>
 
+<!-- Organization Modal (Add/Edit) -->
+<div id="org-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:480px">
+        <div class="card-header">
+            <h3 id="org-modal-title">Add organization</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeOrgModal()">Close</button>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="org-edit-id">
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input type="text" id="org-name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Category</label>
+                <select id="org-category" class="form-control" required>
+                    <option value="shelter_housing">Shelter & Housing</option>
+                    <option value="food_nutrition">Food & Nutrition</option>
+                    <option value="goods_essentials">Goods & Essentials</option>
+                    <option value="mental_health">Mental Health</option>
+                    <option value="outreach">Outreach</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <input type="text" id="org-address" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Contact email</label>
+                <input type="email" id="org-contact-email" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Contact phone</label>
+                <input type="text" id="org-contact-phone" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Website</label>
+                <input type="url" id="org-website" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea id="org-notes" class="form-control" rows="2"></textarea>
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="closeOrgModal()">Cancel</button>
+                <button class="btn btn-primary" id="org-save-btn" onclick="saveOrg()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Staff Modal (Add/Edit) -->
+<div id="staff-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:420px">
+        <div class="card-header">
+            <h3 id="staff-modal-title">Add staff</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeStaffModal()">Close</button>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="staff-edit-id">
+            <div class="form-group">
+                <label class="form-label">Organization</label>
+                <select id="staff-org" class="form-control" required></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">First name</label>
+                <input type="text" id="staff-first" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Last name</label>
+                <input type="text" id="staff-last" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="staff-email" class="form-control" required>
+            </div>
+            <div class="form-group" id="staff-password-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="staff-password" class="form-control" placeholder="Required for new staff">
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="closeStaffModal()">Cancel</button>
+                <button class="btn btn-primary" id="staff-save-btn" onclick="saveStaff()">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Create Transfer Modal -->
 <div id="transfer-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
     <div class="card" style="width:100%;max-width:480px">
@@ -369,7 +530,7 @@
     }
 
     function showSection(name, linkEl) {
-        ['overview', 'organizations', 'needs', 'donations', 'surplus-requests', 'transfers', 'insights'].forEach(s => {
+        ['overview', 'organizations', 'staff', 'inventory', 'needs', 'donations', 'surplus-requests', 'transfers', 'insights'].forEach(s => {
             const el = document.getElementById(`section-${s}`);
             if (el) el.style.display = s === name ? 'block' : 'none';
         });
@@ -377,6 +538,8 @@
         if (linkEl) linkEl.classList.add('active');
 
         if (name === 'organizations' && !allOrgsData.length) loadOrgs();
+        if (name === 'staff') loadStaff();
+        if (name === 'inventory') loadInventory();
         if (name === 'needs' && !allNeedsData.length) loadAllNeeds();
         if (name === 'donations' && !allDonationsData.length) loadDonations();
         if (name === 'surplus-requests') loadSurplusRequests();
@@ -486,7 +649,7 @@
     function renderOrgs() {
         const tbody = document.getElementById('orgs-tbody');
         if (!allOrgsData.length) {
-            tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No organizations found.</p></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No organizations found.</p></div></td></tr>';
             return;
         }
         tbody.innerHTML = allOrgsData.map(o => `
@@ -499,7 +662,291 @@
                 <td>${escHtml(String(o.total_needs))}</td>
                 <td>${escHtml(String(o.surplus_items || 0))}</td>
                 <td class="text-sm text-muted">${o.last_inventory_update ? timeAgo(o.last_inventory_update) : '<span style="color:var(--color-critical)">Never</span>'}</td>
+                <td><button class="btn btn-ghost btn-sm" onclick="openEditOrg('${o.id}')">Edit</button></td>
             </tr>`).join('');
+    }
+
+    function openAddOrg() {
+        document.getElementById('org-modal-title').textContent = 'Add organization';
+        document.getElementById('org-edit-id').value = '';
+        document.getElementById('org-name').value = '';
+        document.getElementById('org-category').value = 'outreach';
+        document.getElementById('org-address').value = '';
+        document.getElementById('org-contact-email').value = '';
+        document.getElementById('org-contact-phone').value = '';
+        document.getElementById('org-website').value = '';
+        document.getElementById('org-notes').value = '';
+        document.getElementById('org-modal').style.display = 'flex';
+    }
+
+    function openEditOrg(id) {
+        const o = allOrgsData.find(x => x.id === id);
+        if (!o) return;
+        document.getElementById('org-modal-title').textContent = 'Edit organization';
+        document.getElementById('org-edit-id').value = o.id;
+        document.getElementById('org-name').value = o.name || '';
+        document.getElementById('org-category').value = o.category || 'outreach';
+        document.getElementById('org-address').value = o.address || '';
+        document.getElementById('org-contact-email').value = o.contact_email || '';
+        document.getElementById('org-contact-phone').value = o.contact_phone || '';
+        document.getElementById('org-website').value = o.website || '';
+        document.getElementById('org-notes').value = o.notes || '';
+        document.getElementById('org-modal').style.display = 'flex';
+    }
+
+    function closeOrgModal() {
+        document.getElementById('org-modal').style.display = 'none';
+    }
+
+    async function saveOrg() {
+        const id = document.getElementById('org-edit-id').value;
+        const data = {
+            name: document.getElementById('org-name').value.trim(),
+            category: document.getElementById('org-category').value,
+            address: document.getElementById('org-address').value.trim() || null,
+            contact_email: document.getElementById('org-contact-email').value.trim() || null,
+            contact_phone: document.getElementById('org-contact-phone').value.trim() || null,
+            website: document.getElementById('org-website').value.trim() || null,
+            notes: document.getElementById('org-notes').value.trim() || null
+        };
+        if (!data.name) {
+            toast('Name is required.', 'error');
+            return;
+        }
+        const btn = document.getElementById('org-save-btn');
+        btn.disabled = true;
+        try {
+            if (id) {
+                await coordinator.updateOrg(id, data);
+                toast('Organization updated.', 'success');
+            } else {
+                await coordinator.createOrg(data);
+                toast('Organization created.', 'success');
+            }
+            closeOrgModal();
+            allOrgsData = [];
+            loadOrgs();
+        } catch (err) {
+            toast(err.message || 'Failed to save.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    let allStaffData = [];
+
+    async function loadStaff() {
+        const orgId = document.getElementById('staff-org-filter').value || undefined;
+        try {
+            if (!allOrgsData.length) {
+                const orgRes = await coordinator.orgs();
+                allOrgsData = orgRes.data || [];
+            }
+            const res = await coordinator.staff(orgId ? { org_id: orgId } : {});
+            allStaffData = res.data || [];
+            renderStaff();
+            const filterSel = document.getElementById('staff-org-filter');
+            if (filterSel.options.length <= 1) {
+                filterSel.innerHTML = '<option value="">All organizations</option>';
+                allOrgsData.forEach(o => {
+                    const opt = document.createElement('option');
+                    opt.value = o.id;
+                    opt.textContent = o.name;
+                    filterSel.appendChild(opt);
+                });
+            }
+        } catch (err) {
+            document.getElementById('staff-tbody').innerHTML = `<tr><td colspan="5"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function renderStaff() {
+        const tbody = document.getElementById('staff-tbody');
+        if (!allStaffData.length) {
+            tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>No staff found.</p></div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = allStaffData.map(s => `
+            <tr>
+                <td><strong>${escHtml(s.first_name)} ${escHtml(s.last_name)}</strong></td>
+                <td>${escHtml(s.email)}</td>
+                <td>${escHtml(s.org_name || '')}</td>
+                <td><span class="badge badge-${s.status === 'active' ? 'success' : 'low'}">${escHtml(s.status)}</span></td>
+                <td>
+                    <button class="btn btn-ghost btn-sm" onclick="openEditStaff('${s.id}')">Edit</button>
+                    ${s.status === 'active'
+                        ? `<button class="btn btn-ghost btn-sm" onclick="deactivateStaff('${s.id}', '${escHtml(s.first_name)} ${escHtml(s.last_name)}')">Deactivate</button>`
+                        : `<button class="btn btn-ghost btn-sm" onclick="activateStaff('${s.id}')">Activate</button>`}
+                </td>
+            </tr>`).join('');
+    }
+
+    function openAddStaff() {
+        document.getElementById('staff-modal-title').textContent = 'Add staff';
+        document.getElementById('staff-edit-id').value = '';
+        document.getElementById('staff-first').value = '';
+        document.getElementById('staff-last').value = '';
+        document.getElementById('staff-email').value = '';
+        document.getElementById('staff-password').value = '';
+        document.getElementById('staff-password-group').style.display = 'block';
+        document.getElementById('staff-org').disabled = false;
+        populateStaffOrgSelect();
+        document.getElementById('staff-modal').style.display = 'flex';
+    }
+
+    function openEditStaff(id) {
+        const s = allStaffData.find(x => x.id === id);
+        if (!s) return;
+        document.getElementById('staff-modal-title').textContent = 'Edit staff';
+        document.getElementById('staff-edit-id').value = s.id;
+        document.getElementById('staff-first').value = s.first_name;
+        document.getElementById('staff-last').value = s.last_name;
+        document.getElementById('staff-email').value = s.email;
+        document.getElementById('staff-password').value = '';
+        document.getElementById('staff-password-group').style.display = 'none';
+        document.getElementById('staff-org').disabled = true;
+        populateStaffOrgSelect(s.org_id);
+        document.getElementById('staff-modal').style.display = 'flex';
+    }
+
+    async function populateStaffOrgSelect(selectedId) {
+        const sel = document.getElementById('staff-org');
+        sel.innerHTML = '';
+        let orgs = allOrgsData.length ? allOrgsData : [];
+        if (!orgs.length) {
+            const r = await coordinator.orgs();
+            orgs = r.data || [];
+        }
+        orgs.forEach(o => {
+            const opt = document.createElement('option');
+            opt.value = o.id;
+            opt.textContent = o.name;
+            if (o.id === selectedId) opt.selected = true;
+            sel.appendChild(opt);
+        });
+    }
+
+    function closeStaffModal() {
+        document.getElementById('staff-modal').style.display = 'none';
+    }
+
+    async function saveStaff() {
+        const id = document.getElementById('staff-edit-id').value;
+        const orgId = document.getElementById('staff-org').value;
+        const first = document.getElementById('staff-first').value.trim();
+        const last = document.getElementById('staff-last').value.trim();
+        const email = document.getElementById('staff-email').value.trim();
+        const password = document.getElementById('staff-password').value;
+
+        if (!first || !last || !email) {
+            toast('Please fill in name and email.', 'error');
+            return;
+        }
+        if (!id && !password) {
+            toast('Password is required for new staff.', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('staff-save-btn');
+        btn.disabled = true;
+        try {
+            if (id) {
+                await coordinator.updateStaff(id, { first_name: first, last_name: last, email });
+                toast('Staff updated.', 'success');
+            } else {
+                if (!orgId) {
+                    toast('Please select an organization.', 'error');
+                    return;
+                }
+                await coordinator.createStaff({ org_id: orgId, first_name: first, last_name: last, email, password });
+                toast('Staff created.', 'success');
+            }
+            closeStaffModal();
+            loadStaff();
+        } catch (err) {
+            toast(err.message || 'Failed to save.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function deactivateStaff(id, name) {
+        if (!confirm(`Deactivate ${name}? They will no longer be able to sign in.`)) return;
+        try {
+            await coordinator.updateStaff(id, { status: 'inactive' });
+            toast('Staff deactivated.', 'success');
+            loadStaff();
+        } catch (err) {
+            toast(err.message || 'Failed to deactivate.', 'error');
+        }
+    }
+
+    async function activateStaff(id) {
+        try {
+            await coordinator.updateStaff(id, { status: 'active' });
+            toast('Staff activated.', 'success');
+            loadStaff();
+        } catch (err) {
+            toast(err.message || 'Failed to activate.', 'error');
+        }
+    }
+
+    let allInventoryData = [];
+    let inventorySearchDebounce = null;
+
+    async function loadInventory() {
+        try {
+            if (!allOrgsData.length) {
+                const orgRes = await coordinator.orgs();
+                allOrgsData = orgRes.data || [];
+            }
+            const params = {};
+            const orgId = document.getElementById('inventory-org-filter').value;
+            const status = document.getElementById('inventory-status-filter').value;
+            const search = document.getElementById('inventory-search').value.trim();
+            if (orgId) params.org_id = orgId;
+            if (status) params.status = status;
+            if (search) params.search = search;
+            const res = await coordinator.inventory(params);
+            allInventoryData = res.data || [];
+            renderInventory();
+            const filterSel = document.getElementById('inventory-org-filter');
+            if (filterSel.options.length <= 1) {
+                filterSel.innerHTML = '<option value="">All organizations</option>';
+                allOrgsData.forEach(o => {
+                    const opt = document.createElement('option');
+                    opt.value = o.id;
+                    opt.textContent = o.name;
+                    filterSel.appendChild(opt);
+                });
+            }
+        } catch (err) {
+            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="8"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function renderInventory() {
+        const tbody = document.getElementById('inventory-tbody');
+        if (!allInventoryData.length) {
+            tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><p>No inventory items found.</p></div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = allInventoryData.map(i => `
+            <tr>
+                <td><strong>${escHtml(i.org_name || '')}</strong></td>
+                <td>${escHtml(i.item_name)}</td>
+                <td>${escHtml(i.category)}</td>
+                <td>${escHtml(String(i.quantity))}</td>
+                <td>${escHtml(i.unit || 'units')}</td>
+                <td><span class="badge badge-${i.status === 'critical' ? 'critical' : i.status === 'surplus' ? 'accent' : i.status === 'low' ? 'high' : 'low'}">${escHtml(i.status)}</span></td>
+                <td class="text-sm">${i.expiry_date ? formatDate(i.expiry_date) : '<span class="text-muted">—</span>'}</td>
+                <td class="text-sm text-muted">${i.updated_at ? timeAgo(i.updated_at) : '—'}</td>
+            </tr>`).join('');
+    }
+
+    function debounceInventorySearch() {
+        clearTimeout(inventorySearchDebounce);
+        inventorySearchDebounce = setTimeout(() => loadInventory(), 400);
     }
 
     async function loadAllNeeds() {

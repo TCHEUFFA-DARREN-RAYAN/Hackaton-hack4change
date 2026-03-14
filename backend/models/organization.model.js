@@ -1,4 +1,5 @@
 const { promisePool } = require('../config/database');
+const { randomUUID } = require('crypto');
 
 class OrganizationModel {
     static async findAll() {
@@ -53,6 +54,46 @@ class OrganizationModel {
              ORDER BY critical_needs DESC, o.name ASC`
         );
         return rows;
+    }
+
+    static async create(data) {
+        const id = randomUUID();
+        const { name, category, address, contact_email, contact_phone, website, notes } = data;
+        if (!name || !category) {
+            throw new Error('name and category are required');
+        }
+        const validCategories = ['shelter_housing', 'food_nutrition', 'goods_essentials', 'mental_health', 'outreach'];
+        if (!validCategories.includes(category)) {
+            throw new Error('Invalid category');
+        }
+        await promisePool.query(
+            `INSERT INTO organizations (id, name, category, address, contact_email, contact_phone, website, notes)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [id, name.trim(), category, address?.trim() || null, contact_email?.trim() || null, contact_phone?.trim() || null, website?.trim() || null, notes?.trim() || null]
+        );
+        return this.findById(id);
+    }
+
+    static async update(id, data) {
+        const allowed = ['name', 'category', 'address', 'contact_email', 'contact_phone', 'website', 'notes'];
+        const set = [];
+        const vals = [];
+        for (const k of allowed) {
+            if (data[k] !== undefined) {
+                set.push(`${k} = ?`);
+                vals.push(typeof data[k] === 'string' ? (data[k].trim() || null) : data[k]);
+            }
+        }
+        if (data.category !== undefined) {
+            const validCategories = ['shelter_housing', 'food_nutrition', 'goods_essentials', 'mental_health', 'outreach'];
+            if (!validCategories.includes(data.category)) {
+                throw new Error('Invalid category');
+            }
+        }
+        if (set.length === 0) return this.findById(id);
+        vals.push(id);
+        await promisePool.query(`UPDATE organizations SET ${set.join(', ')} WHERE id = ?`, vals);
+        return this.findById(id);
     }
 }
 

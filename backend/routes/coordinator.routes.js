@@ -6,6 +6,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken, requireAdmin } = require('../middleware/auth.middleware');
 const OrganizationModel = require('../models/organization.model');
+const StaffModel = require('../models/staff.model');
 const NeedsModel = require('../models/needs.model');
 const InventoryModel = require('../models/inventory.model');
 const DonationModel = require('../models/donation.model');
@@ -54,6 +55,96 @@ router.get('/orgs', async (req, res) => {
     }
 });
 
+router.post('/orgs', async (req, res) => {
+    try {
+        const org = await OrganizationModel.create(req.body);
+        res.status(201).json({ success: true, data: org });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ success: false, message: err.message || 'Failed to create organization' });
+    }
+});
+
+router.patch('/orgs/:id', async (req, res) => {
+    try {
+        const org = await OrganizationModel.update(req.params.id, req.body);
+        if (!org) return res.status(404).json({ success: false, message: 'Organization not found' });
+        res.json({ success: true, data: org });
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ success: false, message: err.message || 'Failed to update organization' });
+    }
+});
+
+// Staff management
+router.get('/staff', async (req, res) => {
+    try {
+        const { org_id } = req.query;
+        const staff = await StaffModel.findAll({ org_id: org_id || undefined });
+        res.json({ success: true, data: staff });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load staff' });
+    }
+});
+
+router.post('/staff', async (req, res) => {
+    try {
+        const { org_id, first_name, last_name, email, password } = req.body;
+        if (!org_id || !first_name || !last_name || !email || !password) {
+            return res.status(400).json({ success: false, message: 'org_id, first_name, last_name, email, and password are required' });
+        }
+        const staff = await StaffModel.create({ org_id, first_name, last_name, email, password });
+        res.status(201).json({ success: true, data: staff });
+    } catch (err) {
+        console.error(err);
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ success: false, message: 'Email already in use' });
+        }
+        res.status(500).json({ success: false, message: err.message || 'Failed to create staff' });
+    }
+});
+
+router.patch('/staff/:id', async (req, res) => {
+    try {
+        const { first_name, last_name, email, status } = req.body;
+        if (status !== undefined) {
+            const updated = await StaffModel.updateStatus(req.params.id, status);
+            if (!updated) return res.status(404).json({ success: false, message: 'Staff not found' });
+            return res.json({ success: true, data: updated });
+        }
+        const updates = {};
+        if (first_name !== undefined) updates.first_name = first_name;
+        if (last_name !== undefined) updates.last_name = last_name;
+        if (email !== undefined) updates.email = email;
+        if (Object.keys(updates).length === 0) {
+            const staff = await StaffModel.findById(req.params.id);
+            if (!staff) return res.status(404).json({ success: false, message: 'Staff not found' });
+            return res.json({ success: true, data: staff });
+        }
+        const staff = await StaffModel.update(req.params.id, updates);
+        if (!staff) return res.status(404).json({ success: false, message: 'Staff not found' });
+        res.json({ success: true, data: staff });
+    } catch (err) {
+        console.error(err);
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ success: false, message: 'Email already in use' });
+        }
+        res.status(500).json({ success: false, message: err.message || 'Failed to update staff' });
+    }
+});
+
+router.delete('/staff/:id', async (req, res) => {
+    try {
+        const deleted = await StaffModel.delete(req.params.id);
+        if (!deleted) return res.status(404).json({ success: false, message: 'Staff not found' });
+        res.json({ success: true });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to delete staff' });
+    }
+});
+
 // GET /api/coordinator/needs — all needs across network
 router.get('/needs', async (req, res) => {
     try {
@@ -88,6 +179,41 @@ router.patch('/donations/:id/status', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, message: 'Failed to update donation' });
+    }
+});
+
+// GET /api/coordinator/inventory — all inventory across orgs (with filters)
+router.get('/inventory', async (req, res) => {
+    try {
+        const { org_id, status, category, search } = req.query;
+        let sql = `SELECT i.*, o.name AS org_name
+                   FROM inventory_items i
+                   JOIN organizations o ON o.id = i.org_id
+                   WHERE 1=1`;
+        const params = [];
+        if (org_id) {
+            sql += ' AND i.org_id = ?';
+            params.push(org_id);
+        }
+        if (status) {
+            sql += ' AND i.status = ?';
+            params.push(status);
+        }
+        if (category) {
+            sql += ' AND i.category = ?';
+            params.push(category);
+        }
+        if (search && search.trim()) {
+            sql += ' AND (i.item_name LIKE ? OR i.category LIKE ?)';
+            const term = '%' + search.trim() + '%';
+            params.push(term, term);
+        }
+        sql += ' ORDER BY o.name ASC, i.item_name ASC';
+        const [rows] = await promisePool.query(sql, params);
+        res.json({ success: true, data: rows });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load inventory' });
     }
 });
 
