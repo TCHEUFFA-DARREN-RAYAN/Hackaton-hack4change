@@ -30,10 +30,12 @@
             <span class="sidebar-label">Coordination</span>
             <a href="#" data-section="needs" onclick="showSection('needs', this)">All Needs</a>
             <a href="#" data-section="donations" onclick="showSection('donations', this)">Donations Pipeline</a>
+            <a href="#" data-section="surplus-requests" onclick="showSection('surplus-requests', this)">Surplus Requests</a>
+            <a href="#" data-section="transfers" onclick="showSection('transfers', this)">Surplus Transfers</a>
         </div>
         <div class="sidebar-section">
             <span class="sidebar-label">Intelligence</span>
-            <a href="#" data-section="insights" onclick="showSection('insights', this)">AI Insights</a>
+            <a href="#" data-section="insights" onclick="showSection('insights', this)">Network Insights</a>
         </div>
         <div class="sidebar-section" style="margin-top:auto;border-top:1px solid var(--color-border-lt);padding-top:1rem">
             <span class="sidebar-label">Exports</span>
@@ -59,6 +61,7 @@
                 <div class="metric-card accent-high"><div class="metric-label">Active Needs</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
                 <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
                 <div class="metric-card accent-primary"><div class="metric-label">Pending Donations</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
+                <div class="metric-card" style="border-left:3px solid #e67e22"><div class="metric-label">Expiring Soon</div><div class="skeleton" style="height:2rem;width:50px;margin:.2rem 0"></div></div>
             </div>
 
             <div class="section">
@@ -79,6 +82,16 @@
                 <div id="critical-needs-list">
                     <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
                     <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2>Expiring soon (next 30 days)</h2>
+                    <a href="#" onclick="loadExpiring(); return false" class="btn btn-ghost btn-sm">Refresh</a>
+                </div>
+                <div id="expiring-list">
+                    <div class="skeleton skeleton-block" style="height:50px;margin-bottom:.4rem"></div>
                 </div>
             </div>
         </div>
@@ -179,16 +192,85 @@
             </div>
         </div>
 
+        <!-- Surplus Requests section -->
+        <div id="section-surplus-requests" style="display:none">
+            <div class="portal-header">
+                <h1>Surplus Requests</h1>
+            </div>
+            <div class="inline-notice info">Staff can request surplus items from other organizations. Approve or reject requests to facilitate coordination.</div>
+            <div style="margin-top:1rem">
+                <select id="surplus-request-status" class="form-control" style="max-width:180px;margin-bottom:1rem" onchange="loadSurplusRequests()">
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Requesting Org</th>
+                            <th>From Org</th>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="surplus-requests-tbody">
+                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Surplus Transfers section -->
+        <div id="section-transfers" style="display:none">
+            <div class="portal-header">
+                <h1>Surplus Transfers</h1>
+                <button class="btn btn-primary btn-sm" onclick="openCreateTransfer()">Initiate Transfer</button>
+            </div>
+            <div class="inline-notice info">Initiate transfers of surplus items from one organization to another. Staff at the receiving org can confirm receipt.</div>
+            <div style="margin-top:1rem">
+                <select id="transfer-status-filter" class="form-control" style="max-width:180px;margin-bottom:1rem" onchange="loadTransfers()">
+                    <option value="">All statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="in_transit">In Transit</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transfers-tbody">
+                        <tr><td colspan="7"><div class="skeleton skeleton-text wide"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- AI Insights section -->
         <div id="section-insights" style="display:none">
             <div class="portal-header">
-                <h1>AI Network Insights</h1>
+                <h1>Network Insights</h1>
                 <button class="btn btn-primary btn-sm" id="insights-btn" onclick="loadInsights()">Generate Insights</button>
             </div>
 
             <div id="insights-placeholder" class="card" style="text-align:center;padding:2.5rem">
-                <p class="text-muted">Click "Generate Insights" to run an AI analysis of the current network state.</p>
-                <p class="text-sm text-muted mt-1">This reads all current needs, inventory, and surplus data and returns a summary with redistribution opportunities and action alerts.</p>
+                <p class="text-muted">Click "Generate Insights" to analyze the current network state.</p>
+                <p class="text-sm text-muted mt-1">Summarizes needs, surplus, redistribution opportunities, and action alerts.</p>
             </div>
 
             <div id="insights-loading" style="display:none">
@@ -228,6 +310,42 @@
     </main>
 </div>
 
+<!-- Create Transfer Modal -->
+<div id="transfer-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:480px">
+        <div class="card-header">
+            <h3>Initiate Surplus Transfer</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeTransferModal()">Close</button>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label class="form-label">From organization (has surplus)</label>
+                <select id="transfer-from-org" class="form-control" onchange="loadSurplusForTransfer()"></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Surplus item</label>
+                <select id="transfer-item" class="form-control" onchange="updateTransferQtyMax()"></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Quantity</label>
+                <input type="number" id="transfer-qty" class="form-control" min="1" value="1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">To organization</label>
+                <select id="transfer-to-org" class="form-control"></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Notes (optional)</label>
+                <textarea id="transfer-notes" class="form-control" rows="2"></textarea>
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="closeTransferModal()">Cancel</button>
+                <button class="btn btn-primary" id="transfer-save-btn" onclick="saveTransfer()">Create Transfer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
@@ -251,7 +369,7 @@
     }
 
     function showSection(name, linkEl) {
-        ['overview', 'organizations', 'needs', 'donations', 'insights'].forEach(s => {
+        ['overview', 'organizations', 'needs', 'donations', 'surplus-requests', 'transfers', 'insights'].forEach(s => {
             const el = document.getElementById(`section-${s}`);
             if (el) el.style.display = s === name ? 'block' : 'none';
         });
@@ -261,6 +379,8 @@
         if (name === 'organizations' && !allOrgsData.length) loadOrgs();
         if (name === 'needs' && !allNeedsData.length) loadAllNeeds();
         if (name === 'donations' && !allDonationsData.length) loadDonations();
+        if (name === 'surplus-requests') loadSurplusRequests();
+        if (name === 'transfers') loadTransfers();
         return false;
     }
 
@@ -270,7 +390,7 @@
             overviewData = res.data;
             renderOverviewMetrics(overviewData);
             document.getElementById('overview-updated').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
-            await loadCriticalNeeds();
+            await Promise.all([loadCriticalNeeds(), loadExpiring()]);
         } catch (err) {
             document.getElementById('overview-metrics').innerHTML = `<div class="inline-notice error">${escHtml(err.message)}</div>`;
         }
@@ -298,6 +418,11 @@
                 <div class="metric-label">Pending</div>
                 <div class="metric-value">${d.pending}</div>
                 <div class="metric-sub">donations unmatched</div>
+            </div>
+            <div class="metric-card" style="border-left:3px solid #e67e22">
+                <div class="metric-label">Expiring Soon</div>
+                <div class="metric-value">${data.expiring_soon || 0}</div>
+                <div class="metric-sub">within 30 days</div>
             </div>`;
 
         document.getElementById('pipeline-stages').innerHTML = `
@@ -327,6 +452,25 @@
                     <span class="text-xs text-muted">${timeAgo(n.created_at)}</span>
                 </div>`).join('');
         } catch {}
+    }
+
+    async function loadExpiring() {
+        try {
+            const res = await coordinator.expiring(30);
+            const items = res.data || [];
+            const container = document.getElementById('expiring-list');
+            if (!items.length) {
+                container.innerHTML = '<div class="inline-notice success">No items expiring in the next 30 days.</div>';
+                return;
+            }
+            container.innerHTML = items.slice(0, 10).map(i => `
+                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .85rem;background:#fff8e6;border:1px solid #f0d78c;border-radius:var(--radius-sm);margin-bottom:.4rem">
+                    <span class="text-sm"><strong>${escHtml(i.org_name)}</strong>: ${escHtml(i.quantity)} ${escHtml(i.unit)} of ${escHtml(i.item_name)}</span>
+                    <span class="text-xs text-muted">expires ${formatDate(i.expiry_date)}</span>
+                </div>`).join('');
+        } catch {
+            document.getElementById('expiring-list').innerHTML = '<div class="text-muted text-sm">Could not load expiring items.</div>';
+        }
     }
 
     async function loadOrgs() {
@@ -438,6 +582,176 @@
         }
     }
 
+    let surplusRequestsData = [];
+    async function loadSurplusRequests() {
+        const status = document.getElementById('surplus-request-status').value;
+        try {
+            const res = await coordinator.surplusRequests(status);
+            surplusRequestsData = res.data || [];
+            const tbody = document.getElementById('surplus-requests-tbody');
+            if (!surplusRequestsData.length) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No surplus requests with this status.</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = surplusRequestsData.map(r => `
+                <tr>
+                    <td>${escHtml(r.requesting_org_name)}</td>
+                    <td>${escHtml(r.from_org_name)}</td>
+                    <td>${escHtml(r.item_name)}</td>
+                    <td>${escHtml(String(r.quantity_requested))} ${escHtml(r.unit)}</td>
+                    <td><span class="badge badge-${escHtml(r.status)}">${escHtml(r.status)}</span></td>
+                    <td class="text-xs text-muted">${timeAgo(r.created_at)}</td>
+                    <td>${r.status === 'pending' ? `
+                        <button class="btn btn-primary btn-sm" onclick="approveSurplusRequest('${escHtml(r.id)}')">Approve</button>
+                        <button class="btn btn-danger btn-sm" onclick="rejectSurplusRequest('${escHtml(r.id)}')">Reject</button>
+                    ` : '—'}</td>
+                </tr>`).join('');
+        } catch (err) {
+            document.getElementById('surplus-requests-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    async function approveSurplusRequest(id) {
+        try {
+            await coordinator.updateSurplusRequest(id, 'approved');
+            toast('Request approved.', 'success');
+            loadSurplusRequests();
+        } catch (err) {
+            toast(err.message || 'Failed to approve.', 'error');
+        }
+    }
+
+    async function rejectSurplusRequest(id) {
+        try {
+            await coordinator.updateSurplusRequest(id, 'rejected');
+            toast('Request rejected.', 'success');
+            loadSurplusRequests();
+        } catch (err) {
+            toast(err.message || 'Failed to reject.', 'error');
+        }
+    }
+
+    let transfersData = [];
+    async function loadTransfers() {
+        const status = document.getElementById('transfer-status-filter').value;
+        try {
+            const res = await coordinator.transfers(status ? { status } : {});
+            transfersData = res.data || [];
+            const tbody = document.getElementById('transfers-tbody');
+            if (!transfersData.length) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No surplus transfers.</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = transfersData.map(t => `
+                <tr>
+                    <td>${escHtml(t.from_org_name)}</td>
+                    <td>${escHtml(t.to_org_name)}</td>
+                    <td>${escHtml(t.item_name)}</td>
+                    <td>${escHtml(String(t.quantity))} ${escHtml(t.unit)}</td>
+                    <td><span class="badge badge-${escHtml(t.status)}">${escHtml(t.status)}</span></td>
+                    <td class="text-xs text-muted">${timeAgo(t.created_at)}</td>
+                    <td>${t.status !== 'completed' && t.status !== 'cancelled' ? `
+                        <select class="form-control" style="font-size:.75rem;padding:.25rem .5rem;min-width:120px" onchange="updateTransferStatus('${escHtml(t.id)}', this.value)">
+                            <option value="">Change status</option>
+                            <option value="in_transit" ${t.status === 'in_transit' ? 'selected' : ''}>In Transit</option>
+                            <option value="completed" ${t.status === 'completed' ? 'selected' : ''}>Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    ` : '—'}</td>
+                </tr>`).join('');
+        } catch (err) {
+            document.getElementById('transfers-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    async function updateTransferStatus(id, status) {
+        if (!status) return;
+        try {
+            await coordinator.updateTransferStatus(id, status);
+            toast('Transfer status updated.', 'success');
+            loadTransfers();
+        } catch (err) {
+            toast(err.message || 'Failed to update.', 'error');
+        }
+    }
+
+    let surplusForTransfer = [];
+    let orgsForTransfer = [];
+    async function openCreateTransfer() {
+        try {
+            const [surplusRes, orgsRes] = await Promise.all([coordinator.surplus(), coordinator.orgs()]);
+            surplusForTransfer = surplusRes.data || [];
+            orgsForTransfer = orgsRes.data || [];
+
+            const fromSelect = document.getElementById('transfer-from-org');
+            const toSelect = document.getElementById('transfer-to-org');
+            fromSelect.innerHTML = '<option value="">Select organization</option>' + orgsForTransfer.map(o => `<option value="${escHtml(o.id)}">${escHtml(o.name)}</option>`).join('');
+            toSelect.innerHTML = '<option value="">Select organization</option>' + orgsForTransfer.map(o => `<option value="${escHtml(o.id)}">${escHtml(o.name)}</option>`).join('');
+            document.getElementById('transfer-item').innerHTML = '<option value="">Select item first</option>';
+            document.getElementById('transfer-qty').value = 1;
+            document.getElementById('transfer-notes').value = '';
+            document.getElementById('transfer-modal').style.display = 'flex';
+        } catch (err) {
+            toast(err.message || 'Failed to load data.', 'error');
+        }
+    }
+
+    function closeTransferModal() {
+        document.getElementById('transfer-modal').style.display = 'none';
+    }
+
+    function loadSurplusForTransfer() {
+        const fromId = document.getElementById('transfer-from-org').value;
+        const itemSelect = document.getElementById('transfer-item');
+        itemSelect.innerHTML = '<option value="">Select item</option>';
+        if (!fromId) return;
+        const items = surplusForTransfer.filter(i => i.org_id === fromId);
+        items.forEach(i => {
+            const opt = document.createElement('option');
+            opt.value = i.id;
+            opt.dataset.quantity = i.quantity;
+            opt.textContent = `${i.item_name} (${i.quantity} ${i.unit} available)`;
+            itemSelect.appendChild(opt);
+        });
+    }
+
+    function updateTransferQtyMax() {
+        const itemSelect = document.getElementById('transfer-item');
+        const opt = itemSelect.options[itemSelect.selectedIndex];
+        const max = opt ? parseInt(opt.dataset.quantity) || 0 : 0;
+        document.getElementById('transfer-qty').max = max;
+    }
+
+    async function saveTransfer() {
+        const fromId = document.getElementById('transfer-from-org').value;
+        const toId = document.getElementById('transfer-to-org').value;
+        const itemId = document.getElementById('transfer-item').value;
+        const qty = parseInt(document.getElementById('transfer-qty').value) || 1;
+        const notes = document.getElementById('transfer-notes').value.trim() || null;
+
+        if (!fromId || !toId || !itemId) {
+            toast('Please select from org, to org, and item.', 'error');
+            return;
+        }
+        if (fromId === toId) {
+            toast('From and to organizations must be different.', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('transfer-save-btn');
+        btn.disabled = true;
+        try {
+            await coordinator.createTransfer({ from_org_id: fromId, to_org_id: toId, inventory_item_id: itemId, quantity: qty, coordinator_notes: notes });
+            closeTransferModal();
+            toast('Transfer created.', 'success');
+            loadTransfers();
+        } catch (err) {
+            toast(err.message || 'Failed to create transfer.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
     // AI Insights
     async function loadInsights() {
         const btn = document.getElementById('insights-btn');
@@ -493,7 +807,7 @@
         } catch (err) {
             document.getElementById('insights-loading').style.display = 'none';
             document.getElementById('insights-placeholder').style.display = 'block';
-            document.getElementById('insights-placeholder').innerHTML = `<div class="inline-notice error">${escHtml(err.message || 'AI insights failed. Ensure ANTHROPIC_API_KEY is set.')}</div>`;
+            document.getElementById('insights-placeholder').innerHTML = `<div class="inline-notice error">${escHtml(err.message || 'Failed to generate insights.')}</div>`;
             toast(err.message || 'AI insights failed.', 'error');
         } finally {
             btn.disabled = false;

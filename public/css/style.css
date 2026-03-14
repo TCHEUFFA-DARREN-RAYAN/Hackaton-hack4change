@@ -161,6 +161,11 @@ p  { margin-top: .5rem; }
 .badge-matched   { background: var(--color-primary-lt);  color: var(--color-primary); }
 .badge-confirmed { background: var(--color-accent-lt);   color: var(--color-accent); }
 .badge-delivered { background: #e8f5e9; color: #2e7d32; }
+.badge-approved  { background: var(--color-accent-lt); color: var(--color-accent); }
+.badge-rejected  { background: #fdf0ef; color: var(--color-critical); }
+.badge-completed { background: #e8f5e9; color: #2e7d32; }
+.badge-in_transit { background: var(--color-primary-lt); color: var(--color-primary); }
+.badge-cancelled { background: #f1f3f5; color: var(--color-text-muted); }
 
 .badge-shelter_housing  { background: #ede9fe; color: #5b21b6; }
 .badge-food_nutrition   { background: #fef3c7; color: #92400e; }

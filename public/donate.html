@@ -128,7 +128,7 @@
         <div class="form-group">
             <label class="form-label" for="preferred-org">Preferred organization <span class="text-muted">(optional)</span></label>
             <select id="preferred-org" class="form-control">
-                <option value="">Let the AI find the best match</option>
+                <option value="">Let the system find the best match</option>
             </select>
             <div class="form-hint">Leave blank to have the system match your donation to the organization with the greatest need.</div>
         </div>
@@ -138,14 +138,14 @@
         </div>
     </div>
 
-    <!-- Step 3: AI match preview -->
+    <!-- Step 3: Match preview -->
     <div class="step-panel card" id="step-3">
         <h2>Where your donation goes</h2>
         <div id="match-loading" style="display:none">
             <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
             <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
             <div class="skeleton skeleton-block" style="height:80px"></div>
-            <p class="text-muted text-sm" style="margin-top:.75rem;text-align:center">Finding the best match...</p>
+            <p class="text-muted text-sm" style="margin-top:.75rem;text-align:center">Finding the best match for your donation...</p>
         </div>
         <div id="match-results" style="display:none">
             <p class="text-sm text-muted" style="margin-bottom:.75rem">Based on current needs across the network, here are the top matches for your donation. Select one to proceed.</p>
@@ -162,7 +162,7 @@
         </div>
         <div id="match-error" style="display:none">
             <div class="inline-notice warning">
-                AI matching is unavailable right now. Please select an organization manually below.
+                No matching needs found. Please select an organization manually below.
             </div>
             <div class="form-group" style="margin-top:1rem">
                 <label class="form-label" for="fallback-org">Select an organization <span class="req">*</span></label>
@@ -412,7 +412,7 @@
         const btn = document.getElementById('show-all-orgs-btn');
         const showing = row.style.display !== 'none';
         row.style.display = showing ? 'none' : 'block';
-        btn.textContent = showing ? 'Choose a different organization instead' : 'Use AI recommendation instead';
+        btn.textContent = showing ? 'Choose a different organization instead' : 'Use system recommendation instead';
         if (!showing) {
             // Reset to first match selection
         }

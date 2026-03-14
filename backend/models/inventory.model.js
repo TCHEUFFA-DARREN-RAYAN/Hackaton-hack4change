@@ -64,6 +64,24 @@ class InventoryModel {
         );
         return rows;
     }
+
+    // Items expiring within N days (for alerts)
+    static async findExpiringSoon(days = 30, orgId = null) {
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() + days);
+        const cutoffStr = cutoff.toISOString().slice(0, 10);
+        let sql = `SELECT i.*, o.name AS org_name FROM inventory_items i
+                   JOIN organizations o ON o.id = i.org_id
+                   WHERE i.expiry_date IS NOT NULL AND i.expiry_date <= ? AND i.expiry_date >= CURDATE()`;
+        const params = [cutoffStr];
+        if (orgId) {
+            sql += ' AND i.org_id = ?';
+            params.push(orgId);
+        }
+        sql += ' ORDER BY i.expiry_date ASC';
+        const [rows] = await promisePool.query(sql, params);
+        return rows;
+    }
 }
 
 module.exports = InventoryModel;

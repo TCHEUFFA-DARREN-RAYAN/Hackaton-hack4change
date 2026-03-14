@@ -9,6 +9,8 @@ const OrganizationModel = require('../models/organization.model');
 const NeedsModel = require('../models/needs.model');
 const InventoryModel = require('../models/inventory.model');
 const DonationModel = require('../models/donation.model');
+const SurplusRequestModel = require('../models/surplusRequest.model');
+const SurplusTransferModel = require('../models/surplusTransfer.model');
 const { promisePool } = require('../config/database');
 
 router.use(authenticateToken, requireAdmin);
@@ -19,6 +21,10 @@ router.get('/overview', async (req, res) => {
         const [orgCount] = await promisePool.query(`SELECT COUNT(*) AS total FROM organizations`);
         const [needsCount] = await promisePool.query(`SELECT COUNT(*) AS total FROM needs WHERE fulfilled = 0`);
         const [criticalCount] = await promisePool.query(`SELECT COUNT(*) AS total FROM needs WHERE fulfilled = 0 AND urgency = 'critical'`);
+        const [expiringCount] = await promisePool.query(
+            `SELECT COUNT(*) AS total FROM inventory_items 
+             WHERE expiry_date IS NOT NULL AND expiry_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY) AND expiry_date >= CURDATE()`
+        );
         const pipeline = await DonationModel.getPipelineCounts();
 
         res.json({
@@ -27,6 +33,7 @@ router.get('/overview', async (req, res) => {
                 total_orgs: orgCount[0].total,
                 active_needs: needsCount[0].total,
                 critical_needs: criticalCount[0].total,
+                expiring_soon: expiringCount[0].total,
                 donations: pipeline
             }
         });
@@ -92,6 +99,106 @@ router.get('/surplus', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, message: 'Failed to load surplus' });
+    }
+});
+
+// GET /api/coordinator/expiring — items expiring soon (7–30 days)
+router.get('/expiring', async (req, res) => {
+    try {
+        const days = parseInt(req.query.days) || 30;
+        const items = await InventoryModel.findExpiringSoon(days);
+        res.json({ success: true, data: items });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load expiring items' });
+    }
+});
+
+// Surplus requests (staff-initiated)
+router.get('/surplus-requests', async (req, res) => {
+    try {
+        const status = req.query.status || 'pending';
+        const [rows] = await promisePool.query(
+            `SELECT sr.*, o_from.name AS from_org_name, o_to.name AS requesting_org_name,
+                    i.item_name, i.category, i.quantity AS available_quantity, i.unit
+             FROM surplus_requests sr
+             JOIN organizations o_from ON o_from.id = sr.from_org_id
+             JOIN organizations o_to ON o_to.id = sr.requesting_org_id
+             JOIN inventory_items i ON i.id = sr.inventory_item_id
+             WHERE sr.status = ?
+             ORDER BY sr.created_at ASC`,
+            [status]
+        );
+        res.json({ success: true, data: rows });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load surplus requests' });
+    }
+});
+
+router.patch('/surplus-requests/:id', async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['approved', 'rejected'].includes(status)) {
+            return res.status(400).json({ success: false, message: 'Invalid status' });
+        }
+        const request = await SurplusRequestModel.updateStatus(req.params.id, status);
+        if (!request) return res.status(404).json({ success: false, message: 'Request not found' });
+        res.json({ success: true, data: request });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to update request' });
+    }
+});
+
+// Surplus transfers (coordinator-initiated)
+router.get('/transfers', async (req, res) => {
+    try {
+        const transfers = await SurplusTransferModel.findAll(req.query);
+        res.json({ success: true, data: transfers });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load transfers' });
+    }
+});
+
+router.post('/transfers', async (req, res) => {
+    try {
+        const { from_org_id, to_org_id, inventory_item_id, quantity, coordinator_notes } = req.body;
+        if (!from_org_id || !to_org_id || !inventory_item_id) {
+            return res.status(400).json({ success: false, message: 'from_org_id, to_org_id, and inventory_item_id are required' });
+        }
+        const item = await InventoryModel.findById(inventory_item_id);
+        if (!item || item.org_id !== from_org_id) {
+            return res.status(400).json({ success: false, message: 'Invalid surplus item' });
+        }
+        const qty = Math.min(parseInt(quantity) || 1, item.quantity);
+        const transfer = await SurplusTransferModel.create({
+            from_org_id,
+            to_org_id,
+            inventory_item_id,
+            quantity: qty,
+            coordinator_notes
+        });
+        res.status(201).json({ success: true, data: transfer });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to create transfer' });
+    }
+});
+
+router.patch('/transfers/:id/status', async (req, res) => {
+    try {
+        const { status } = req.body;
+        if (!['in_transit', 'completed', 'cancelled'].includes(status)) {
+            return res.status(400).json({ success: false, message: 'Invalid status' });
+        }
+        const transfer = await SurplusTransferModel.updateStatus(req.params.id, status);
+        if (!transfer) return res.status(404).json({ success: false, message: 'Transfer not found' });
+        res.json({ success: true, data: transfer });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to update transfer' });
     }
 });
 

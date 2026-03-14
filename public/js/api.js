@@ -40,7 +40,13 @@ const staff = {
     fulfillNeed:          (id)      => api(`/staff/needs/${id}/fulfill`, { method: 'POST' }),
     deleteNeed:           (id)      => api(`/staff/needs/${id}`,    { method: 'DELETE' }),
     donations:            ()        => api('/staff/donations'),
-    confirmDonation:      (id)      => api(`/staff/donations/${id}/confirm`, { method: 'POST' })
+    confirmDonation:      (id)      => api(`/staff/donations/${id}/confirm`, { method: 'POST' }),
+    surplus:              ()        => api('/staff/surplus'),
+    surplusRequests:      ()        => api('/staff/surplus-requests'),
+    requestSurplus:       (data)    => api('/staff/surplus-requests', { method: 'POST', body: JSON.stringify(data) }),
+    transfers:            ()        => api('/staff/transfers'),
+    completeTransfer:     (id)      => api(`/staff/transfers/${id}/complete`, { method: 'POST' }),
+    expiring:             (days)    => api('/staff/expiring?' + new URLSearchParams(days ? { days } : {}))
 };
 
 const coordinator = {
@@ -50,6 +56,12 @@ const coordinator = {
     donations:            (params)  => api('/coordinator/donations?' + new URLSearchParams(params || {})),
     updateDonationStatus: (id, status) => api(`/coordinator/donations/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
     surplus:              ()        => api('/coordinator/surplus'),
+    expiring:             (days)   => api('/coordinator/expiring?' + new URLSearchParams(days ? { days } : {})),
+    surplusRequests:      (status)  => api('/coordinator/surplus-requests?' + new URLSearchParams(status ? { status } : {})),
+    updateSurplusRequest:  (id, status) => api(`/coordinator/surplus-requests/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+    transfers:            (params) => api('/coordinator/transfers?' + new URLSearchParams(params || {})),
+    createTransfer:       (data)   => api('/coordinator/transfers', { method: 'POST', body: JSON.stringify(data) }),
+    updateTransferStatus: (id, status) => api(`/coordinator/transfers/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
     exportNeeds:          ()        => window.open('/api/coordinator/export/needs'),
     exportInventory:      ()        => window.open('/api/coordinator/export/inventory')
 };

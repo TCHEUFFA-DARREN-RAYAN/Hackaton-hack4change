@@ -9,6 +9,8 @@ const InventoryModel = require('../models/inventory.model');
 const NeedsModel = require('../models/needs.model');
 const DonationModel = require('../models/donation.model');
 const OrganizationModel = require('../models/organization.model');
+const SurplusRequestModel = require('../models/surplusRequest.model');
+const SurplusTransferModel = require('../models/surplusTransfer.model');
 
 // All staff routes require authentication
 router.use(authenticateToken);
@@ -164,6 +166,92 @@ router.post('/donations/:id/confirm', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, message: 'Failed to confirm donation' });
+    }
+});
+
+// --- Network surplus (org-to-org) ---
+
+router.get('/surplus', async (req, res) => {
+    try {
+        const items = await InventoryModel.findAllSurplus();
+        const filtered = items.filter(i => i.org_id !== req.user.orgId);
+        res.json({ success: true, data: filtered });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load surplus' });
+    }
+});
+
+router.get('/surplus-requests', async (req, res) => {
+    try {
+        const requests = await SurplusRequestModel.findByRequestingOrg(req.user.orgId);
+        res.json({ success: true, data: requests });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load surplus requests' });
+    }
+});
+
+router.post('/surplus-requests', async (req, res) => {
+    try {
+        const { from_org_id, inventory_item_id, quantity_requested, notes } = req.body;
+        if (!from_org_id || !inventory_item_id) {
+            return res.status(400).json({ success: false, message: 'from_org_id and inventory_item_id are required' });
+        }
+        const item = await InventoryModel.findById(inventory_item_id);
+        if (!item || item.org_id !== from_org_id) {
+            return res.status(400).json({ success: false, message: 'Invalid surplus item' });
+        }
+        if (item.org_id === req.user.orgId) {
+            return res.status(400).json({ success: false, message: 'Cannot request your own surplus' });
+        }
+        const qty = Math.min(parseInt(quantity_requested) || 1, item.quantity);
+        const request = await SurplusRequestModel.create({
+            requesting_org_id: req.user.orgId,
+            from_org_id,
+            inventory_item_id,
+            quantity_requested: qty,
+            notes
+        });
+        res.status(201).json({ success: true, data: request });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to create surplus request' });
+    }
+});
+
+router.get('/transfers', async (req, res) => {
+    try {
+        const incoming = await SurplusTransferModel.findByToOrg(req.user.orgId);
+        res.json({ success: true, data: incoming });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load transfers' });
+    }
+});
+
+router.post('/transfers/:id/complete', async (req, res) => {
+    try {
+        const transfer = await SurplusTransferModel.findById(req.params.id);
+        if (!transfer || transfer.to_org_id !== req.user.orgId) {
+            return res.status(404).json({ success: false, message: 'Transfer not found' });
+        }
+        const updated = await SurplusTransferModel.updateStatus(req.params.id, 'completed');
+        res.json({ success: true, data: updated });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to complete transfer' });
+    }
+});
+
+router.get('/expiring', async (req, res) => {
+    try {
+        const days = parseInt(req.query.days) || 30;
+        const items = await InventoryModel.findExpiringSoon(days, req.user.orgId);
+        res.json({ success: true, data: items });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to load expiring items' });
     }
 });
 

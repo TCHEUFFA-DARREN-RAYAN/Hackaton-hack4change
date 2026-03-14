@@ -3,7 +3,12 @@ const StaffModel = require('../models/staff.model');
 const { hashPassword, comparePassword } = require('../utils/hash.util');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt.util');
 
-const cookieOpts = { httpOnly: true, sameSite: 'lax', maxAge: 7 * 24 * 60 * 60 * 1000 };
+const getCookieOpts = () => ({
+    httpOnly: true,
+    sameSite: process.env.COOKIE_SAME_SITE || 'lax',
+    secure: process.env.COOKIE_SECURE === 'true' || process.env.COOKIE_SECURE === '1',
+    maxAge: 7 * 24 * 60 * 60 * 1000
+});
 
 class AuthController {
     static async login(req, res) {
@@ -28,8 +33,8 @@ class AuthController {
                 const payload = { id: admin.id, email: admin.email, role: 'coordinator', isAdmin: true };
                 const accessToken = generateAccessToken(payload);
                 const refreshToken = generateRefreshToken(payload);
-                res.cookie('token', accessToken, cookieOpts);
-                res.cookie('refreshToken', refreshToken, cookieOpts);
+                res.cookie('token', accessToken, getCookieOpts());
+                res.cookie('refreshToken', refreshToken, getCookieOpts());
                 return res.json({
                     success: true,
                     data: {
@@ -55,8 +60,8 @@ class AuthController {
             const payload = { id: staff.id, email: staff.email, role: 'staff', orgId: staff.org_id, isAdmin: false };
             const accessToken = generateAccessToken(payload);
             const refreshToken = generateRefreshToken(payload);
-            res.cookie('token', accessToken, cookieOpts);
-            res.cookie('refreshToken', refreshToken, cookieOpts);
+            res.cookie('token', accessToken, getCookieOpts());
+            res.cookie('refreshToken', refreshToken, getCookieOpts());
             return res.json({
                 success: true,
                 data: {
@@ -118,7 +123,7 @@ class AuthController {
             const decoded = verifyRefreshToken(refreshToken);
             const payload = { id: decoded.id, email: decoded.email, role: decoded.role, orgId: decoded.orgId, isAdmin: decoded.isAdmin };
             const accessToken = generateAccessToken(payload);
-            res.cookie('token', accessToken, cookieOpts);
+            res.cookie('token', accessToken, getCookieOpts());
             res.json({ success: true, accessToken });
         } catch {
             res.clearCookie('token');

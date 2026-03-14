@@ -1,0 +1,34 @@
+# Render Blueprint - set env vars in Render Dashboard (do not commit secrets)
+# Services: https://dashboard.render.com
+# Add these env vars in your Web Service → Environment
+
+services:
+  - type: web
+    name: commonground
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_SSL_ENABLED
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: COOKIE_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false

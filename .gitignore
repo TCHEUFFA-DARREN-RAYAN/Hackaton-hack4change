@@ -275,3 +275,7 @@ __pycache__/
 
 .claude/
 .ps1
+
+# Environment (contains secrets)
+.env
+.env.local

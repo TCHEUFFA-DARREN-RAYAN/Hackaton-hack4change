@@ -26,6 +26,11 @@
             <a href="#" data-section="inventory" class="active" onclick="showSection('inventory', this)">Inventory</a>
             <a href="#" data-section="needs" onclick="showSection('needs', this)">Needs</a>
             <a href="#" data-section="donations" onclick="showSection('donations', this)">Incoming Donations</a>
+            <a href="#" data-section="transfers" onclick="showSection('transfers', this)">Incoming Transfers</a>
+        </div>
+        <div class="sidebar-section">
+            <span class="sidebar-label">Network</span>
+            <a href="#" data-section="surplus" onclick="showSection('surplus', this)">Request Surplus</a>
         </div>
         <div class="sidebar-section" style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--color-border-lt)">
             <a href="/" style="color:var(--color-text-muted)">View Public Board</a>
@@ -43,6 +48,10 @@
 
         <!-- Inventory section -->
         <div id="section-inventory">
+            <div id="expiring-alert" style="display:none;margin-bottom:1rem;padding:.75rem 1rem;background:#fff8e6;border:1px solid #f0d78c;border-radius:var(--radius-sm)">
+                <strong>Expiring soon</strong>
+                <div id="expiring-alert-list" class="text-sm" style="margin-top:.4rem"></div>
+            </div>
             <div class="metrics-row" id="inventory-metrics">
                 <div class="metric-card"><div class="metric-label">Total Items</div><div class="metric-value skeleton" style="height:2rem;width:60px;display:inline-block"></div></div>
                 <div class="metric-card accent-critical"><div class="metric-label">Critical</div><div class="metric-value skeleton" style="height:2rem;width:60px;display:inline-block"></div></div>
@@ -104,6 +113,33 @@
             </div>
         </div>
 
+        <!-- Incoming Transfers section -->
+        <div id="section-transfers" style="display:none">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Incoming transfers from other organizations</h2>
+                </div>
+                <div class="inline-notice info">These are surplus items being transferred to your organization. Confirm receipt when you receive them.</div>
+                <div class="table-wrap" style="margin-top:1rem">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>From</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transfers-tbody">
+                            <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Donations section -->
         <div id="section-donations" style="display:none">
             <div class="section">
@@ -131,7 +167,80 @@
                 </div>
             </div>
         </div>
+
+        <!-- Request Surplus section -->
+        <div id="section-surplus" style="display:none">
+            <div class="section">
+                <div class="section-header">
+                    <h2>Request surplus from other organizations</h2>
+                </div>
+                <div class="inline-notice info">Browse surplus items across the network. Request what you need — the coordinator will approve and facilitate the transfer.</div>
+                <div class="table-wrap" style="margin-top:1rem">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Organization</th>
+                                <th>Item</th>
+                                <th>Category</th>
+                                <th>Available</th>
+                                <th>Expires</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="surplus-tbody">
+                            <tr><td colspan="6"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="section" style="margin-top:1.5rem">
+                <div class="section-header"><h2>Your surplus requests</h2></div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>From</th>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="surplus-requests-tbody">
+                            <tr><td colspan="5"><div class="skeleton skeleton-text wide"></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </main>
+</div>
+
+<!-- Request Surplus Modal -->
+<div id="surplus-request-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:420px">
+        <div class="card-header">
+            <h3>Request surplus</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('surplus-request-modal')">Close</button>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="surplus-request-item-id">
+            <input type="hidden" id="surplus-request-from-org">
+            <p id="surplus-request-summary" class="text-sm" style="margin-bottom:1rem"></p>
+            <div class="form-group">
+                <label class="form-label">Quantity</label>
+                <input type="number" id="surplus-request-qty" class="form-control" min="1">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Notes (optional)</label>
+                <textarea id="surplus-request-notes" class="form-control" rows="2"></textarea>
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+                <button class="btn btn-ghost" onclick="closeModal('surplus-request-modal')">Cancel</button>
+                <button class="btn btn-primary" id="surplus-request-btn" onclick="submitSurplusRequest()">Submit Request</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Add/Edit Inventory Modal -->
@@ -293,18 +402,21 @@
         document.getElementById('nav-org-name').textContent = currentUser.orgName || '';
         document.getElementById('org-subtitle').textContent = currentUser.orgName || '';
 
-        await Promise.all([loadInventory(), loadNeeds(), loadDonations()]);
+        await Promise.all([loadInventory(), loadNeeds(), loadDonations(), loadExpiring()]);
     }
 
     function showSection(name, linkEl) {
-        ['inventory', 'needs', 'donations'].forEach(s => {
+        ['inventory', 'needs', 'donations', 'transfers', 'surplus'].forEach(s => {
             document.getElementById(`section-${s}`).style.display = s === name ? 'block' : 'none';
         });
         document.querySelectorAll('.portal-sidebar a').forEach(a => a.classList.remove('active'));
         if (linkEl) linkEl.classList.add('active');
 
-        const titles = { inventory: 'Inventory', needs: 'Needs', donations: 'Incoming Donations' };
+        const titles = { inventory: 'Inventory', needs: 'Needs', donations: 'Incoming Donations', transfers: 'Incoming Transfers', surplus: 'Request Surplus' };
         document.getElementById('page-title').textContent = titles[name] || name;
+
+        if (name === 'transfers') loadTransfers();
+        if (name === 'surplus') { loadSurplus(); loadSurplusRequests(); }
     }
 
     // --- Inventory ---
@@ -317,6 +429,24 @@
             renderInventoryMetrics();
         } catch (err) {
             document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    async function loadExpiring() {
+        try {
+            const res = await staff.expiring(30);
+            const items = res.data || [];
+            const alertEl = document.getElementById('expiring-alert');
+            const listEl = document.getElementById('expiring-alert-list');
+            if (!items.length) {
+                alertEl.style.display = 'none';
+                return;
+            }
+            alertEl.style.display = 'block';
+            listEl.innerHTML = items.slice(0, 5).map(i => `${escHtml(i.quantity)} ${escHtml(i.unit)} of ${escHtml(i.item_name)} expiring ${formatDate(i.expiry_date)}`).join('; ');
+            if (items.length > 5) listEl.innerHTML += ` (and ${items.length - 5} more)`;
+        } catch {
+            document.getElementById('expiring-alert').style.display = 'none';
         }
     }
 
@@ -422,6 +552,121 @@
             await loadInventory();
         } catch (err) {
             toast(err.message || 'Failed to delete item.', 'error');
+        }
+    }
+
+    // --- Surplus & Transfers ---
+
+    let surplusData = [];
+    let surplusRequestsData = [];
+    let transfersData = [];
+
+    async function loadSurplus() {
+        try {
+            const res = await staff.surplus();
+            surplusData = res.data || [];
+            const tbody = document.getElementById('surplus-tbody');
+            if (!surplusData.length) {
+                tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No surplus items available from other organizations.</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = surplusData.map(i => `
+                <tr>
+                    <td>${escHtml(i.org_name)}</td>
+                    <td>${escHtml(i.item_name)}</td>
+                    <td>${escHtml(i.category)}</td>
+                    <td>${escHtml(String(i.quantity))} ${escHtml(i.unit)}</td>
+                    <td>${i.expiry_date ? formatDate(i.expiry_date) : '<span class="text-muted">—</span>'}</td>
+                    <td><button class="btn btn-primary btn-sm" onclick="openSurplusRequestModal('${escHtml(i.id)}', '${escHtml(i.org_id).replace(/'/g, "\\'")}', '${escHtml(i.item_name).replace(/'/g, "\\'")}', ${i.quantity})">Request</button></td>
+                </tr>`).join('');
+        } catch (err) {
+            document.getElementById('surplus-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    async function loadSurplusRequests() {
+        try {
+            const res = await staff.surplusRequests();
+            surplusRequestsData = res.data || [];
+            const tbody = document.getElementById('surplus-requests-tbody');
+            if (!surplusRequestsData.length) {
+                tbody.innerHTML = '<tr><td colspan="5"><div class="empty-state"><p>No surplus requests yet.</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = surplusRequestsData.map(r => `
+                <tr>
+                    <td>${escHtml(r.from_org_name)}</td>
+                    <td>${escHtml(r.item_name)}</td>
+                    <td>${escHtml(String(r.quantity_requested))} ${escHtml(r.unit)}</td>
+                    <td><span class="badge badge-${escHtml(r.status)}">${escHtml(r.status)}</span></td>
+                    <td class="text-xs text-muted">${timeAgo(r.created_at)}</td>
+                </tr>`).join('');
+        } catch (err) {
+            document.getElementById('surplus-requests-tbody').innerHTML = `<tr><td colspan="5"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    async function loadTransfers() {
+        try {
+            const res = await staff.transfers();
+            transfersData = res.data || [];
+            const tbody = document.getElementById('transfers-tbody');
+            if (!transfersData.length) {
+                tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><p>No incoming transfers.</p></div></td></tr>';
+                return;
+            }
+            tbody.innerHTML = transfersData.map(t => `
+                <tr>
+                    <td>${escHtml(t.item_name)}</td>
+                    <td>${escHtml(String(t.quantity))} ${escHtml(t.unit)}</td>
+                    <td>${escHtml(t.from_org_name)}</td>
+                    <td><span class="badge badge-${escHtml(t.status)}">${escHtml(t.status)}</span></td>
+                    <td class="text-xs text-muted">${timeAgo(t.created_at)}</td>
+                    <td>${t.status === 'pending' || t.status === 'in_transit' ? `<button class="btn btn-primary btn-sm" onclick="completeTransfer('${escHtml(t.id)}')">Confirm Receipt</button>` : '—'}</td>
+                </tr>`).join('');
+        } catch (err) {
+            document.getElementById('transfers-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+        }
+    }
+
+    function openSurplusRequestModal(itemId, fromOrgId, itemName, maxQty) {
+        document.getElementById('surplus-request-item-id').value = itemId;
+        document.getElementById('surplus-request-from-org').value = fromOrgId;
+        document.getElementById('surplus-request-summary').textContent = `Request "${itemName}" from another organization. Max available: ${maxQty}.`;
+        document.getElementById('surplus-request-qty').value = Math.min(1, maxQty);
+        document.getElementById('surplus-request-qty').max = maxQty;
+        document.getElementById('surplus-request-notes').value = '';
+        openModal('surplus-request-modal');
+    }
+
+    async function submitSurplusRequest() {
+        const itemId = document.getElementById('surplus-request-item-id').value;
+        const fromOrgId = document.getElementById('surplus-request-from-org').value;
+        const qty = parseInt(document.getElementById('surplus-request-qty').value) || 1;
+        const notes = document.getElementById('surplus-request-notes').value.trim() || null;
+
+        const btn = document.getElementById('surplus-request-btn');
+        btn.disabled = true;
+        try {
+            await staff.requestSurplus({ from_org_id: fromOrgId, inventory_item_id: itemId, quantity_requested: qty, notes });
+            closeModal('surplus-request-modal');
+            toast('Request submitted. The coordinator will review it.', 'success');
+            loadSurplus();
+            loadSurplusRequests();
+        } catch (err) {
+            toast(err.message || 'Failed to submit request.', 'error');
+        } finally {
+            btn.disabled = false;
+        }
+    }
+
+    async function completeTransfer(id) {
+        try {
+            await staff.completeTransfer(id);
+            toast('Transfer marked as received.', 'success');
+            loadTransfers();
+        } catch (err) {
+            toast(err.message || 'Failed to complete transfer.', 'error');
         }
     }
 

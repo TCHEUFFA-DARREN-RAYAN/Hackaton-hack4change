@@ -96,7 +96,7 @@ Visit `http://localhost:3000`
 | `JWT_SECRET` | Secret for signing JWT tokens | *(long random string)* |
 | `JWT_EXPIRES_IN` | Access token expiry | `24h` |
 | `JWT_REFRESH_EXPIRES_IN` | Refresh token expiry | `7d` |
-| `ANTHROPIC_API_KEY` | Claude API key for AI features | `sk-ant-...` |
+| `ANTHROPIC_API_KEY` | Not used — matching is automatic (no AI required) | *(leave empty)* |
 | `ADMIN_DEFAULT_EMAIL` | Coordinator login email | `coordinator@gmhsc.ca` |
 | `ADMIN_DEFAULT_PASSWORD` | Coordinator login password | `Admin123456` |
 | `CORS_ORIGINS` | Allowed CORS origins (comma-separated) | `http://localhost:3000` |
@@ -118,14 +118,19 @@ After running `npm run migrate`:
 
 ---
 
+## Roles
+
+- **Coordinator** = Network admin. Logs in with coordinator credentials and has full visibility across all 28 organizations. The coordinator dashboard at `/coordinator` is the main admin interface for donation coordination.
+- **Staff** = Organization-scoped. Manages one organization's inventory, needs, and donations. Can request surplus from other orgs and confirm incoming transfers.
+
 ## Pages
 
 | URL | Access | Description |
 |---|---|---|
 | `/` | Public | Live needs board — all 28 orgs with top needs, filterable |
-| `/donate` | Public | 4-step donation form with AI matching |
-| `/staff` | Staff login required | Inventory management, needs posting, incoming donations |
-| `/coordinator` | Coordinator login required | Network overview, all needs, donation pipeline, AI insights |
+| `/donate` | Public | 4-step donation form with automatic matching |
+| `/staff` | Staff login required | Inventory, needs, incoming donations, incoming transfers, request surplus from other orgs |
+| `/coordinator` | Coordinator login required | Network overview, needs, donations, surplus requests, surplus transfers, AI insights, exports |
 | `/login` | Public | Login page for staff and coordinators |
 
 ---
@@ -154,6 +159,12 @@ After running `npm run migrate`:
 - `POST /api/staff/needs/:id/fulfill`
 - `GET /api/staff/donations`
 - `POST /api/staff/donations/:id/confirm`
+- `GET /api/staff/surplus` — Network surplus (excluding own org)
+- `GET /api/staff/surplus-requests` — My org's surplus requests
+- `POST /api/staff/surplus-requests` — Request surplus from another org
+- `GET /api/staff/transfers` — Incoming transfers
+- `POST /api/staff/transfers/:id/complete` — Confirm receipt
+- `GET /api/staff/expiring?days=30` — Items expiring soon
 
 ### Coordinator (JWT + admin role required)
 - `GET /api/coordinator/overview`
@@ -162,30 +173,28 @@ After running `npm run migrate`:
 - `GET /api/coordinator/donations`
 - `PATCH /api/coordinator/donations/:id/status`
 - `GET /api/coordinator/surplus`
+- `GET /api/coordinator/expiring?days=30` — Items expiring soon
+- `GET /api/coordinator/surplus-requests?status=pending` — Surplus requests (staff-initiated)
+- `PATCH /api/coordinator/surplus-requests/:id` — Approve/reject request
+- `GET /api/coordinator/transfers` — Surplus transfers
+- `POST /api/coordinator/transfers` — Initiate transfer
+- `PATCH /api/coordinator/transfers/:id/status` — Update transfer status
 - `GET /api/coordinator/export/needs` (CSV)
 - `GET /api/coordinator/export/inventory` (CSV)
 
-### AI
-- `POST /api/ai/match-donation` — Smart donation matching (public, rate-limited)
-- `POST /api/ai/network-insights` — Network health summary (coordinator only)
+### Match (automatic, no AI)
+- `POST /api/ai/match-donation` — Automatic donation matching by category, item name, urgency (public, rate-limited)
+- `POST /api/ai/network-insights` — Rule-based network summary (coordinator only)
 
 ---
 
-## AI Usage Declaration
+## Matching & Insights (No AI Required)
 
-*Required disclosure per Hack4Change 2026 rules.*
+Donation matching and network insights use **automatic rule-based logic** — no AI or API keys needed.
 
-### How Claude API is used in the application
+**Donation Matching** (`POST /api/ai/match-donation`): Matches donations to needs by category, item name similarity, urgency level, and quantity fit. Returns top 3 organizations. Runs entirely on the server with no external API calls.
 
-**Feature 1 — Smart Donation Matching** (`POST /api/ai/match-donation`):
-When a donor completes step 2 of the donation form, the backend fetches all unfulfilled needs from the database and sends them to `claude-sonnet-4-20250514` along with the item being donated (name, category, quantity, condition). Claude ranks the top 3 matching organizations considering urgency level, category alignment, and quantity fit. It returns a JSON structure with organization names and plain-language reasoning for each match. This is shown to the donor in step 3 before they confirm. The donor can accept the recommended match or choose differently.
-
-**Feature 2 — Network Insights** (`POST /api/ai/network-insights`):
-From the coordinator dashboard, a coordinator can click "Generate Insights" to trigger a full network analysis. The backend sends Claude a snapshot of all critical needs, all surplus items, and organizations that haven't updated their inventory in 48+ hours. Claude returns a structured JSON response with: a 3-sentence network health summary, up to 3 redistribution opportunities (surplus at one org matched to a need at another), up to 3 organizations needing follow-up, and up to 3 immediate action alerts. This is rendered in the AI Insights panel.
-
-### Tools used during development
-
-This project was developed using **Claude Code** (Anthropic's official CLI, powered by `claude-sonnet-4-6`) as the primary development tool. Claude Code was used to generate, review, and refine all code in this repository — including the database schema, backend routes and models, frontend HTML/CSS/JS, and this README.
+**Network Insights** (`POST /api/ai/network-insights`): Generates a summary from current data: critical needs count, surplus items, redistribution opportunities (surplus at one org matching a need at another), and organizations needing follow-up (stale inventory). Rule-based only.
 
 ---
 
@@ -220,7 +229,7 @@ homeless-hackaton/
 │   └── server.js
 ├── public/
 │   ├── index.html               # Public needs board
-│   ├── donate.html              # Donation form with AI matching
+│   ├── donate.html              # Donation form with automatic matching
 │   ├── staff.html               # Staff portal
 │   ├── coordinator.html         # Coordinator dashboard
 │   ├── login.html               # Login page

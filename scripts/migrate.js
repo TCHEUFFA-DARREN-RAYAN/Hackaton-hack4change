@@ -5,18 +5,30 @@
  */
 const mysql = require('mysql2/promise');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 const run = async () => {
     let conn;
     try {
-        conn = await mysql.createConnection({
+        const connConfig = {
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
             password: process.env.DB_PASSWORD,
             port: process.env.DB_PORT || 3306,
             multipleStatements: true,
-        });
+        };
+        if (process.env.DB_SSL_ENABLED === 'true' || process.env.DB_SSL_ENABLED === '1') {
+            let ca = process.env.DB_CA_CERT;
+            if (!ca && process.env.DB_CA_CERT_PATH) {
+                const certPath = path.resolve(process.cwd(), process.env.DB_CA_CERT_PATH);
+                ca = fs.readFileSync(certPath, 'utf8');
+            }
+            connConfig.ssl = ca
+                ? { ca, rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' }
+                : { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' };
+        }
+        conn = await mysql.createConnection(connConfig);
 
         await conn.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME}\``);
         await conn.query(`USE \`${process.env.DB_NAME}\``);
@@ -24,6 +36,8 @@ const run = async () => {
         console.log('Running schema...');
 
         await conn.query(`SET FOREIGN_KEY_CHECKS = 0`);
+        await conn.query(`DROP TABLE IF EXISTS surplus_requests`);
+        await conn.query(`DROP TABLE IF EXISTS surplus_transfers`);
         await conn.query(`DROP TABLE IF EXISTS donations`);
         await conn.query(`DROP TABLE IF EXISTS needs`);
         await conn.query(`DROP TABLE IF EXISTS inventory_items`);
@@ -129,6 +143,41 @@ const run = async () => {
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 FOREIGN KEY (preferred_org_id) REFERENCES organizations(id) ON DELETE SET NULL,
                 FOREIGN KEY (matched_org_id) REFERENCES organizations(id) ON DELETE SET NULL
+            )
+        `);
+
+        await conn.query(`
+            CREATE TABLE surplus_requests (
+                id CHAR(36) PRIMARY KEY,
+                requesting_org_id CHAR(36) NOT NULL,
+                from_org_id CHAR(36) NOT NULL,
+                inventory_item_id CHAR(36) NOT NULL,
+                quantity_requested INT NOT NULL DEFAULT 1,
+                notes TEXT,
+                status ENUM('pending', 'approved', 'rejected', 'completed') NOT NULL DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                responded_at TIMESTAMP NULL,
+                completed_at TIMESTAMP NULL,
+                FOREIGN KEY (requesting_org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+                FOREIGN KEY (from_org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+                FOREIGN KEY (inventory_item_id) REFERENCES inventory_items(id) ON DELETE CASCADE
+            )
+        `);
+
+        await conn.query(`
+            CREATE TABLE surplus_transfers (
+                id CHAR(36) PRIMARY KEY,
+                from_org_id CHAR(36) NOT NULL,
+                to_org_id CHAR(36) NOT NULL,
+                inventory_item_id CHAR(36) NOT NULL,
+                quantity INT NOT NULL DEFAULT 1,
+                status ENUM('pending', 'in_transit', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+                coordinator_notes TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                completed_at TIMESTAMP NULL,
+                FOREIGN KEY (from_org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+                FOREIGN KEY (to_org_id) REFERENCES organizations(id) ON DELETE CASCADE,
+                FOREIGN KEY (inventory_item_id) REFERENCES inventory_items(id) ON DELETE CASCADE
             )
         `);
 
