@@ -13,7 +13,7 @@ const getCookieOpts = () => ({
 class AuthController {
     static async login(req, res) {
         try {
-            const { email, password, role } = req.body;
+            const { email, password } = req.body;
             const normalizedEmail = (email || '').trim().toLowerCase();
             const normalizedPassword = (password || '').trim();
 
@@ -21,34 +21,31 @@ class AuthController {
                 return res.status(400).json({ success: false, message: 'Email and password required' });
             }
 
-            if (role === 'coordinator') {
-                const admin = await AdminModel.findByEmailForLogin(normalizedEmail);
-                if (!admin || admin.status !== 'active') {
-                    return res.status(401).json({ success: false, message: 'Invalid credentials' });
-                }
+            // Try coordinator first
+            const admin = await AdminModel.findByEmailForLogin(normalizedEmail);
+            if (admin && admin.status === 'active') {
                 const valid = await comparePassword(normalizedPassword, admin.password_hash);
-                if (!valid) {
-                    return res.status(401).json({ success: false, message: 'Invalid credentials' });
+                if (valid) {
+                    const payload = { id: admin.id, email: admin.email, role: 'coordinator', isAdmin: true };
+                    const accessToken = generateAccessToken(payload);
+                    const refreshToken = generateRefreshToken(payload);
+                    res.cookie('token', accessToken, getCookieOpts());
+                    res.cookie('refreshToken', refreshToken, getCookieOpts());
+                    return res.json({
+                        success: true,
+                        data: {
+                            id: admin.id,
+                            name: `${admin.first_name} ${admin.last_name}`,
+                            email: admin.email,
+                            role: 'coordinator',
+                            isAdmin: true,
+                            accessToken
+                        }
+                    });
                 }
-                const payload = { id: admin.id, email: admin.email, role: 'coordinator', isAdmin: true };
-                const accessToken = generateAccessToken(payload);
-                const refreshToken = generateRefreshToken(payload);
-                res.cookie('token', accessToken, getCookieOpts());
-                res.cookie('refreshToken', refreshToken, getCookieOpts());
-                return res.json({
-                    success: true,
-                    data: {
-                        id: admin.id,
-                        name: `${admin.first_name} ${admin.last_name}`,
-                        email: admin.email,
-                        role: 'coordinator',
-                        isAdmin: true,
-                        accessToken
-                    }
-                });
             }
 
-            // Staff login
+            // Try staff
             const staff = await StaffModel.findByEmailForLogin(normalizedEmail);
             if (!staff || staff.status !== 'active') {
                 return res.status(401).json({ success: false, message: 'Invalid credentials' });

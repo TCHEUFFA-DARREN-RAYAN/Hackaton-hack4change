@@ -15,15 +15,6 @@
             <p>GMHSC Donation Coordination Network</p>
         </div>
 
-        <div class="role-tabs" role="tablist">
-            <button class="role-tab active" id="tab-staff" role="tab" aria-selected="true" onclick="setRole('staff')">Shelter Staff</button>
-            <button class="role-tab" id="tab-coordinator" role="tab" aria-selected="false" onclick="setRole('coordinator')">Coordinator</button>
-        </div>
-
-        <div id="role-hint" class="inline-notice info" style="margin-bottom:1rem;font-size:.8rem">
-            Log in as a staff member to manage your organization's inventory and needs.
-        </div>
-
         <form id="login-form" onsubmit="handleLogin(event)" novalidate>
             <div class="form-group">
                 <label class="form-label" for="email">Email address</label>
@@ -53,21 +44,6 @@
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
-    let currentRole = 'staff';
-
-    const hints = {
-        staff: 'Log in as a staff member to manage your organization\'s inventory and needs.',
-        coordinator: 'Log in as a network coordinator to view all organizations and generate AI insights.'
-    };
-
-    function setRole(role) {
-        currentRole = role;
-        document.getElementById('tab-staff').classList.toggle('active', role === 'staff');
-        document.getElementById('tab-coordinator').classList.toggle('active', role === 'coordinator');
-        document.getElementById('role-hint').textContent = hints[role];
-        document.getElementById('login-error').style.display = 'none';
-    }
-
     // Check if already logged in
     (async function () {
         try {
@@ -119,7 +95,7 @@
         errEl.style.display = 'none';
 
         try {
-            const res = await auth.login(emailEl.value.trim(), passEl.value, currentRole);
+            const res = await auth.login(emailEl.value.trim(), passEl.value);
             redirectAfterLogin(res.data);
         } catch (err) {
             errEl.textContent = err.message || 'Sign in failed. Check your email and password.';
