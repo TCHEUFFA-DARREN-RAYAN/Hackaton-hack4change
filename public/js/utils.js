@@ -1,7 +1,34 @@
 // CommonGround — shared UI utilities
 
-// ---- Toast notifications (disabled — no pop-ups in system) ----
-window.toast = function () { /* no-op */ };
+// ---- Toast notifications ----
+(function () {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    window.toast = function (message, type) {
+        if (!message) return;
+        type = type || 'info';
+        const el = document.createElement('div');
+        el.className = 'toast ' + type;
+        el.setAttribute('role', 'status');
+        el.setAttribute('aria-live', 'polite');
+
+        const icons = { success: '\u2713', error: '\u2717', info: '\u24D8' };
+        el.innerHTML = '<span style="margin-right:6px;font-weight:700">' + (icons[type] || '') + '</span>' + escHtml(message);
+
+        container.appendChild(el);
+        setTimeout(function () {
+            el.style.transition = 'opacity .25s, transform .25s';
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(8px)';
+            setTimeout(function () { el.remove(); }, 300);
+        }, 3500);
+    };
+})();
 
 // ---- Badge helpers ----
 window.urgencyBadge = function (urgency) {

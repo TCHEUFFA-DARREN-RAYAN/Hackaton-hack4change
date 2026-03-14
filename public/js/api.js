@@ -23,6 +23,7 @@ const pub = {
     orgsWithNeeds: ()       => api('/public/orgs-with-needs'),
     needs:  (params = {})   => api('/public/needs?' + new URLSearchParams(params)),
     organizations: ()       => api('/public/organizations'),
+    stats: ()               => api('/public/stats'),
     submitDonation: (data)  => api('/public/donations', { method: 'POST', body: JSON.stringify(data) }),
     applyMatch: (id, orgId, reasoning) =>
         api(`/public/donations/${id}/match`, { method: 'PATCH', body: JSON.stringify({ org_id: orgId, reasoning }) })

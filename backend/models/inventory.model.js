@@ -1,14 +1,12 @@
 const { promisePool } = require('../config/database');
 const { randomUUID } = require('crypto');
 
-function computeStatus(quantity, targetQuantity) {
+function computeStatus(quantity, threshold) {
     const q = Number(quantity) || 0;
-    const t = Number(targetQuantity) || 0;
+    const t = Number(threshold) || 0;
     if (t <= 0) return q > 0 ? 'available' : 'low';
-    const ratio = q / t;
-    if (ratio < 0.25) return 'critical';
-    if (ratio < 0.5) return 'low';
-    if (ratio >= 1) return 'surplus';
+    if (q < t) return 'low';
+    if (q > t) return 'surplus';
     return 'available';
 }
 
@@ -32,7 +30,7 @@ class InventoryModel {
         const id = randomUUID();
         const { org_id, item_name, category, quantity, target_quantity, unit, expiry_date, notes } = data;
         const q = quantity || 0;
-        const t = target_quantity != null ? target_quantity : null;
+        const t = target_quantity != null ? target_quantity : 0;
         const status = computeStatus(q, t);
         await promisePool.query(
             `INSERT INTO inventory_items (id, org_id, item_name, category, quantity, target_quantity, unit, status, expiry_date, notes)
@@ -56,7 +54,7 @@ class InventoryModel {
         const item = await this.findById(id);
         if (!item || item.org_id !== orgId) return null;
         const q = data.quantity !== undefined ? data.quantity : item.quantity;
-        const t = data.target_quantity !== undefined ? data.target_quantity : item.target_quantity;
+        const t = data.target_quantity !== undefined ? data.target_quantity : (item.target_quantity ?? 0);
         const status = computeStatus(q, t);
         fields.push('`status` = ?');
         values.push(status);
