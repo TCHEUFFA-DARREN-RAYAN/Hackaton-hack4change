@@ -227,11 +227,12 @@
         <!-- Your Needs -->
         <div id="section-needs" style="display:none">
             <div class="section">
-                <div class="section-header">
-                    <div>
-                        <p class="text-sm text-muted" style="margin:0">Add or update your organization's needs.</p>
-                    </div>
-                    <div style="display:flex;gap:.5rem">
+                <div class="section-header inv-section-header">
+                    <div class="inv-toolbar-right" style="flex:1">
+                        <div class="inv-search">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                            <input type="search" id="needs-search" placeholder="Search items..." autocomplete="off" aria-label="Search needs">
+                        </div>
                         <button class="btn-action-secondary" onclick="showFacebookPostPreview()">Post to Facebook</button>
                         <button class="btn-action-primary" onclick="openAddNeed()">Post a need</button>
                     </div>
@@ -260,20 +261,16 @@
                             <option value="low">Low</option>
                         </select>
                     </div>
-                    <div class="inv-dropdown-wrap" style="flex:1;max-width:240px">
-                        <label class="inv-dropdown-label">Search</label>
-                        <input type="search" id="needs-search" class="form-control" placeholder="Search items..." autocomplete="off" style="padding:6px 10px">
-                    </div>
                     <span class="inv-results" id="needs-results-count">0 results</span>
                 </div>
                 <div class="table-wrap">
-                    <table class="data-table">
+                    <table class="data-table inv-table">
                         <thead>
                             <tr>
-                                <th>Item</th>
-                                <th>Category</th>
-                                <th>Qty needed</th>
-                                <th>Urgency</th>
+                                <th class="sortable-th" data-sort="item_name" onclick="toggleNeedsSort('item_name')">Item <span class="sort-chevron" id="needs-sort-icon-item_name">&#9662;</span></th>
+                                <th class="sortable-th" data-sort="category" onclick="toggleNeedsSort('category')">Category <span class="sort-chevron" id="needs-sort-icon-category">&#9662;</span></th>
+                                <th class="sortable-th" data-sort="quantity_needed" onclick="toggleNeedsSort('quantity_needed')">Qty needed <span class="sort-chevron" id="needs-sort-icon-quantity_needed">&#9662;</span></th>
+                                <th class="sortable-th" data-sort="urgency" onclick="toggleNeedsSort('urgency')">Urgency <span class="sort-chevron" id="needs-sort-icon-urgency">&#9662;</span></th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -1229,6 +1226,8 @@
     // --- Needs ---
     let needsCategoryFilter = '';
     let needsUrgencyFilter = '';
+    let needsSortField = '';
+    let needsSortDir = 'asc';
 
     function setNeedsCategory(cat) {
         needsCategoryFilter = cat;
@@ -1261,6 +1260,54 @@
         });
     }
 
+    function toggleNeedsSort(field) {
+        if (needsSortField === field) {
+            needsSortDir = needsSortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            needsSortField = field;
+            needsSortDir = 'asc';
+        }
+        renderNeeds();
+    }
+
+    function updateNeedsSortIndicators() {
+        document.querySelectorAll('#section-needs .inv-table .sortable-th').forEach(th => {
+            const field = th.dataset.sort;
+            const icon = document.getElementById('needs-sort-icon-' + field);
+            if (!icon) return;
+            if (field === needsSortField) {
+                th.classList.add('sortable-th--active');
+                icon.classList.add('sort-chevron--active');
+                icon.classList.toggle('sort-chevron--asc', needsSortDir === 'asc');
+                icon.classList.toggle('sort-chevron--desc', needsSortDir === 'desc');
+            } else {
+                th.classList.remove('sortable-th--active');
+                icon.classList.remove('sort-chevron--active', 'sort-chevron--asc', 'sort-chevron--desc');
+            }
+        });
+    }
+
+    const URGENCY_ORDER = { critical: 4, high: 3, medium: 2, low: 1 };
+
+    function getSortedNeeds(items) {
+        if (!needsSortField) return items;
+        const sorted = [...items];
+        const dir = needsSortDir === 'asc' ? 1 : -1;
+        sorted.sort((a, b) => {
+            let va = a[needsSortField], vb = b[needsSortField];
+            if (needsSortField === 'quantity_needed') {
+                return ((Number(va) || 0) - (Number(vb) || 0)) * dir;
+            }
+            if (needsSortField === 'urgency') {
+                return ((URGENCY_ORDER[va] || 0) - (URGENCY_ORDER[vb] || 0)) * dir;
+            }
+            va = (va || '').toString().toLowerCase();
+            vb = (vb || '').toString().toLowerCase();
+            return va.localeCompare(vb) * dir;
+        });
+        return sorted;
+    }
+
     async function loadNeeds() {
         try {
             const res = await staff.needs();
@@ -1273,9 +1320,10 @@
 
     function renderNeeds() {
         const tbody = document.getElementById('needs-tbody');
-        const filtered = getFilteredNeeds();
+        const filtered = getSortedNeeds(getFilteredNeeds());
         const countEl = document.getElementById('needs-results-count');
         if (countEl) countEl.textContent = filtered.length + ' result' + (filtered.length !== 1 ? 's' : '');
+        updateNeedsSortIndicators();
         if (!filtered.length) {
             tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No active needs posted</h3><p>${needsData.filter(n => !n.fulfilled).length ? 'No needs match your filters.' : 'Post a need to let donors and the network know what your organization requires.'}</p></div></td></tr>`;
             return;
@@ -1288,7 +1336,7 @@
                 <td><span class="badge badge-${escHtml(n.urgency)}">${escHtml(n.urgency)}</span></td>
                 <td>
                     <div class="gap-row">
-                        <button class="btn-action-accent" onclick="openFulfillAmountModal('${escHtml(n.id)}', ${escHtml(String(n.quantity_needed))}, '${escHtml(n.item_name).replace(/'/g, "\\'")}')">Mark fulfilled</button>
+                        <button class="btn-action-accent" onclick="openFulfillAmountModal('${escHtml(n.id)}', ${escHtml(String(n.quantity_needed))}, '${escHtml(n.item_name).replace(/'/g, "\\'")}')">Update</button>
                         <button class="btn-action" onclick="openManageNeed('${escHtml(n.id)}')">Manage</button>
                     </div>
                 </td>
