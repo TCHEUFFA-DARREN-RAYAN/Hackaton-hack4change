@@ -532,6 +532,40 @@
     </div>
 </div>
 
+<!-- Fulfill amount modal -->
+<div id="fulfill-amount-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:360px">
+        <div class="card-header">
+            <h3>Quantity received</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('fulfill-amount-modal')">Close</button>
+        </div>
+        <p class="text-sm text-muted" style="margin:0 0 .75rem 0">Enter how many of <strong id="fulfill-item-name"></strong> you received (max <span id="fulfill-max-qty"></span>):</p>
+        <div class="form-group">
+            <input type="number" id="fulfill-amount" class="form-control" min="1" placeholder="e.g. 2">
+        </div>
+        <input type="hidden" id="fulfill-need-id">
+        <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
+            <button class="btn btn-ghost" onclick="closeModal('fulfill-amount-modal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitFulfillAmount()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- Facebook post preview modal -->
+<div id="facebook-preview-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+    <div class="card" style="width:100%;max-width:480px;max-height:80vh;overflow-y:auto">
+        <div class="card-header">
+            <h3>Facebook post preview</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeModal('facebook-preview-modal')">Close</button>
+        </div>
+        <p class="text-sm text-muted" style="margin:0 0 .75rem 0">This is the message that would be posted to Facebook (placeholder — not implemented):</p>
+        <div id="facebook-preview-content" style="background:#f8f9fa;padding:1rem;border-radius:8px;white-space:pre-wrap;font-family:inherit"></div>
+        <div style="margin-top:1rem">
+            <button class="btn btn-ghost" onclick="closeModal('facebook-preview-modal')">Close</button>
+        </div>
+    </div>
+</div>
+
 <!-- Cross-org chat modal -->
 <div id="cross-org-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
     <div class="card" style="width:100%;max-width:420px">
@@ -591,6 +625,7 @@
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
+    window.toast = function() {}; // Pop-ups removed per user request
     let currentUser = null;
     let inventoryData = [];
     let needsData = [];
@@ -1033,33 +1068,25 @@
     }
 
     async function deleteInventoryItem(id, name) {
-        const ok = await showConfirm(`Remove "${name}" from inventory?`);
-        if (!ok) return;
         try {
             await staff.deleteInventory(id);
-            toast('Item removed.', 'success');
             await loadInventory();
             renderDashboard();
         } catch (err) {
-            toast(err.message || 'Failed to delete item.', 'error');
+            throw err;
         }
     }
 
     async function deleteFromModal() {
         const editId = document.getElementById('inv-edit-id').value;
         if (!editId) return;
-        const item = inventoryData.find(i => i.id === editId);
-        const name = item ? item.item_name : 'this item';
-        const ok = await showConfirm(`Remove "${name}" from inventory?`);
-        if (!ok) return;
         try {
             await staff.deleteInventory(editId);
             closeModal('inventory-modal');
-            toast('Item removed.', 'success');
             await loadInventory();
             renderDashboard();
         } catch (err) {
-            toast(err.message || 'Failed to delete item.', 'error');
+            throw err;
         }
     }
 
@@ -1070,31 +1097,27 @@
             needsData = res.data || [];
             renderNeeds();
         } catch (err) {
-            document.getElementById('needs-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+            document.getElementById('needs-tbody').innerHTML = `<tr><td colspan="5"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
     }
 
     function renderNeeds() {
         const tbody = document.getElementById('needs-tbody');
-        if (!needsData.length) {
-            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No active needs posted</h3><p>Post a need to let donors and the network know what your organization requires.</p></div></td></tr>`;
+        const openNeeds = needsData.filter(n => !n.fulfilled);
+        if (!openNeeds.length) {
+            tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No active needs posted</h3><p>Post a need to let donors and the network know what your organization requires.</p></div></td></tr>`;
             return;
         }
-        tbody.innerHTML = needsData.map(n => `
-            <tr style="${n.fulfilled ? 'opacity:.55' : ''}">
+        tbody.innerHTML = openNeeds.map(n => `
+            <tr>
                 <td><strong>${escHtml(n.item_name)}</strong></td>
                 <td>${escHtml(n.category)}</td>
                 <td>${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</td>
                 <td><span class="badge badge-${escHtml(n.urgency)}">${escHtml(n.urgency)}</span></td>
-                <td>${n.fulfilled ? '<span class="badge badge-confirmed">Fulfilled</span>' : '<span class="badge badge-pending">Open</span>'}</td>
-                <td><span class="text-xs text-muted">${escHtml(n.notes || '—')}</span></td>
                 <td>
                     <div class="gap-row">
-                        ${!n.fulfilled ? `
-                            <button class="btn btn-accent btn-sm" onclick="fulfillNeed('${escHtml(n.id)}', '${escHtml(n.item_name).replace(/'/g, "\\'")}')">Mark fulfilled</button>
-                            <button class="btn btn-ghost btn-sm" onclick="openEditNeed('${escHtml(n.id)}')">Edit</button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteNeed('${escHtml(n.id)}')">Delete</button>
-                        ` : ''}
+                        <button class="btn btn-accent btn-sm" onclick="openFulfillAmountModal('${escHtml(n.id)}', ${escHtml(String(n.quantity_needed))}, '${escHtml(n.item_name).replace(/'/g, "\\'")}')">Mark fulfilled</button>
+                        <button class="btn btn-ghost btn-sm" onclick="openManageNeed('${escHtml(n.id)}')">Manage</button>
                     </div>
                 </td>
             </tr>`).join('');
@@ -1107,24 +1130,24 @@
         document.getElementById('need-urgency').value = 'medium';
         document.getElementById('need-qty').value = 1;
         document.getElementById('need-unit').value = 'items';
-        document.getElementById('need-notes').value = '';
         document.getElementById('need-edit-id').value = '';
         document.getElementById('need-save-btn').textContent = 'Post need';
+        document.getElementById('need-delete-wrap').style.display = 'none';
         openModal('need-modal');
     }
 
-    function openEditNeed(id) {
+    function openManageNeed(id) {
         const n = needsData.find(x => x.id === id);
         if (!n) return;
-        document.getElementById('need-modal-title').textContent = 'Edit need';
+        document.getElementById('need-modal-title').textContent = 'Manage need';
         document.getElementById('need-item-name').value = n.item_name;
         document.getElementById('need-category').value = n.category;
         document.getElementById('need-urgency').value = n.urgency;
         document.getElementById('need-qty').value = n.quantity_needed;
         document.getElementById('need-unit').value = n.unit;
-        document.getElementById('need-notes').value = n.notes || '';
         document.getElementById('need-edit-id').value = n.id;
         document.getElementById('need-save-btn').textContent = 'Save changes';
+        document.getElementById('need-delete-wrap').style.display = 'block';
         openModal('need-modal');
     }
 
@@ -1132,7 +1155,7 @@
         const editId = document.getElementById('need-edit-id').value;
         const item = document.getElementById('need-item-name').value.trim();
         const cat = document.getElementById('need-category').value;
-        if (!item || !cat) { toast('Item name and category are required.', 'error'); return; }
+        if (!item || !cat) return;
 
         const data = {
             item_name: item,
@@ -1140,7 +1163,7 @@
             urgency: document.getElementById('need-urgency').value,
             quantity_needed: parseInt(document.getElementById('need-qty').value) || 1,
             unit: document.getElementById('need-unit').value,
-            notes: document.getElementById('need-notes').value.trim() || null
+            notes: null
         };
 
         const btn = document.getElementById('need-save-btn');
@@ -1149,40 +1172,66 @@
             if (editId) await staff.updateNeed(editId, data);
             else await staff.addNeed(data);
             closeModal('need-modal');
-            toast(editId ? 'Need updated.' : 'Need posted.', 'success');
             await loadNeeds();
+            await loadInventory();
             renderDashboard();
         } catch (err) {
-            toast(err.message || 'Failed to save.', 'error');
+            throw err;
         } finally {
             btn.disabled = false;
         }
     }
 
-    async function fulfillNeed(id, name) {
-        const ok = await showConfirm(`Mark "${name}" as fulfilled?`);
-        if (!ok) return;
+    function openFulfillAmountModal(id, maxQty, itemName) {
+        document.getElementById('fulfill-need-id').value = id;
+        document.getElementById('fulfill-amount').value = '';
+        document.getElementById('fulfill-amount').max = maxQty;
+        document.getElementById('fulfill-item-name').textContent = itemName;
+        document.getElementById('fulfill-max-qty').textContent = maxQty;
+        openModal('fulfill-amount-modal');
+    }
+
+    async function submitFulfillAmount() {
+        const id = document.getElementById('fulfill-need-id').value;
+        const amount = parseInt(document.getElementById('fulfill-amount').value, 10);
+        if (!amount || amount <= 0) return;
         try {
-            await staff.fulfillNeed(id);
-            toast('Need marked as fulfilled.', 'success');
+            await staff.receiveNeed(id, amount);
+            closeModal('fulfill-amount-modal');
             await loadNeeds();
+            await loadInventory();
             renderDashboard();
         } catch (err) {
-            toast(err.message || 'Failed.', 'error');
+            throw err;
         }
     }
 
-    async function deleteNeed(id) {
-        const ok = await showConfirm('Delete this need?');
-        if (!ok) return;
+    async function deleteNeedFromModal() {
+        const editId = document.getElementById('need-edit-id').value;
+        if (!editId) return;
         try {
-            await staff.deleteNeed(id);
-            toast('Need removed.', 'success');
+            await staff.deleteNeed(editId);
+            closeModal('need-modal');
             await loadNeeds();
             renderDashboard();
         } catch (err) {
-            toast(err.message || 'Failed.', 'error');
+            throw err;
         }
+    }
+
+    function showFacebookPostPreview() {
+        const openNeeds = needsData.filter(n => !n.fulfilled);
+        const orgName = currentUser?.orgName || 'Our organization';
+        let msg = `${orgName} needs:\n\n`;
+        if (openNeeds.length) {
+            openNeeds.forEach(n => {
+                msg += `- ${String(n.quantity_needed)} ${n.unit} ${n.item_name} (${(n.urgency || '').toUpperCase()})\n`;
+            });
+        } else {
+            msg += 'No active needs at the moment.';
+        }
+        document.getElementById('facebook-preview-content').textContent = msg;
+        openModal('facebook-preview-modal');
     }
 
     // --- Other Needs ---
@@ -1567,14 +1616,11 @@
     }
 
     async function completeTransfer(id) {
-        const ok = await showConfirm('Mark this transfer as received?');
-        if (!ok) return;
         try {
             await staff.completeTransfer(id);
-            toast('Transfer marked as completed.', 'success');
             loadTransfers();
         } catch (err) {
-            toast(err.message || 'Failed to complete transfer.', 'error');
+            throw err;
         }
     }
 
