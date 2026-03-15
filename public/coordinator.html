@@ -19,6 +19,11 @@
     </div>
     <div class="topbar-actions">
         <span class="text-muted" id="nav-org-name">Network Coordinator</span>
+        <button class="topbar-toggle-btn" onclick="toggleLocale()" id="locale-toggle-btn" title="Switch language">EN</button>
+        <button class="topbar-toggle-btn" onclick="toggleDarkMode()" id="dark-mode-btn" title="Toggle dark mode">
+            <svg id="dm-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg id="dm-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
         <button class="btn btn-ghost btn-sm" onclick="handleLogout()">Sign out</button>
     </div>
 </div>
@@ -1049,6 +1054,14 @@
             loadOrgs();
         } catch (err) {
             toast(err.message || 'Failed to save organization.', 'error');
+            const modal = document.getElementById('org-modal');
+            const old = modal.querySelector('.form-server-error');
+            if (old) old.remove();
+            const errorEl = document.createElement('div');
+            errorEl.className = 'form-server-error';
+            errorEl.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:10px 14px;border-radius:6px;font-size:.8125rem;margin-bottom:12px;border:1px solid #FECACA';
+            errorEl.textContent = err.message || 'Failed to save.';
+            modal.querySelector('.card').insertBefore(errorEl, modal.querySelector('.card-body') || modal.querySelector('.card').children[1]);
         } finally {
             btn.disabled = false;
         }
@@ -1164,6 +1177,14 @@
             loadStaff();
         } catch (err) {
             toast(err.message || 'Failed to save staff member.', 'error');
+            const modal = document.getElementById('staff-modal');
+            const old = modal.querySelector('.form-server-error');
+            if (old) old.remove();
+            const errorEl = document.createElement('div');
+            errorEl.className = 'form-server-error';
+            errorEl.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:10px 14px;border-radius:6px;font-size:.8125rem;margin-bottom:12px;border:1px solid #FECACA';
+            errorEl.textContent = err.message || 'Failed to save.';
+            modal.querySelector('.card').insertBefore(errorEl, modal.querySelector('.card-body') || modal.querySelector('.card').children[1]);
         } finally {
             btn.disabled = false;
         }
@@ -1706,6 +1727,14 @@
             loadTransfers();
         } catch (err) {
             toast(err.message || 'Failed to create transfer.', 'error');
+            const modal = document.getElementById('transfer-modal');
+            const old = modal.querySelector('.form-server-error');
+            if (old) old.remove();
+            const errorEl = document.createElement('div');
+            errorEl.className = 'form-server-error';
+            errorEl.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:10px 14px;border-radius:6px;font-size:.8125rem;margin-bottom:12px;border:1px solid #FECACA';
+            errorEl.textContent = err.message || 'Failed to save.';
+            modal.querySelector('.card').insertBefore(errorEl, modal.querySelector('.card-body') || modal.querySelector('.card').children[1]);
         } finally {
             btn.disabled = false;
         }
@@ -2086,6 +2115,41 @@
             });
         } catch (e) { /* Socket.IO optional - app works without real-time updates */ }
     }
+
+    function toggleDarkMode() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        localStorage.setItem('cg-theme', isDark ? 'light' : 'dark');
+        updateDarkModeIcon();
+    }
+
+    function updateDarkModeIcon() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const moon = document.getElementById('dm-icon-moon');
+        const sun = document.getElementById('dm-icon-sun');
+        if (moon) moon.style.display = isDark ? 'none' : 'block';
+        if (sun) sun.style.display = isDark ? 'block' : 'none';
+    }
+
+    function toggleLocale() {
+        const btn = document.getElementById('locale-toggle-btn');
+        const current = btn.textContent.trim();
+        btn.textContent = current === 'EN' ? 'FR' : 'EN';
+        localStorage.setItem('cg-locale', current === 'EN' ? 'fr' : 'en');
+    }
+
+    (function initTheme() {
+        const saved = localStorage.getItem('cg-theme');
+        if (saved === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        updateDarkModeIcon();
+        const locale = localStorage.getItem('cg-locale');
+        if (locale === 'fr') {
+            const btn = document.getElementById('locale-toggle-btn');
+            if (btn) btn.textContent = 'FR';
+        }
+    })();
 </script>
 
 </body>
