@@ -80,7 +80,8 @@ class ChatThreadModel {
             `SELECT t.*,
                     o.name AS org_name,
                     po.name AS peer_org_name,
-                    s.first_name AS staff_first_name, s.last_name AS staff_last_name
+                    s.first_name AS staff_first_name, s.last_name AS staff_last_name,
+                    (SELECT MAX(m.created_at) FROM chat_messages m WHERE m.thread_id = t.id) AS last_message_at
              FROM chat_threads t
              LEFT JOIN organizations o ON o.id = t.org_id
              LEFT JOIN organizations po ON po.id = t.peer_org_id
@@ -88,7 +89,7 @@ class ChatThreadModel {
              WHERE (t.type = 'org_channel' AND t.org_id = ?)
                 OR (t.type = 'direct' AND t.staff_id = ?)
                 OR (t.type = 'cross_org' AND (t.org_id = ? OR t.peer_org_id = ?))
-             ORDER BY t.type ASC, t.created_at DESC`,
+             ORDER BY last_message_at DESC, t.created_at DESC`,
             [orgId, staffId, orgId, orgId]
         );
         return rows;
