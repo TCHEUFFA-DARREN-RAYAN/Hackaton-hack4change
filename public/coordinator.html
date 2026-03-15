@@ -7,60 +7,84 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dashboard.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
-<nav class="site-nav">
-    <div class="nav-inner">
-        <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span>GMHSC Network</span></a>
-        <div class="nav-actions">
-            <span class="text-muted text-sm">Network Coordinator</span>
-            <button class="btn btn-ghost btn-sm" onclick="handleLogout()">Sign out</button>
-        </div>
+<div id="topbar">
+    <div class="topbar-brand">
+        <img src="/assets/images/logo.png" alt="Common Ground">
+        <span>CommonGround</span>
     </div>
-</nav>
+    <div class="topbar-actions">
+        <span class="text-muted" id="nav-org-name">Network Coordinator</span>
+        <button class="btn btn-ghost btn-sm" onclick="handleLogout()">Sign out</button>
+    </div>
+</div>
 
-<div class="portal-layout">
+<div id="app">
+    <aside id="sidebar" aria-label="Coordinator navigation">
+        <div class="sidebar-brand">
+            <span class="brand-dot"></span>
+            <span id="sidebar-org-name">GMHSC Network</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                Overview
+            </a></li>
+            <li><a href="#" data-section="organizations" onclick="showSection('organizations', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Organizations
+            </a></li>
+            <li><a href="#" data-section="staff" onclick="showSection('staff', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Staff
+            </a></li>
+            <li><a href="#" data-section="needs" onclick="showSection('needs', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
+                All Needs
+            </a></li>
+            <li><a href="#" data-section="donations" onclick="showSection('donations', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 9V2"/><path d="M8 5l4-4 4 4"/></svg>
+                Donations
+            </a></li>
+            <li><a href="#" data-section="inventory" onclick="showSection('inventory', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
+                Inventory
+            </a></li>
+            <li><a href="#" data-section="surplus-requests" onclick="showSection('surplus-requests', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Surplus Requests
+            </a></li>
+            <li><a href="#" data-section="transfers" onclick="showSection('transfers', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17V7m0 10l-4-4m4 4l4-4"/><path d="M17 7v10m0-10l4 4m-4-4l-4 4"/></svg>
+                Transfers
+            </a></li>
+            <li><a href="#" data-section="chat" onclick="showSection('chat', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Chat
+            </a></li>
+            <li><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                Analytics
+            </a></li>
+            <li><a href="#" data-section="insights" onclick="showSection('insights', this)">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+                Insights
+            </a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button class="sidebar-signout-btn" onclick="handleLogout()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Sign out
+            </button>
+        </div>
+    </aside>
 
-    <nav class="portal-sidebar" aria-label="Coordinator navigation">
-        <div class="sidebar-section">
-            <span class="sidebar-label">Dashboard</span>
-            <a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">Overview</a>
-            <a href="#" data-section="organizations" onclick="showSection('organizations', this)">Organizations</a>
-            <a href="#" data-section="staff" onclick="showSection('staff', this)">Staff</a>
-        </div>
-        <div class="sidebar-section">
-            <span class="sidebar-label">Coordination</span>
-            <a href="#" data-section="needs" onclick="showSection('needs', this)">All Needs</a>
-            <a href="#" data-section="donations" onclick="showSection('donations', this)">Donations Pipeline</a>
-            <a href="#" data-section="inventory" onclick="showSection('inventory', this)">Network Inventory</a>
-            <a href="#" data-section="surplus-requests" onclick="showSection('surplus-requests', this)">Surplus Requests</a>
-            <a href="#" data-section="transfers" onclick="showSection('transfers', this)">Surplus Transfers</a>
-        </div>
-        <div class="sidebar-section">
-            <span class="sidebar-label">Communication</span>
-            <a href="#" data-section="chat" onclick="showSection('chat', this)">Chat</a>
-        </div>
-        <div class="sidebar-section">
-            <span class="sidebar-label">Intelligence</span>
-            <a href="#" data-section="analytics" onclick="showSection('analytics', this)">Analytics</a>
-            <a href="#" data-section="insights" onclick="showSection('insights', this)">Network Insights</a>
-        </div>
-        <div class="sidebar-section" style="margin-top:auto;border-top:1px solid var(--color-border-lt);padding-top:1rem">
-            <span class="sidebar-label">Exports</span>
-            <a href="#" onclick="coordinator.exportNeeds(); return false;">Needs CSV</a>
-            <a href="#" onclick="coordinator.exportInventory(); return false;">Inventory CSV</a>
-            <a href="#" onclick="coordinator.exportDonations(); return false;">Donations CSV</a>
-            <a href="#" onclick="coordinator.exportOrganizations(); return false;">Organizations CSV</a>
-            <a href="#" onclick="coordinator.exportStaff(); return false;">Staff CSV</a>
-            <a href="#" onclick="coordinator.exportSurplusRequests(); return false;">Surplus Requests CSV</a>
-            <a href="#" onclick="coordinator.exportTransfers(); return false;">Transfers CSV</a>
-            <a href="#" onclick="coordinator.exportMeetingReport(); return false;">Meeting Report</a>
-        </div>
-    </nav>
-
-    <main class="portal-main">
+    <main id="main">
+        <div id="page-content">
 
         <!-- Overview section -->
         <div id="section-overview">
@@ -132,7 +156,13 @@
         <div id="section-organizations" style="display:none">
             <div class="portal-header">
                 <h1>Organizations</h1>
-                <button class="btn btn-primary btn-sm" onclick="openCreateOrg()">Add Organization</button>
+                <div style="display:flex;gap:.5rem;align-items:center">
+                    <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('organizations')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export CSV
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="openCreateOrg()">Add Organization</button>
+                </div>
             </div>
             <div class="table-wrap">
                 <table class="data-table">
@@ -160,7 +190,10 @@
         <div id="section-needs" style="display:none">
             <div class="portal-header">
                 <h1>All Network Needs</h1>
-                <button class="btn btn-outline btn-sm" onclick="coordinator.exportNeeds()">Export CSV</button>
+                <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('needs')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export CSV
+                </button>
             </div>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
                 <input type="search" id="needs-search" class="form-control" placeholder="Search..." style="max-width:240px">
@@ -196,6 +229,10 @@
         <div id="section-donations" style="display:none">
             <div class="portal-header">
                 <h1>Donations Pipeline</h1>
+                <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('donations')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export CSV
+                </button>
             </div>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
                 <select id="donation-status-filter" class="form-control" style="max-width:200px">
@@ -230,6 +267,10 @@
         <div id="section-surplus-requests" style="display:none">
             <div class="portal-header">
                 <h1>Surplus Requests</h1>
+                <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('surplus-requests')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export CSV
+                </button>
             </div>
             <div class="inline-notice info">Staff can request surplus items from other organizations. Approve or reject requests to facilitate coordination.</div>
             <div style="margin-top:1rem">
@@ -263,7 +304,13 @@
         <div id="section-transfers" style="display:none">
             <div class="portal-header">
                 <h1>Surplus Transfers</h1>
-                <button class="btn btn-primary btn-sm" onclick="openCreateTransfer()">Initiate Transfer</button>
+                <div style="display:flex;gap:.5rem;align-items:center">
+                    <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('transfers')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export CSV
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="openCreateTransfer()">Initiate Transfer</button>
+                </div>
             </div>
             <div class="inline-notice info">Initiate transfers of surplus items from one organization to another. Staff at the receiving org can confirm receipt.</div>
             <div style="margin-top:1rem">
@@ -345,7 +392,13 @@
         <div id="section-staff" style="display:none">
             <div class="portal-header">
                 <h1>Staff Members</h1>
-                <button class="btn btn-primary btn-sm" onclick="openCreateStaff()">Add Staff</button>
+                <div style="display:flex;gap:.5rem;align-items:center">
+                    <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('staff')">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        Export CSV
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="openCreateStaff()">Add Staff</button>
+                </div>
             </div>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
                 <select id="staff-org-filter" class="form-control" style="max-width:240px" onchange="loadStaff()">
@@ -375,7 +428,10 @@
         <div id="section-inventory" style="display:none">
             <div class="portal-header">
                 <h1>Network Inventory</h1>
-                <button class="btn btn-outline btn-sm" onclick="coordinator.exportInventory()">Export CSV</button>
+                <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('inventory')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Export CSV
+                </button>
             </div>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
                 <select id="inv-org-filter" class="form-control" style="max-width:220px" onchange="loadNetworkInventory()">
@@ -450,6 +506,10 @@
         <div id="section-analytics" style="display:none">
             <div class="portal-header">
                 <h1>Network Analytics</h1>
+                <button class="btn btn-outline btn-sm don-export-btn" onclick="downloadCsv('meeting-report')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Meeting Report
+                </button>
             </div>
             <div class="coord-date-range">
                 <label for="coord-a-from">From</label>
@@ -504,6 +564,7 @@
             </div>
         </div>
 
+        </div>
     </main>
 </div>
 
@@ -629,6 +690,10 @@
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
+    (function hideModals() {
+        const modals = ['staff-picker-modal', 'org-modal', 'staff-modal', 'transfer-modal'];
+        modals.forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+    })();
     const CAT_LABELS = {
         shelter_housing: 'Shelter & Housing',
         food_nutrition: 'Food & Nutrition',
@@ -652,9 +717,9 @@
         const user = await requireAuth('coordinator');
         if (!user) return;
         currentUser = user;
+        initAnalyticsDateRange();
         await loadOverview();
         loadOverviewInsights();
-        initAnalyticsDateRange();
     }
 
     async function loadOverviewInsights() {
@@ -688,7 +753,7 @@
             const el = document.getElementById(`section-${s}`);
             if (el) el.style.display = s === name ? 'block' : 'none';
         });
-        document.querySelectorAll('.portal-sidebar a[data-section]').forEach(a => a.classList.remove('active'));
+        document.querySelectorAll('#sidebar .nav-links a[data-section]').forEach(a => a.classList.remove('active'));
         if (linkEl) linkEl.classList.add('active');
 
         if (name === 'organizations' && !allOrgsData.length) loadOrgs();
@@ -1276,9 +1341,217 @@
         return function (...args) { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), delay); };
     }
 
+    function initAnalyticsDateRange() {
+        const to = new Date();
+        const from = new Date(to);
+        from.setDate(from.getDate() - 30);
+        document.getElementById('coord-a-from').value = from.toISOString().slice(0, 10);
+        document.getElementById('coord-a-to').value = to.toISOString().slice(0, 10);
+    }
+
+    function setCoordPreset(days) {
+        const to = new Date();
+        const from = new Date(to);
+        from.setDate(from.getDate() - days);
+        document.getElementById('coord-a-from').value = from.toISOString().slice(0, 10);
+        document.getElementById('coord-a-to').value = to.toISOString().slice(0, 10);
+        loadCoordAnalytics();
+    }
+
+    async function loadCoordAnalytics() {
+        const from = document.getElementById('coord-a-from').value;
+        const to = document.getElementById('coord-a-to').value;
+        if (!from || !to) return;
+        try {
+            const [analyticsRes, overviewRes] = await Promise.all([coordinator.analytics({ from, to }), coordinator.overview()]);
+            const d = analyticsRes.data || {};
+            const ov = overviewRes.data || {};
+            document.getElementById('coord-kpi-fulfilled').textContent = d.needs_fulfilled ?? '-';
+            document.getElementById('coord-kpi-delivered').textContent = d.donations_delivered ?? '-';
+            document.getElementById('coord-kpi-transfers').textContent = d.transfers_completed ?? '-';
+            document.getElementById('coord-kpi-pending').textContent = (ov.donations && ov.donations.pending) ?? '-';
+            const dailyEl = document.getElementById('coord-chart-daily');
+            const byDay = d.donations_by_day || [];
+            if (byDay.length) {
+                const maxVal = Math.max(...byDay.map(x => x.count || 0), 1);
+                dailyEl.innerHTML = byDay.map(day => `
+                    <div class="coord-col-bar">
+                        <div class="coord-col-bar-fill" style="height:${((day.count || 0) / maxVal) * 100}%"></div>
+                        <span class="coord-col-bar-val">${day.count || 0}</span>
+                        <span class="coord-col-bar-label">${(day.day || '').slice(5)}</span>
+                    </div>`).join('');
+            } else {
+                dailyEl.innerHTML = '<div class="coord-chart-empty">No data for this period</div>';
+            }
+            const pipelineEl = document.getElementById('coord-chart-pipeline');
+            const p = d.donations_pipeline || {};
+            if (p.pending !== undefined || p.matched !== undefined || p.confirmed !== undefined || p.delivered !== undefined) {
+                const total = (p.pending || 0) + (p.matched || 0) + (p.confirmed || 0) + (p.delivered || 0) || 1;
+                pipelineEl.innerHTML = `
+                    <div class="coord-funnel">
+                        <div class="coord-funnel-step"><div class="coord-funnel-step-bg" style="background:var(--color-primary);opacity:.8"></div><span class="coord-funnel-label">Pending</span><span class="coord-funnel-count">${p.pending || 0}</span></div>
+                        <div class="coord-funnel-step"><div class="coord-funnel-step-bg" style="background:#059669;opacity:.8"></div><span class="coord-funnel-label">Matched</span><span class="coord-funnel-count">${p.matched || 0}</span></div>
+                        <div class="coord-funnel-step"><div class="coord-funnel-step-bg" style="background:#D97706;opacity:.8"></div><span class="coord-funnel-label">Confirmed</span><span class="coord-funnel-count">${p.confirmed || 0}</span></div>
+                        <div class="coord-funnel-step"><div class="coord-funnel-step-bg" style="background:#DC2626;opacity:.8"></div><span class="coord-funnel-label">Delivered</span><span class="coord-funnel-count">${p.delivered || 0}</span></div>
+                    </div>`;
+            } else {
+                pipelineEl.innerHTML = '<div class="coord-chart-empty">No pipeline data</div>';
+            }
+            const summaryEl = document.getElementById('coord-period-summary');
+            const period = d.period || {};
+            summaryEl.innerHTML = `<p class="text-sm">Period: ${period.from || from} to ${period.to || to}. Delivered: ${d.donations_delivered ?? 0}, Fulfilled: ${d.needs_fulfilled ?? 0}, Transfers: ${d.transfers_completed ?? 0}.</p>`;
+        } catch (err) {
+            document.getElementById('coord-kpi-fulfilled').textContent = '-';
+            document.getElementById('coord-kpi-delivered').textContent = '-';
+            document.getElementById('coord-kpi-transfers').textContent = '-';
+            document.getElementById('coord-kpi-pending').textContent = '-';
+            document.getElementById('coord-chart-daily').innerHTML = '<div class="coord-chart-empty">Failed to load</div>';
+        }
+    }
+
+    async function openStaffPicker() {
+        try {
+            const res = await coordinator.staff({});
+            staffPickerData = res.data || [];
+            document.getElementById('staff-picker-search').value = '';
+            filterStaffPickerList();
+            document.getElementById('staff-picker-modal').style.display = 'flex';
+        } catch (err) {
+            toast(err.message || 'Failed to load staff.', 'error');
+        }
+    }
+
+    function closeStaffPicker() {
+        document.getElementById('staff-picker-modal').style.display = 'none';
+    }
+
+    function filterStaffPickerList() {
+        const q = (document.getElementById('staff-picker-search').value || '').toLowerCase();
+        const list = document.getElementById('staff-picker-list');
+        const filtered = staffPickerData.filter(s => {
+            const name = `${(s.first_name || '')} ${(s.last_name || '')}`.toLowerCase();
+            const email = (s.email || '').toLowerCase();
+            return name.includes(q) || email.includes(q) || (s.org_name || '').toLowerCase().includes(q);
+        });
+        list.innerHTML = filtered.map(s => `
+            <div class="coord-staff-picker-item" onclick="selectStaffForChat('${escHtml(s.id)}')" style="padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--color-border-lt)">
+                <div class="text-sm" style="font-weight:600">${escHtml(s.first_name || '')} ${escHtml(s.last_name || '')}</div>
+                <div class="text-xs text-muted">${escHtml(s.email || '')} &middot; ${escHtml(s.org_name || '')}</div>
+            </div>`).join('') || '<div class="text-sm text-muted" style="padding:16px">No staff found</div>';
+    }
+
+    async function selectStaffForChat(staffId) {
+        closeStaffPicker();
+        try {
+            await coordinator.createDirectThread(staffId);
+            loadCoordChatThreads();
+        } catch (err) {
+            toast(err.message || 'Failed to start conversation.', 'error');
+        }
+    }
+
+    async function loadCoordChatThreads() {
+        try {
+            const res = await coordinator.chatThreads();
+            coordChatThreads = res.data || [];
+            const list = document.getElementById('coord-threads-list');
+            const otherName = t => (t.staff_first_name && t.staff_last_name) ? `${t.staff_first_name} ${t.staff_last_name}` : (t.org_name || t.peer_org_name || 'Unknown');
+            list.innerHTML = coordChatThreads.map(t => `
+                <div class="coord-thread-item ${selectedCoordThread === t.id ? 'active' : ''}" data-thread-id="${escHtml(t.id)}" onclick="selectCoordThread('${escHtml(t.id)}')">
+                    <div class="coord-thread-avatar">${otherName(t).charAt(0).toUpperCase()}</div>
+                    <div class="coord-thread-info">
+                        <div class="coord-thread-name">${escHtml(otherName(t))}</div>
+                        <div class="coord-thread-preview">${escHtml(t.last_preview || t.org_name || '')}</div>
+                    </div>
+                </div>`).join('') || '<div class="text-sm text-muted" style="padding:12px">No conversations yet. Click + Message Staff to start.</div>';
+        } catch (err) {
+            document.getElementById('coord-threads-list').innerHTML = '<div class="text-sm text-muted" style="padding:12px">Failed to load</div>';
+        }
+    }
+
+    function selectCoordThread(threadId) {
+        selectedCoordThread = threadId;
+        document.querySelectorAll('.coord-thread-item').forEach(el => { el.classList.remove('active'); if (el.dataset.threadId === threadId) el.classList.add('active'); });
+        const thread = coordChatThreads.find(t => t.id === threadId);
+        document.getElementById('coord-chat-title').textContent = thread ? (thread.other_name || 'Chat') : 'Select a conversation';
+        document.getElementById('coord-chat-input-wrap').style.display = 'flex';
+        loadCoordMessages(threadId);
+    }
+
+    async function loadCoordMessages(threadId) {
+        const container = document.getElementById('coord-chat-messages');
+        container.innerHTML = '<div class="coord-chat-empty">Loading...</div>';
+        try {
+            const res = await coordinator.chatMessages(threadId);
+            const msgs = res.data || [];
+            container.innerHTML = msgs.map(m => `
+                <div class="coord-chat-msg ${(m.sender_type === 'coordinator' && m.sender_id === currentUser?.id) ? 'own' : ''}">
+                    <div class="coord-chat-msg-bubble">${escHtml(m.content || '')}</div>
+                    <div class="coord-chat-msg-meta">${timeAgo(m.created_at)}</div>
+                </div>`).join('') || '<div class="coord-chat-empty">No messages yet</div>';
+        } catch {
+            container.innerHTML = '<div class="coord-chat-empty">Failed to load messages</div>';
+        }
+    }
+
+    async function sendCoordMessage() {
+        if (!selectedCoordThread) return;
+        const input = document.getElementById('coord-chat-input');
+        const content = (input.value || '').trim();
+        if (!content) return;
+        input.value = '';
+        try {
+            await coordinator.sendChatMessage(selectedCoordThread, content);
+            loadCoordMessages(selectedCoordThread);
+        } catch (err) {
+            toast(err.message || 'Failed to send.', 'error');
+        }
+    }
+
     async function handleLogout() {
         try { await auth.logout(); } catch {}
         window.location.href = '/login';
+    }
+
+    async function downloadCsv(type) {
+        const staffFilter = document.getElementById('staff-org-filter');
+        const surplusFilter = document.getElementById('surplus-request-status');
+        const transferFilter = document.getElementById('transfer-status-filter');
+        const base = '/api/coordinator/export/';
+        const urls = {
+            'needs': base + 'needs',
+            'inventory': base + 'inventory',
+            'donations': base + 'donations',
+            'organizations': base + 'organizations',
+            'staff': base + 'staff' + (staffFilter?.value ? '?org_id=' + encodeURIComponent(staffFilter.value) : ''),
+            'surplus-requests': base + 'surplus-requests' + (surplusFilter?.value ? '?status=' + encodeURIComponent(surplusFilter.value) : ''),
+            'transfers': base + 'transfers' + (transferFilter?.value ? '?status=' + encodeURIComponent(transferFilter.value) : ''),
+            'meeting-report': (() => {
+                const fromEl = document.getElementById('coord-a-from');
+                const toEl = document.getElementById('coord-a-to');
+                const params = new URLSearchParams();
+                if (fromEl?.value) params.set('from', fromEl.value);
+                if (toEl?.value) params.set('to', toEl.value);
+                return base + 'meeting-report' + (params.toString() ? '?' + params : '');
+            })()
+        };
+        const url = urls[type] || urls.needs;
+        const filename = type === 'meeting-report' ? 'meeting-report.csv' : (type + '.csv');
+        try {
+            const res = await fetch(url, { credentials: 'include' });
+            if (!res.ok) throw new Error('Export failed');
+            const blob = await res.blob();
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+            toast('Download started.', 'success');
+        } catch (err) {
+            toast(err.message || 'Download failed.', 'error');
+        }
     }
 
     init();
