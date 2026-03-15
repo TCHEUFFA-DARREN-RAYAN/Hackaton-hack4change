@@ -36,7 +36,16 @@ CommonGround connects three groups in one web application:
 
 *Required per Hack4Change submission rules.*
 
-**AI tools used in development:** We used Cursor IDE with Claude (Anthropic) as a coding assistant to accelerate development — for generating boilerplate, debugging, and documentation. All AI-generated code was reviewed and modified by the team before use.
+**AI tools used in development:** We used Cursor IDE with Claude (Anthropic) as a coding assistant to accelerate development. AI assistance was used for:
+
+- **Boilerplate and scaffolding** — Express routes, MySQL models, API structure
+- **Chat functionality** — In-app messaging (org channels, direct to coordinator, cross-org threads), Socket.IO integration, thread and message models
+- **Analytics page** — Chart.js dashboards, date-range filters, donation and needs charts for staff and coordinator views
+- **Donation matching logic** — Rule-based scoring algorithm (category, item name, urgency, quantity fit)
+- **Security middleware** — Input sanitization, SQL injection blocking, rate limiting
+- **Debugging and documentation** — Error handling, inline comments, README content
+
+All AI-generated code was reviewed, tested, and modified by the team before use.
 
 ---
 
