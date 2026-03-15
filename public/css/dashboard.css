@@ -1783,6 +1783,15 @@ select.form-control {
   background: var(--color-surface);
 }
 
+/* Resolved donation rows — greyed out, pushed to bottom */
+.don-row-resolved td {
+  opacity: .45;
+  color: var(--color-text-muted);
+}
+.don-row-resolved td strong,
+.don-row-resolved td a { color: var(--color-text-muted); }
+.don-row-resolved:hover td { background: transparent !important; }
+
 [data-theme="dark"] .btn-resolve { background: #3B82F6; }
 [data-theme="dark"] .btn-resolve:hover { background: #2563EB; }
 

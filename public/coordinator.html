@@ -95,27 +95,27 @@
         <div id="section-overview">
             <div class="metrics-row metrics-row-5" id="overview-metrics">
                 <div class="metric-card">
-                    <div class="metric-label"><span class="metric-icon">🏢</span>Organizations</div>
+                    <div class="metric-label">Organizations</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
                     <div class="metric-sub">CommonGround Network</div>
                 </div>
-                <div class="metric-card accent-primary">
-                    <div class="metric-label"><span class="metric-icon">📌</span>Active Needs</div>
+                <div class="metric-card">
+                    <div class="metric-label">Active Needs</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
                     <div class="metric-sub">Unfulfilled across network</div>
                 </div>
-                <div class="metric-card accent-high">
-                    <div class="metric-label"><span class="metric-icon">🚨</span>Critical</div>
+                <div class="metric-card">
+                    <div class="metric-label">Critical</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
                     <div class="metric-sub">Require immediate action</div>
                 </div>
-                <div class="metric-card accent-accent">
-                    <div class="metric-label"><span class="metric-icon">💝</span>Pending Donations</div>
+                <div class="metric-card">
+                    <div class="metric-label">Pending Donations</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">Awaiting matching</div>
+                    <div class="metric-sub">Awaiting confirmation</div>
                 </div>
                 <div class="metric-card">
-                    <div class="metric-label"><span class="metric-icon">⏰</span>Expiring Soon</div>
+                    <div class="metric-label">Expiring Soon</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
                     <div class="metric-sub">Within 30 days</div>
                 </div>
@@ -503,34 +503,34 @@
 
             <!-- KPI Row -->
             <div class="an-kpi-row" id="coord-kpi-grid">
-                <div class="an-kpi-card" style="border-top:3px solid var(--color-accent)">
+                <div class="an-kpi-card">
                     <div class="an-kpi-label">Needs Fulfilled</div>
-                    <div class="an-kpi-value" id="coord-kpi-fulfilled" style="color:var(--color-accent)">—</div>
+                    <div class="an-kpi-value" id="coord-kpi-fulfilled">—</div>
                     <div class="an-kpi-sub">In period</div>
                 </div>
-                <div class="an-kpi-card" style="border-top:3px solid var(--color-primary)">
+                <div class="an-kpi-card">
                     <div class="an-kpi-label">Donations Delivered</div>
-                    <div class="an-kpi-value" id="coord-kpi-delivered" style="color:var(--color-primary)">—</div>
+                    <div class="an-kpi-value" id="coord-kpi-delivered">—</div>
                     <div class="an-kpi-sub">In period</div>
                 </div>
-                <div class="an-kpi-card" style="border-top:3px solid #d97706">
+                <div class="an-kpi-card">
                     <div class="an-kpi-label">Transfers Completed</div>
-                    <div class="an-kpi-value" id="coord-kpi-transfers" style="color:#d97706">—</div>
+                    <div class="an-kpi-value" id="coord-kpi-transfers">—</div>
                     <div class="an-kpi-sub">In period</div>
                 </div>
-                <div class="an-kpi-card" style="border-top:3px solid var(--color-critical)">
+                <div class="an-kpi-card">
                     <div class="an-kpi-label">Pending Donations</div>
-                    <div class="an-kpi-value" id="coord-kpi-pending" style="color:var(--color-critical)">—</div>
+                    <div class="an-kpi-value" id="coord-kpi-pending">—</div>
                     <div class="an-kpi-sub">In pipeline now</div>
                 </div>
-                <div class="an-kpi-card" style="border-top:3px solid #7c3aed">
+                <div class="an-kpi-card">
                     <div class="an-kpi-label">Active Needs</div>
-                    <div class="an-kpi-value" id="coord-kpi-active-needs" style="color:#7c3aed">—</div>
+                    <div class="an-kpi-value" id="coord-kpi-active-needs">—</div>
                     <div class="an-kpi-sub">Across network</div>
                 </div>
-                <div class="an-kpi-card" style="border-top:3px solid #0891b2">
+                <div class="an-kpi-card">
                     <div class="an-kpi-label">Organizations</div>
-                    <div class="an-kpi-value" id="coord-kpi-orgs" style="color:#0891b2">—</div>
+                    <div class="an-kpi-value" id="coord-kpi-orgs">—</div>
                     <div class="an-kpi-sub">In network</div>
                 </div>
             </div>
@@ -798,28 +798,28 @@
     function renderOverviewMetrics(data) {
         const d = data.donations;
         document.getElementById('overview-metrics').innerHTML = `
-            <div class="metric-card" style="border-top:3px solid #6366f1">
-                <div class="metric-label"><span class="metric-icon">🏢</span>Organizations</div>
+            <div class="metric-card">
+                <div class="metric-label">Organizations</div>
                 <div class="metric-value">${data.total_orgs}</div>
                 <div class="metric-sub">CommonGround Network</div>
             </div>
-            <div class="metric-card" style="border-top:3px solid #f59e0b">
-                <div class="metric-label"><span class="metric-icon">📌</span>Active Needs</div>
+            <div class="metric-card">
+                <div class="metric-label">Active Needs</div>
                 <div class="metric-value">${data.active_needs}</div>
                 <div class="metric-sub">Unfulfilled across network</div>
             </div>
-            <div class="metric-card" style="border-top:3px solid #ef4444">
-                <div class="metric-label"><span class="metric-icon">🚨</span>Critical</div>
+            <div class="metric-card">
+                <div class="metric-label">Critical</div>
                 <div class="metric-value">${data.critical_needs}</div>
                 <div class="metric-sub">Require immediate action</div>
             </div>
-            <div class="metric-card" style="border-top:3px solid #10b981">
-                <div class="metric-label"><span class="metric-icon">💝</span>Pending Donations</div>
+            <div class="metric-card">
+                <div class="metric-label">Pending Donations</div>
                 <div class="metric-value">${d.pending}</div>
                 <div class="metric-sub">Awaiting confirmation</div>
             </div>
-            <div class="metric-card" style="border-top:3px solid #2563eb">
-                <div class="metric-label"><span class="metric-icon">⏰</span>Expiring Soon</div>
+            <div class="metric-card">
+                <div class="metric-label">Expiring Soon</div>
                 <div class="metric-value">${data.expiring_soon || 0}</div>
                 <div class="metric-sub">Within 30 days</div>
             </div>`;
@@ -839,7 +839,7 @@
                 return;
             }
             container.innerHTML = needs.slice(0, 8).map(n => `
-                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;background:var(--color-surface);border:1px solid var(--color-border-lt);border-left:3px solid var(--color-critical);border-radius:var(--radius-sm);margin-bottom:.35rem">
+                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .75rem;background:var(--color-surface);border:1px solid var(--color-border-lt);border-radius:var(--radius-sm);margin-bottom:.35rem">
                     <span class="badge badge-critical">Critical</span>
                     <div style="flex:1">
                         <strong style="font-size:.8125rem">${escHtml(n.org_name)}</strong>

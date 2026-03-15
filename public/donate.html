@@ -190,8 +190,9 @@
                     <div class="form-error" id="err-donor-email" data-i18n="errEmail">Please enter a valid email address.</div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="donor-phone"><span data-i18n="phoneNumber">Phone number</span> <span class="text-muted" data-i18n="optional">(optional)</span></label>
-                    <input type="tel" id="donor-phone" class="form-control" data-i18n-placeholder="phonePlaceholder" placeholder="506-000-0000" autocomplete="tel">
+                    <label class="form-label" for="donor-phone"><span data-i18n="phoneNumber">Phone number</span> <span class="req">*</span></label>
+                    <input type="tel" id="donor-phone" class="form-control" data-i18n-placeholder="phonePlaceholder" placeholder="506-000-0000" autocomplete="tel" required>
+                    <div class="form-error" id="err-donor-phone">Please enter your phone number.</div>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="preferred-org"><span data-i18n="preferredOrg">Preferred organization</span> <span class="text-muted" data-i18n="optional">(optional)</span></label>
@@ -279,6 +280,7 @@
     function validateStep2() {
         const name  = document.getElementById('donor-name');
         const email = document.getElementById('donor-email');
+        const phone = document.getElementById('donor-phone');
         let ok = true;
 
         const check = (el, errId, condition) => {
@@ -288,6 +290,7 @@
 
         check(name,  'err-donor-name',  !name.value.trim());
         check(email, 'err-donor-email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()));
+        check(phone, 'err-donor-phone', !phone.value.trim());
         return ok;
     }
 

@@ -335,7 +335,7 @@
                                 <th>Donor</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th class="don-sortable" onclick="sortDonations('status')">Status <span class="sort-chevron" id="don-sort-status">&#9662;</span></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="donations-tbody"></tbody>
@@ -897,6 +897,10 @@
         const pageTitle = document.getElementById('page-title');
         pageTitle._sectionKey = name;
         pageTitle.textContent = t('title.' + name) || name;
+
+        // Hide the shared page-header on analytics (it has its own header)
+        const pageHeader = document.querySelector('.page-header');
+        if (pageHeader) pageHeader.style.display = name === 'analytics' ? 'none' : '';
 
         if (name === 'donations') {
             const pendingPill = document.querySelector('#don-status-pills .don-pill[data-status="pending"]');
@@ -1833,18 +1837,23 @@
             tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No donations found</h3><p>Donations to your organization will appear here.</p></div></td></tr>`;
             return;
         }
-        tbody.innerHTML = donations.map(d => {
-            const statusVal = d.status === 'confirmed' ? 'received' : 'pending';
-            const statusCell = statusVal === 'received'
+        // Active donations first, resolved (confirmed) at the bottom
+        const active   = donations.filter(d => d.status !== 'confirmed');
+        const resolved = donations.filter(d => d.status === 'confirmed');
+        const ordered  = [...active, ...resolved];
+
+        tbody.innerHTML = ordered.map(d => {
+            const isResolved = d.status === 'confirmed';
+            const actionCell = isResolved
                 ? `<span class="badge badge-fulfilled">Received</span>`
-                : `<button class="btn btn-accent btn-sm" onclick="resolveDonation('${escHtml(d.id)}')">Resolved</button>`;
-            return `<tr>
+                : `<button class="btn btn-accent btn-sm" onclick="resolveDonation('${escHtml(d.id)}')">Mark received</button>`;
+            return `<tr class="${isResolved ? 'don-row-resolved' : ''}">
                 <td><strong>${escHtml(d.item_name)}</strong></td>
                 <td>${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</td>
                 <td><span class="don-donor-name">${escHtml(d.donor_name)}</span></td>
                 <td><a class="don-contact-link" href="mailto:${escHtml(d.donor_email)}">${escHtml(d.donor_email)}</a></td>
                 <td>${d.donor_phone ? `<a class="don-contact-link" href="tel:${escHtml(d.donor_phone)}">${escHtml(d.donor_phone)}</a>` : '<span class="text-muted">—</span>'}</td>
-                <td>${statusCell}</td>
+                <td>${actionCell}</td>
             </tr>`;
         }).join('');
     }
@@ -2635,8 +2644,8 @@
 
     const _translations = {
         en: {
-            'nav.dashboard': 'Dashboard', 'nav.inventory': 'Inventory', 'nav.your_needs': 'Your Needs',
-            'nav.other_needs': 'Other Needs', 'nav.donations': 'Donations', 'nav.analytics': 'Analytics',
+            'nav.dashboard': 'Dashboard', 'nav.inventory': 'Inventory', 'nav.your_needs': 'My Needs',
+            'nav.other_needs': 'Urgent Needs', 'nav.donations': 'Donations', 'nav.analytics': 'Analytics',
             'nav.chats': 'Chats', 'nav.sign_out': 'Sign out',
             'dash.total_users': 'Total users', 'dash.staff_volunteers': 'Staff & volunteers',
             'dash.open_needs': 'Open needs', 'dash.needs_to_fulfill': 'Needs to fulfill',
@@ -2653,15 +2662,15 @@
             'chat.contact_org': 'Contact organisation', 'chat.conversations': 'Conversations',
             'chat.select_conversation': 'Select a conversation', 'chat.select_to_view': 'Select a conversation to view messages',
             'chat.send': 'Send',
-            'title.dashboard': 'Dashboard', 'title.inventory': 'Inventory', 'title.needs': 'Your Needs',
-            'title.other-needs': 'Other Needs', 'title.donations': 'Donations', 'title.analytics': 'Analytics',
+            'title.dashboard': 'Dashboard', 'title.inventory': 'Inventory', 'title.needs': 'My Needs',
+            'title.other-needs': 'Urgent Needs', 'title.donations': 'Donations', 'title.analytics': 'Analytics',
             'title.chats': 'Chats',
             'placeholder.search_items': 'Search items...', 'placeholder.search_donor': 'Search by item or donor name...',
             'placeholder.type_message': 'Type a message...'
         },
         fr: {
-            'nav.dashboard': 'Tableau de bord', 'nav.inventory': 'Inventaire', 'nav.your_needs': 'Vos besoins',
-            'nav.other_needs': 'Autres besoins', 'nav.donations': 'Dons', 'nav.analytics': 'Analytique',
+            'nav.dashboard': 'Tableau de bord', 'nav.inventory': 'Inventaire', 'nav.your_needs': 'Mes besoins',
+            'nav.other_needs': 'Besoins urgents', 'nav.donations': 'Dons', 'nav.analytics': 'Analytique',
             'nav.chats': 'Discussions', 'nav.sign_out': 'Déconnexion',
             'dash.total_users': 'Total utilisateurs', 'dash.staff_volunteers': 'Personnel et bénévoles',
             'dash.open_needs': 'Besoins ouverts', 'dash.needs_to_fulfill': 'Besoins à combler',
@@ -2679,7 +2688,7 @@
             'chat.select_conversation': 'Sélectionner une conversation', 'chat.select_to_view': 'Sélectionnez une conversation pour voir les messages',
             'chat.send': 'Envoyer',
             'title.dashboard': 'Tableau de bord', 'title.inventory': 'Inventaire', 'title.needs': 'Vos besoins',
-            'title.other-needs': 'Autres besoins', 'title.donations': 'Dons', 'title.analytics': 'Analytique',
+            'title.other-needs': 'Besoins urgents', 'title.donations': 'Dons', 'title.analytics': 'Analytique',
             'title.chats': 'Discussions',
             'placeholder.search_items': 'Rechercher des articles...', 'placeholder.search_donor': 'Rechercher par article ou nom du donateur...',
             'placeholder.type_message': 'Écrire un message...'
