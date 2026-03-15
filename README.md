@@ -1,3 +1,6 @@
+Presented By Team "sudo -rm -rf"
+Members : Faizan Malek, Darren Rayan Tcheuffa, Uday Shishodia 
+
 # CommonGround
 
 **Hack4Change 2026 — Hackathon submission**
