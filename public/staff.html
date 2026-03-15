@@ -1797,35 +1797,29 @@
             return;
         }
         tbody.innerHTML = donations.map(d => {
-            // DB statuses: 'matched' = pending receipt, 'confirmed' = received
             const statusVal = d.status === 'confirmed' ? 'received' : 'pending';
+            const statusCell = statusVal === 'received'
+                ? `<span class="badge badge-fulfilled">Received</span>`
+                : `<button class="btn btn-accent btn-sm" onclick="resolveDonation('${escHtml(d.id)}')">Resolved</button>`;
             return `<tr>
                 <td><strong>${escHtml(d.item_name)}</strong></td>
                 <td>${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</td>
                 <td><span class="don-donor-name">${escHtml(d.donor_name)}</span></td>
                 <td><a class="don-contact-link" href="mailto:${escHtml(d.donor_email)}">${escHtml(d.donor_email)}</a></td>
                 <td>${d.donor_phone ? `<a class="don-contact-link" href="tel:${escHtml(d.donor_phone)}">${escHtml(d.donor_phone)}</a>` : '<span class="text-muted">—</span>'}</td>
-                <td>
-                    <select class="don-status-select don-status-${statusVal}" onchange="updateDonationStatus('${escHtml(d.id)}', this.value)">
-                        <option value="pending" ${statusVal === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="received" ${statusVal === 'received' ? 'selected' : ''}>Received</option>
-                    </select>
-                </td>
+                <td>${statusCell}</td>
             </tr>`;
         }).join('');
     }
 
-    async function updateDonationStatus(id, newStatus) {
+    async function resolveDonation(id) {
         try {
-            if (newStatus === 'received') {
-                await staff.confirmDonation(id);
-            } else {
-                await staff.pendingDonation(id);
-            }
+            await staff.confirmDonation(id);
             await loadDonations();
+            await loadInventory();
             renderDashboard();
         } catch (err) {
-            toast(err.message || 'Failed to update donation status.', 'error');
+            toast(err.message || 'Failed to resolve donation.', 'error');
             await loadDonations();
         }
     }
