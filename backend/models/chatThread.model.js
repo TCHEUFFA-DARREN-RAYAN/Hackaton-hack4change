@@ -47,12 +47,13 @@ class ChatThreadModel {
     static async findForCoordinator() {
         const [rows] = await promisePool.query(
             `SELECT t.*, o.name AS org_name, po.name AS peer_org_name,
-                    s.first_name AS staff_first_name, s.last_name AS staff_last_name
+                    s.first_name AS staff_first_name, s.last_name AS staff_last_name,
+                    (SELECT MAX(m.created_at) FROM chat_messages m WHERE m.thread_id = t.id) AS last_message_at
              FROM chat_threads t
              LEFT JOIN organizations o ON o.id = t.org_id
              LEFT JOIN organizations po ON po.id = t.peer_org_id
              LEFT JOIN staff_members s ON s.id = t.staff_id
-             ORDER BY t.type ASC, o.name ASC, s.last_name ASC`
+             ORDER BY last_message_at DESC, t.created_at DESC`
         );
         return rows;
     }
