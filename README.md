@@ -42,7 +42,9 @@ CommonGround connects three groups in one web application:
 
 ## Demo
 
-[Screenshot placeholder — add screenshot or GIF of the needs board, donation form, and coordinator dashboard]
+| Needs Board | Donation Form | Coordinator Dashboard |
+|-------------|---------------|------------------------|
+| ![Needs Board](docs/screenshots/needs-board.png) | ![Donation Form](docs/screenshots/donate-form.png) | ![Coordinator](docs/screenshots/coordinator-dashboard.png) |
 
 ---
 
