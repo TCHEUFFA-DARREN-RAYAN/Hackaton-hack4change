@@ -29,7 +29,7 @@ describe('i18n translation system', () => {
 
     test('contains French translations', () => {
         expect(i18nSource).toContain("fr: {");
-        expect(i18nSource).toContain("navBrand: 'Réseau GMHSC'");
+        expect(i18nSource).toContain("navBrand: 'CommonGround'");
         expect(i18nSource).toContain("pageTitle: 'Tableau des besoins communautaires'");
     });
 

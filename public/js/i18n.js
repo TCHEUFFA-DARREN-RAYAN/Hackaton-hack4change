@@ -8,7 +8,7 @@
   const translations = {
     en: {
       // Nav
-      navBrand: 'GMHSC Network',
+      navBrand: 'CommonGround',
       navHome: 'Home',
       navNeedsBoard: 'Needs Board',
       navDonate: 'Donate',
@@ -136,7 +136,7 @@
     },
     fr: {
       // Nav
-      navBrand: 'Réseau GMHSC',
+      navBrand: 'CommonGround',
       navHome: 'Accueil',
       navNeedsBoard: 'Tableau des besoins',
       navDonate: 'Donner',

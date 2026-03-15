@@ -471,7 +471,7 @@ router.get('/export/needs', async (req, res) => {
             .join(',')
         ).join('\n');
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', `attachment; filename="gmhsc-needs${org_id ? '-org' : ''}.csv"`);
+        res.setHeader('Content-Disposition', `attachment; filename="commonground-needs${org_id ? '-org' : ''}.csv"`);
         res.send(header + rows);
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });
@@ -496,7 +496,7 @@ router.get('/export/inventory', async (req, res) => {
             .join(',')
         ).join('\n');
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', `attachment; filename="gmhsc-inventory${org_id ? '-org' : ''}.csv"`);
+        res.setHeader('Content-Disposition', `attachment; filename="commonground-inventory${org_id ? '-org' : ''}.csv"`);
         res.send(header + rows);
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });
@@ -525,7 +525,7 @@ router.get('/export/donations', async (req, res) => {
             .join(',')
         ).join('\n');
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', `attachment; filename="gmhsc-donations${org_id ? '-org' : ''}.csv"`);
+        res.setHeader('Content-Disposition', `attachment; filename="commonground-donations${org_id ? '-org' : ''}.csv"`);
         res.send(header + rows);
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });
@@ -544,7 +544,7 @@ router.get('/export/organizations', async (req, res) => {
             .join(',')
         ).join('\n');
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename="gmhsc-organizations.csv"');
+        res.setHeader('Content-Disposition', 'attachment; filename="commonground-organizations.csv"');
         res.send(header + rows);
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });
@@ -562,7 +562,7 @@ router.get('/export/staff', async (req, res) => {
             .join(',')
         ).join('\n');
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', `attachment; filename="gmhsc-staff${org_id ? '-org' : ''}.csv"`);
+        res.setHeader('Content-Disposition', `attachment; filename="commonground-staff${org_id ? '-org' : ''}.csv"`);
         res.send(header + rows);
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });
@@ -588,7 +588,7 @@ router.get('/export/surplus-requests', async (req, res) => {
             .join(',')
         ).join('\n');
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', `attachment; filename="gmhsc-surplus-requests${org_id ? '-org' : ''}.csv"`);
+        res.setHeader('Content-Disposition', `attachment; filename="commonground-surplus-requests${org_id ? '-org' : ''}.csv"`);
         res.send(header + csvRows);
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });
@@ -614,7 +614,7 @@ router.get('/export/transfers', async (req, res) => {
             .join(',')
         ).join('\n');
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', `attachment; filename="gmhsc-transfers${org_id ? '-org' : ''}.csv"`);
+        res.setHeader('Content-Disposition', `attachment; filename="commonground-transfers${org_id ? '-org' : ''}.csv"`);
         res.send(header + csvRows);
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });
@@ -711,7 +711,7 @@ router.get('/export/meeting-report', async (req, res) => {
         const pipeline = await DonationModel.getPipelineCounts();
 
         const lines = [
-            `GMHSC Network — Meeting Report`,
+            `CommonGround — Meeting Report`,
             `Period: ${fromDate} to ${toDate}`,
             `Scope: ${orgName}`,
             ``,
@@ -729,7 +729,7 @@ router.get('/export/meeting-report', async (req, res) => {
             `Generated: ${new Date().toISOString()}`
         ];
         res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', `attachment; filename="gmhsc-meeting-report-${fromDate}-${toDate}.csv"`);
+        res.setHeader('Content-Disposition', `attachment; filename="commonground-meeting-report-${fromDate}-${toDate}.csv"`);
         res.send(lines.join('\n'));
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });

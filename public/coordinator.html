@@ -20,10 +20,13 @@
     <div class="topbar-actions">
         <span class="text-muted" id="nav-org-name">Network Coordinator</span>
         <button class="topbar-toggle-btn" onclick="toggleLocale()" id="locale-toggle-btn" title="Switch language">EN</button>
-        <button class="topbar-toggle-btn" onclick="toggleDarkMode()" id="dark-mode-btn" title="Toggle dark mode">
-            <svg id="dm-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <svg id="dm-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
+        <div class="theme-toggle" onclick="toggleDarkMode()" role="button" tabindex="0" id="dark-mode-btn" title="Toggle dark mode">
+            <div class="theme-toggle-thumb"></div>
+            <div class="theme-toggle-icons">
+                <div class="theme-toggle-icon theme-toggle-icon-moon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+                <div class="theme-toggle-icon theme-toggle-icon-sun"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
+            </div>
+        </div>
         <button class="btn btn-ghost btn-sm" onclick="handleLogout()" data-i18n="nav.sign_out">Sign out</button>
     </div>
 </div>
@@ -32,7 +35,7 @@
     <aside id="sidebar" aria-label="Coordinator navigation">
         <div class="sidebar-brand">
             <span class="brand-dot"></span>
-            <span id="sidebar-org-name">GMHSC Network</span>
+            <span id="sidebar-org-name">CommonGround</span>
         </div>
         <ul class="nav-links">
             <li><a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">
@@ -72,10 +75,6 @@
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
                 Analytics
             </a></li>
-            <li><a href="#" data-section="insights" onclick="showSection('insights', this)">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
-                Insights
-            </a></li>
         </ul>
         <div class="sidebar-footer">
             <button class="sidebar-signout-btn" onclick="handleLogout()">
@@ -94,7 +93,7 @@
                 <div class="metric-card">
                     <div class="metric-label"><span class="metric-icon">🏢</span>Organizations</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">GMHSC Network</div>
+                    <div class="metric-sub">CommonGround Network</div>
                 </div>
                 <div class="metric-card accent-primary">
                     <div class="metric-label"><span class="metric-icon">📌</span>Active Needs</div>
@@ -281,8 +280,8 @@
                                 <th>Donor</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th>Matched To</th>
                                 <th>Status</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="donations-tbody">
@@ -346,81 +345,6 @@
             </div>
         </div>
 
-        <!-- AI Insights section -->
-        <div id="section-insights" style="display:none">
-            <div class="an-section-header">
-                <div>
-                    <h1 style="font-size:1.25rem;font-weight:700;margin:0">AI Network Intelligence</h1>
-                    <p class="an-section-sub">Real-time analysis of needs, surplus, and redistribution opportunities</p>
-                </div>
-                <button class="btn btn-primary btn-sm" id="insights-btn" onclick="loadInsights()" style="gap:.4rem;display:flex;align-items:center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                    Generate Insights
-                </button>
-            </div>
-
-            <div id="insights-placeholder" class="dashboard-hero" style="text-align:center;padding:2.5rem 1rem">
-                <div style="font-size:2.5rem;margin-bottom:.75rem">🧠</div>
-                <h3 style="color:#fff;margin:0 0 .5rem;font-size:1.1rem">Network Intelligence Ready</h3>
-                <p style="color:rgba(255,255,255,.8);font-size:.875rem;margin:0">Click "Generate Insights" to analyze the current state of all organizations — needs, surplus, redistribution opportunities, and action alerts.</p>
-            </div>
-
-            <div id="insights-loading" style="display:none">
-                <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.75rem"></div>
-                <div class="skeleton skeleton-block" style="height:140px;margin-bottom:.75rem"></div>
-                <div class="skeleton skeleton-block" style="height:120px;margin-bottom:.75rem"></div>
-                <div class="skeleton skeleton-block" style="height:100px"></div>
-            </div>
-
-            <div id="insights-panel" style="display:none">
-                <!-- Summary card -->
-                <div class="card" style="margin-bottom:12px;border-left:4px solid var(--color-primary)">
-                    <div class="card-header">
-                        <h3 style="display:flex;align-items:center;gap:.5rem">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                            Network Health Summary
-                        </h3>
-                        <span class="text-xs text-muted" id="insights-timestamp"></span>
-                    </div>
-                    <div style="padding:0 16px 16px">
-                        <div id="insights-summary" style="font-size:.875rem;line-height:1.7;color:var(--color-text)"></div>
-                    </div>
-                </div>
-
-                <!-- Alerts card -->
-                <div class="card" id="alerts-section" style="margin-bottom:12px;border-left:4px solid var(--color-critical)">
-                    <div class="card-header">
-                        <h3 style="display:flex;align-items:center;gap:.5rem">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-critical)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                            Immediate Alerts
-                        </h3>
-                    </div>
-                    <div style="padding:0 16px 16px" id="insights-alerts"></div>
-                </div>
-
-                <!-- Redistribution card -->
-                <div class="card" id="redistribution-section" style="margin-bottom:12px;border-left:4px solid var(--color-accent)">
-                    <div class="card-header">
-                        <h3 style="display:flex;align-items:center;gap:.5rem">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" stroke-width="2"><path d="M7 17V7m0 10l-4-4m4 4l4-4"/><path d="M17 7v10m0-10l4 4m-4-4l-4 4"/></svg>
-                            Redistribution Opportunities
-                        </h3>
-                    </div>
-                    <div style="padding:0 16px 16px" id="insights-redistribution"></div>
-                </div>
-
-                <!-- Follow-up card -->
-                <div class="card" id="followup-section" style="border-left:4px solid #d97706">
-                    <div class="card-header">
-                        <h3 style="display:flex;align-items:center;gap:.5rem">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            Organizations Needing Follow-up
-                        </h3>
-                    </div>
-                    <div style="padding:0 16px 16px" id="insights-followup"></div>
-                </div>
-            </div>
-        </div>
 
         <!-- Staff Management section -->
         <div id="section-staff" style="display:none">
@@ -509,7 +433,7 @@
                             <th class="sortable-th" onclick="toggleInvNetSort('org_name')">Organization <span class="sort-chevron" id="ni-sort-org_name">&#9662;</span></th>
                             <th class="sortable-th" onclick="toggleInvNetSort('item_name')">Item <span class="sort-chevron" id="ni-sort-item_name">&#9662;</span></th>
                             <th class="sortable-th" onclick="toggleInvNetSort('category')">Category <span class="sort-chevron" id="ni-sort-category">&#9662;</span></th>
-                            <th class="sortable-th" onclick="toggleInvNetSort('quantity')">Qty <span class="sort-chevron" id="ni-sort-quantity">&#9662;</span></th>
+                            <th>Qty</th>
                             <th>Unit</th>
                             <th class="sortable-th" onclick="toggleInvNetSort('status')">Status <span class="sort-chevron" id="ni-sort-status">&#9662;</span></th>
                             <th class="sortable-th" onclick="toggleInvNetSort('expiry_date')">Expiry <span class="sort-chevron" id="ni-sort-expiry_date">&#9662;</span></th>
@@ -608,34 +532,34 @@
             </div>
 
             <!-- Chart row 1: Pipeline donut + Daily bar -->
-            <div class="dashboard-row" style="margin-top:16px">
-                <div class="card">
-                    <div class="card-header"><h3>Donation Pipeline</h3></div>
+            <div class="an-row-2" style="margin-top:16px">
+                <div class="analytics-card">
+                    <h4>Donation Pipeline</h4>
                     <div class="an-donut-wrap">
-                        <canvas id="coord-chart-pipeline" width="200" height="200"></canvas>
-                        <div class="an-legend" id="coord-pipeline-legend"></div>
+                        <canvas id="coord-chart-pipeline" width="180" height="180"></canvas>
+                        <div class="an-donut-legend" id="coord-pipeline-legend"></div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header"><h3>Donations — Daily Trend</h3></div>
-                    <div style="position:relative;height:200px">
+                <div class="analytics-card">
+                    <h4>Donations — Daily Trend</h4>
+                    <div style="position:relative;height:220px">
                         <canvas id="coord-chart-daily"></canvas>
                     </div>
                 </div>
             </div>
 
             <!-- Chart row 2: Needs by urgency + Top categories -->
-            <div class="dashboard-row" style="margin-top:12px">
-                <div class="card">
-                    <div class="card-header"><h3>Needs by Urgency</h3></div>
+            <div class="an-row-2" style="margin-top:16px">
+                <div class="analytics-card">
+                    <h4>Needs by Urgency</h4>
                     <div class="an-donut-wrap">
-                        <canvas id="coord-chart-urgency" width="200" height="200"></canvas>
-                        <div class="an-legend" id="coord-urgency-legend"></div>
+                        <canvas id="coord-chart-urgency" width="180" height="180"></canvas>
+                        <div class="an-donut-legend" id="coord-urgency-legend"></div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header"><h3>Top Need Categories</h3></div>
-                    <div style="position:relative;height:200px">
+                <div class="analytics-card">
+                    <h4>Top Need Categories</h4>
+                    <div style="position:relative;height:220px">
                         <canvas id="coord-chart-categories"></canvas>
                     </div>
                 </div>
@@ -835,7 +759,7 @@
         }
     }
 
-    const ALL_SECTIONS = ['overview', 'organizations', 'staff', 'needs', 'donations', 'inventory', 'transfers', 'chat', 'analytics', 'insights'];
+    const ALL_SECTIONS = ['overview', 'organizations', 'staff', 'needs', 'donations', 'inventory', 'transfers', 'chat', 'analytics'];
 
     function showSection(name, linkEl) {
         ALL_SECTIONS.forEach(s => {
@@ -873,7 +797,7 @@
             <div class="metric-card" style="border-top:3px solid #6366f1">
                 <div class="metric-label"><span class="metric-icon">🏢</span>Organizations</div>
                 <div class="metric-value">${data.total_orgs}</div>
-                <div class="metric-sub">GMHSC Network</div>
+                <div class="metric-sub">CommonGround Network</div>
             </div>
             <div class="metric-card" style="border-top:3px solid #f59e0b">
                 <div class="metric-label"><span class="metric-icon">📌</span>Active Needs</div>
@@ -1503,6 +1427,12 @@
                 else { va = String(va).toLowerCase(); vb = String(vb).toLowerCase(); }
                 return _coordDonSort.dir === 'asc' ? (va < vb ? -1 : va > vb ? 1 : 0) : (va > vb ? -1 : va < vb ? 1 : 0);
             });
+        } else {
+            donations = [...donations].sort((a, b) => {
+                const aP = (a.status === 'pending' || a.status === 'matched') ? 0 : 1;
+                const bP = (b.status === 'pending' || b.status === 'matched') ? 0 : 1;
+                return aP - bP;
+            });
         }
         if (!donations.length) {
             tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><p>No donations match the current filter.</p></div></td></tr>`;
@@ -1511,18 +1441,21 @@
         tbody.innerHTML = donations.map(d => {
             const st = d.status || 'pending';
             const isPending = (st === 'pending' || st === 'matched');
-            const rowStyle = isPending ? '' : 'style="opacity:.65"';
-            const statusCol = isPending
-                ? `<button class="btn btn-primary btn-sm btn-resolve" onclick="resolveCoordDonation('${escHtml(d.id)}')">Resolved</button>`
+            const rowStyle = isPending ? '' : 'style="opacity:.6"';
+            const statusBadge = isPending
+                ? `<span class="badge badge-pending" style="padding:4px 10px;border-radius:4px;font-size:.75rem;font-weight:600">Pending</span>`
                 : `<span class="badge badge-confirmed" style="background:#ECFDF5;color:#065F46;padding:4px 10px;border-radius:4px;font-size:.75rem;font-weight:600">Confirmed</span>`;
+            const actionCol = isPending
+                ? `<button class="btn btn-primary btn-sm btn-resolve" onclick="resolveCoordDonation('${escHtml(d.id)}')">Mark as Resolved</button>`
+                : '';
             return `<tr ${rowStyle}>
                 <td><strong>${escHtml(d.item_name)}</strong></td>
                 <td>${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</td>
                 <td><span class="don-donor-name">${escHtml(d.donor_name)}</span></td>
                 <td><a class="don-contact-link" href="mailto:${escHtml(d.donor_email)}">${escHtml(d.donor_email)}</a></td>
                 <td>${d.donor_phone ? `<a class="don-contact-link" href="tel:${escHtml(d.donor_phone)}">${escHtml(d.donor_phone)}</a>` : '<span class="text-muted">—</span>'}</td>
-                <td>${d.matched_org_name ? `<strong>${escHtml(d.matched_org_name)}</strong>` : '<span class="text-muted">Unmatched</span>'}</td>
-                <td>${statusCol}</td>
+                <td>${statusBadge}</td>
+                <td>${actionCol}</td>
             </tr>`;
         }).join('');
     }
@@ -1715,6 +1648,7 @@
     // AI Insights
     async function loadInsights() {
         const btn = document.getElementById('insights-btn');
+        if (!btn) return;
         btn.disabled = true;
         btn.textContent = 'Analyzing...';
         document.getElementById('insights-placeholder').style.display = 'none';
@@ -1810,14 +1744,16 @@
         if (!canvas) return;
         const total = data.reduce((a, b) => a + b, 0);
         if (!total) { canvas.parentElement.innerHTML = '<div class="text-center text-muted" style="padding:2rem;font-size:.875rem">No data</div>'; return; }
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const borderCol = isDark ? '#1E293B' : '#fff';
         _coordAnCharts[canvasId] = new Chart(canvas, {
             type: 'doughnut',
-            data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff' }] },
-            options: { responsive: false, cutout: '70%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/total*100)}%)` } } } }
+            data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: borderCol, hoverOffset: 6 }] },
+            options: { cutout: '65%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} (${Math.round(ctx.parsed/total*100)}%)` } } } }
         });
         if (legendId) {
             document.getElementById(legendId).innerHTML = labels.map((l, i) =>
-                `<div class="an-legend-item"><span style="background:${colors[i]};width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:5px"></span><span>${escHtml(l)}</span><span style="margin-left:auto;font-weight:600">${data[i]}</span></div>`
+                `<div class="an-legend-item"><span class="an-legend-dot" style="background:${colors[i]}"></span><span>${escHtml(l)}</span><span class="an-legend-val">${data[i]}</span></div>`
             ).join('');
         }
     }
@@ -1826,6 +1762,11 @@
         const from = document.getElementById('coord-a-from').value;
         const to   = document.getElementById('coord-a-to').value;
         if (!from || !to) return;
+
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const gridColor = isDark ? '#1E293B' : '#f1f5f9';
+        const tickColor = isDark ? '#94A3B8' : '#64748b';
+        const labelColor = isDark ? '#F1F5F9' : '#374151';
 
         // Populate org filter if needed
         if (allOrgsData.length) {
@@ -1874,9 +1815,9 @@
                     type: 'bar',
                     data: {
                         labels: byDay.map(x => (x.day||'').slice(5)),
-                        datasets: [{ label: 'Donations', data: byDay.map(x => x.count||0), backgroundColor: '#3b82f6', borderRadius: 4 }]
+                        datasets: [{ label: 'Donations', data: byDay.map(x => x.count||0), backgroundColor: '#3b82f6', borderRadius: 6, borderSkipped: false }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: gridColor }, ticks: { font: { size: 11 }, color: tickColor } }, y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 }, color: tickColor }, grid: { color: gridColor } } } }
                 });
             } else if (dailyCanvas) {
                 dailyCanvas.parentElement.innerHTML = '<div class="text-center text-muted" style="padding:2rem;font-size:.875rem">No data for this period</div>';
@@ -1901,9 +1842,9 @@
                         type: 'bar',
                         data: {
                             labels: catEntries.map(([k]) => k),
-                            datasets: [{ label: 'Needs', data: catEntries.map(([,v]) => v), backgroundColor: '#059669', borderRadius: 4 }]
+                            datasets: [{ label: 'Needs', data: catEntries.map(([,v]) => v), backgroundColor: '#059669', borderRadius: 6, borderSkipped: false }]
                         },
-                        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 }, color: tickColor }, grid: { color: gridColor } }, y: { grid: { display: false }, ticks: { font: { size: 11, weight: 500 }, color: labelColor } } } }
                     });
                 } else {
                     catCanvas.parentElement.innerHTML = '<div class="text-center text-muted" style="padding:2rem;font-size:.875rem">No category data</div>';
@@ -1920,54 +1861,31 @@
 
     async function loadCoordChatThreads() {
         try {
-            if (!allOrgsData.length) await loadOrgs();
             const res = await coordinator.chatThreads();
             coordChatThreads = res.data || [];
             const list = document.getElementById('coord-threads-list');
             const otherName = t => (t.staff_first_name && t.staff_last_name) ? `${t.staff_first_name} ${t.staff_last_name}` : (t.org_name || t.peer_org_name || 'Unknown');
+            const threadLabel = t => t.type === 'org_channel' ? 'Organization channel' : t.type === 'direct' ? 'Direct message' : t.type === 'cross_org' ? 'Cross-org' : '';
 
-            const orgThreadMap = {};
-            coordChatThreads.forEach(t => {
-                if (t.org_id) orgThreadMap[t.org_id] = t;
-            });
-
-            let html = '';
-
-            // Threads with messages first (sorted by recency, already sorted from backend)
-            if (coordChatThreads.length) {
-                coordChatThreads.forEach(t => {
-                    const isUnread = _unreadThreadIds.has(t.id);
-                    html += `
-                    <div class="coord-thread-item ${selectedCoordThread === t.id ? 'active' : ''}" data-thread-id="${escHtml(t.id)}" onclick="selectCoordThread('${escHtml(t.id)}')">
-                        <div class="coord-thread-avatar" style="position:relative">
-                            ${otherName(t).charAt(0).toUpperCase()}
-                            ${isUnread ? '<span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#ef4444;border-radius:50%;border:2px solid var(--color-surface)"></span>' : ''}
-                        </div>
-                        <div class="coord-thread-info">
-                            <div class="coord-thread-name" style="${isUnread ? 'font-weight:700' : ''}">${escHtml(otherName(t))}</div>
-                            <div class="coord-thread-preview">${escHtml(t.type === 'org_channel' ? 'Organization channel' : t.type === 'direct' ? 'Direct message' : t.type === 'cross_org' ? 'Cross-org' : '')}</div>
-                        </div>
-                    </div>`;
-                });
+            if (!coordChatThreads.length) {
+                list.innerHTML = '<div class="text-sm text-muted" style="padding:12px">No conversations yet. Click + New Chat to start one.</div>';
+                return;
             }
 
-            // All organizations that don't have a thread yet
-            const orgsWithoutThread = allOrgsData.filter(o => !orgThreadMap[o.id]);
-            if (orgsWithoutThread.length) {
-                html += `<div style="padding:8px 14px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--color-text-muted);border-top:1px solid var(--color-border-lt);margin-top:4px">All Organizations</div>`;
-                orgsWithoutThread.forEach(o => {
-                    html += `
-                    <div class="coord-thread-item" style="cursor:pointer" onclick="startCoordOrgChat('${escHtml(o.id)}')">
-                        <div class="coord-thread-avatar">${(o.name || '?').charAt(0).toUpperCase()}</div>
-                        <div class="coord-thread-info">
-                            <div class="coord-thread-name">${escHtml(o.name)}</div>
-                            <div class="coord-thread-preview text-muted" style="font-size:.75rem">Tap to start conversation</div>
-                        </div>
-                    </div>`;
-                });
-            }
-
-            list.innerHTML = html || '<div class="text-sm text-muted" style="padding:12px">No organizations found.</div>';
+            list.innerHTML = coordChatThreads.map(t => {
+                const isUnread = _unreadThreadIds.has(t.id);
+                return `
+                <div class="coord-thread-item ${selectedCoordThread === t.id ? 'active' : ''} ${isUnread ? 'unread' : ''}" data-thread-id="${escHtml(t.id)}" onclick="selectCoordThread('${escHtml(t.id)}')">
+                    <div class="coord-thread-avatar" style="position:relative">
+                        ${otherName(t).charAt(0).toUpperCase()}
+                        ${isUnread ? '<span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#ef4444;border-radius:50%;border:2px solid var(--color-surface)"></span>' : ''}
+                    </div>
+                    <div class="coord-thread-info">
+                        <div class="coord-thread-name" style="${isUnread ? 'font-weight:700' : ''}">${escHtml(otherName(t))}</div>
+                        <div class="coord-thread-preview">${escHtml(threadLabel(t))}</div>
+                    </div>
+                </div>`;
+            }).join('');
         } catch (err) {
             document.getElementById('coord-threads-list').innerHTML = '<div class="text-sm text-muted" style="padding:12px">Failed to load</div>';
         }
@@ -2116,14 +2034,12 @@
         document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
         localStorage.setItem('cg-theme', isDark ? 'light' : 'dark');
         updateDarkModeIcon();
+        const anSection = document.getElementById('section-analytics');
+        if (anSection && anSection.style.display !== 'none') loadCoordAnalytics();
     }
 
     function updateDarkModeIcon() {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const moon = document.getElementById('dm-icon-moon');
-        const sun = document.getElementById('dm-icon-sun');
-        if (moon) moon.style.display = isDark ? 'none' : 'block';
-        if (sun) sun.style.display = isDark ? 'block' : 'none';
+        // CSS handles icon state via [data-theme] selectors
     }
 
     const _translations = {

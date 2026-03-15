@@ -6,11 +6,11 @@
     "needsBoard": "Tableau des besoins",
     "staffLogin": "Connexion personnel",
     "commonGround": "CommonGround",
-    "gmhscNetwork": "Réseau GMHSC"
+    "gmhscNetwork": "CommonGround"
   },
   "login": {
     "title": "CommonGround",
-    "tagline": "Réseau de coordination des dons GMHSC",
+    "tagline": "Réseau de coordination des dons CommonGround",
     "pressEnter": "[Appuyez sur Entrée pour vous connecter]",
     "emailPlaceholder": "Adresse courriel",
     "passwordPlaceholder": "Mot de passe",

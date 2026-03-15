@@ -220,7 +220,7 @@ const run = async () => {
         const bcrypt = require('bcryptjs');
         const { randomUUID } = require('crypto');
 
-        const adminEmail = process.env.ADMIN_DEFAULT_EMAIL || 'coordinator@gmhsc.ca';
+        const adminEmail = process.env.ADMIN_DEFAULT_EMAIL || 'coordinator@commonground.ca';
         const adminPass = process.env.ADMIN_DEFAULT_PASSWORD || 'Admin123456';
         const adminHash = await bcrypt.hash(adminPass, 10);
         await conn.query(
@@ -234,7 +234,7 @@ const run = async () => {
             { name: 'Salvemos Wellness Centre', category: 'mental_health', address: '245 Main St, Moncton, NB E1C 1B8', email: 'info@salvemos.ca', phone: '506-382-7800' },
             { name: 'Crossroads for Women', category: 'shelter_housing', address: '100 Cameron St, Moncton, NB E1C 5Y6', email: 'info@crossroadsforwomen.ca', phone: '506-855-2400' },
             { name: 'Moncton Headstart Inc.', category: 'outreach', address: '245 Lutz St, Moncton, NB E1C 5G5', email: 'info@monctonheadstart.org', phone: '506-857-3277' },
-            { name: 'GMHSC Network Hub', category: 'outreach', address: '95 Foundry St, Moncton, NB E1C 5H7', email: 'info@gmhsc.ca', phone: '506-877-3000' },
+            { name: 'CommonGround Hub', category: 'outreach', address: '95 Foundry St, Moncton, NB E1C 5H7', email: 'info@commonground.ca', phone: '506-877-3000' },
             { name: 'John Howard Society of SE New Brunswick', category: 'outreach', address: '77 King St, Moncton, NB E1C 1Z2', email: 'info@johnhoward.nb.ca', phone: '506-857-0088' },
             { name: 'Coverdale Centre for Women', category: 'shelter_housing', address: '55 Assomption Blvd, Moncton, NB E1C 1A3', email: 'info@coverdalecentre.ca', phone: '506-855-4349' },
             { name: 'Moncton Food Bank', category: 'food_nutrition', address: '21 Acadia St, Moncton, NB E1A 1L4', email: 'info@moncton-foodbank.ca', phone: '506-857-0124' },

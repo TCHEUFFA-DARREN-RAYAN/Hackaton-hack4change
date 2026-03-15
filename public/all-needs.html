@@ -59,7 +59,7 @@
 
 <nav class="site-nav site-nav--dark">
     <div class="nav-inner">
-        <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="Common Ground"> <span data-i18n="navBrand">GMHSC Network</span></a>
+        <a href="/" class="nav-brand"><img src="/assets/images/logo.png" alt="CommonGround"> <span data-i18n="navBrand">CommonGround</span></a>
         <div class="nav-actions">
             <a href="/" class="btn btn-ghost btn-sm" style="margin-right:0.5rem" data-i18n="navHome">Home</a>
             <a href="/give" class="btn btn-ghost btn-sm" style="margin-right:0.5rem" data-i18n="navDonate">Donate</a>
@@ -199,7 +199,7 @@
                     <div class="needs-list">${needsHtml}</div>
                     <div class="org-card-footer">
                         <span class="updated">${i18n.t('updated')} ${timeAgo(org.updated_at)}</span>
-                        <a href="/give?org=${encodeURIComponent(org.id)}" class="btn btn-primary btn-sm">${i18n.t('donate')}</a>
+                        <a href="/donate?org=${encodeURIComponent(org.id)}" class="btn btn-primary btn-sm">${i18n.t('donate')}</a>
                     </div>
                 </div>`;
         }).join('');

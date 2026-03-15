@@ -6,11 +6,11 @@
     "needsBoard": "Needs Board",
     "staffLogin": "Staff login",
     "commonGround": "CommonGround",
-    "gmhscNetwork": "GMHSC Network"
+    "gmhscNetwork": "CommonGround"
   },
   "login": {
     "title": "CommonGround",
-    "tagline": "GMHSC Donation Coordination Network",
+    "tagline": "CommonGround Donation Coordination Network",
     "pressEnter": "[Press Enter to sign in]",
     "emailPlaceholder": "Email address",
     "passwordPlaceholder": "Password",

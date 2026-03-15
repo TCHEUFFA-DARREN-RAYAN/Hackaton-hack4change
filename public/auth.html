@@ -100,6 +100,60 @@
     }
     .toggle-btn:hover { color: var(--primary); border-color: var(--primary); }
 
+    .theme-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 64px; height: 32px;
+      padding: 4px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: background .3s ease, border-color .3s ease;
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      vertical-align: middle;
+    }
+    [data-theme="dark"] .theme-toggle {
+      background: #09090b;
+      border-color: #27272a;
+    }
+    .theme-toggle:hover { border-color: var(--primary); }
+    .theme-toggle-thumb {
+      position: absolute;
+      left: 4px;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      transition: transform .3s ease, background .3s ease;
+      background: #e5e7eb;
+      transform: translateX(30px);
+      z-index: 0;
+    }
+    [data-theme="dark"] .theme-toggle-thumb {
+      background: #27272a;
+      transform: translateX(0);
+    }
+    .theme-toggle-icons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .theme-toggle-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 24px; height: 24px;
+    }
+    .theme-toggle-icon-moon svg { stroke: #000; }
+    [data-theme="dark"] .theme-toggle-icon-moon svg { stroke: #fff; }
+    .theme-toggle-icon-sun svg { stroke: #374151; }
+    [data-theme="dark"] .theme-toggle-icon-sun svg { stroke: #6b7280; }
+
     .login-card {
       width: 100%;
       max-width: 400px;
@@ -196,10 +250,13 @@
     <div class="login-main">
       <div class="login-topbar">
         <button class="toggle-btn" onclick="toggleLocale()" id="locale-toggle-btn" title="Switch language">EN</button>
-        <button class="toggle-btn" onclick="toggleDarkMode()" id="dark-mode-btn" title="Toggle dark mode">
-          <svg id="dm-icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-          <svg id="dm-icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
+        <div class="theme-toggle" onclick="toggleDarkMode()" role="button" tabindex="0" id="dark-mode-btn" title="Toggle dark mode">
+          <div class="theme-toggle-thumb"></div>
+          <div class="theme-toggle-icons">
+            <div class="theme-toggle-icon theme-toggle-icon-moon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+            <div class="theme-toggle-icon theme-toggle-icon-sun"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
+          </div>
+        </div>
       </div>
 
       <div class="login-card">
@@ -285,9 +342,7 @@
       updateDarkModeIcon();
     }
     function updateDarkModeIcon() {
-      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-      document.getElementById('dm-icon-moon').style.display = isDark ? 'none' : 'block';
-      document.getElementById('dm-icon-sun').style.display = isDark ? 'block' : 'none';
+      // CSS handles icon state via [data-theme] selectors
     }
     function toggleLocale() {
       const btn = document.getElementById('locale-toggle-btn');
