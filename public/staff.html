@@ -285,45 +285,53 @@
         <!-- Other Needs -->
         <div id="section-other-needs" style="display:none">
             <div class="section">
-                <div class="section-header">
+                <div class="section-header" style="margin-bottom:16px">
                     <div>
                         <p class="text-sm text-muted" style="margin:0">See what other organizations in the network need. Reach out via Chats if you can help supply.</p>
                     </div>
                     <button class="btn-action-secondary" onclick="loadOtherNeeds()">Refresh</button>
                 </div>
-                <div class="inv-filters-row">
-                    <div class="inv-dropdown-wrap">
-                        <label class="inv-dropdown-label">Category</label>
-                        <select id="other-needs-cat-select" class="form-control inv-dropdown" onchange="applyOtherNeedsFilters()">
-                            <option value="">All categories</option>
-                            <option value="clothing">Clothing</option>
-                            <option value="bedding">Bedding</option>
-                            <option value="food">Food</option>
-                            <option value="hygiene">Hygiene</option>
-                            <option value="baby_supplies">Baby Supplies</option>
-                            <option value="goods">Household Goods</option>
-                            <option value="other">Other</option>
-                        </select>
+                <div class="on-toolbar">
+                    <div class="on-search-wrap">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <input type="search" id="other-needs-search" class="on-search-input" placeholder="Search by item, org, or description..." autocomplete="off" aria-label="Search other needs">
                     </div>
-                    <div class="inv-dropdown-wrap">
-                        <label class="inv-dropdown-label">Urgency</label>
-                        <select id="other-needs-urgency-select" class="form-control inv-dropdown" onchange="applyOtherNeedsFilters()">
-                            <option value="">All urgency levels</option>
-                            <option value="critical">Critical</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
+                    <div class="on-cat-pills" id="other-needs-cat-pills">
+                        <button type="button" class="on-cat-pill active" data-cat="">All</button>
+                        <button type="button" class="on-cat-pill" data-cat="clothing">Clothing</button>
+                        <button type="button" class="on-cat-pill" data-cat="bedding">Bedding</button>
+                        <button type="button" class="on-cat-pill" data-cat="food">Food</button>
+                        <button type="button" class="on-cat-pill" data-cat="hygiene">Hygiene</button>
+                        <button type="button" class="on-cat-pill" data-cat="baby_supplies">Baby Supplies</button>
+                        <button type="button" class="on-cat-pill" data-cat="goods">Household Goods</button>
+                        <button type="button" class="on-cat-pill" data-cat="other">Other</button>
                     </div>
-                    <div class="inv-dropdown-wrap" style="flex:1;max-width:240px">
-                        <label class="inv-dropdown-label">Search</label>
-                        <input type="search" id="other-needs-search" class="form-control" placeholder="Search items or orgs..." autocomplete="off" style="padding:6px 10px">
-                    </div>
-                    <span class="inv-results" id="other-needs-results-count">0 results</span>
                 </div>
-                <div class="other-needs-list" id="other-needs-list">
-                    <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.5rem"></div>
-                    <div class="skeleton skeleton-block" style="height:80px;margin-bottom:.5rem"></div>
+                <div class="on-priority-bar">
+                    <div class="on-pri-pills" id="other-needs-pri-pills">
+                        <button type="button" class="on-pri-pill active" data-urg="">All</button>
+                        <button type="button" class="on-pri-pill" data-urg="critical"><span class="on-dot on-dot-critical"></span>Critical</button>
+                        <button type="button" class="on-pri-pill" data-urg="high"><span class="on-dot on-dot-high"></span>High</button>
+                        <button type="button" class="on-pri-pill" data-urg="medium"><span class="on-dot on-dot-medium"></span>Medium</button>
+                        <button type="button" class="on-pri-pill" data-urg="low"><span class="on-dot on-dot-low"></span>Low</button>
+                    </div>
+                    <span class="on-results-count" id="other-needs-results-count">0 results</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table on-table">
+                        <thead>
+                            <tr>
+                                <th class="on-th-priority">Priority</th>
+                                <th>Request</th>
+                                <th class="on-th-category">Category</th>
+                                <th class="on-th-progress">Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody id="other-needs-tbody">
+                            <tr><td colspan="4"><div class="skeleton skeleton-block" style="height:60px"></div></td></tr>
+                            <tr><td colspan="4"><div class="skeleton skeleton-block" style="height:60px"></div></td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -1471,9 +1479,26 @@
     // --- Other Needs ---
     let otherNeedsData = [];
 
+    function getOtherNeedsCatFilter() {
+        const active = document.querySelector('#other-needs-cat-pills .on-cat-pill.active');
+        return active ? (active.getAttribute('data-cat') || '') : '';
+    }
+    function getOtherNeedsUrgFilter() {
+        const active = document.querySelector('#other-needs-pri-pills .on-pri-pill.active');
+        return active ? (active.getAttribute('data-urg') || '') : '';
+    }
+
+    function getAllOtherNeedsFlat() {
+        const flat = [];
+        otherNeedsData.forEach(org => {
+            (org.top_needs || []).forEach(n => flat.push({ org, need: n }));
+        });
+        return flat;
+    }
+
     function getFilteredOtherNeeds() {
-        const catFilter = document.getElementById('other-needs-cat-select')?.value || '';
-        const urgFilter = document.getElementById('other-needs-urgency-select')?.value || '';
+        const catFilter = getOtherNeedsCatFilter();
+        const urgFilter = getOtherNeedsUrgFilter();
         const search = (document.getElementById('other-needs-search')?.value || '').toLowerCase().trim();
         const cards = [];
         otherNeedsData.forEach(org => {
@@ -1483,7 +1508,8 @@
                 if (search) {
                     const match = (n.item_name || '').toLowerCase().includes(search) ||
                         (n.category || '').toLowerCase().includes(search) ||
-                        (org.name || '').toLowerCase().includes(search);
+                        (org.name || '').toLowerCase().includes(search) ||
+                        ((n.notes || '').toLowerCase().includes(search));
                     if (!match) return;
                 }
                 cards.push({ org, need: n });
@@ -1493,32 +1519,68 @@
     }
 
     function renderOtherNeeds() {
-        const listEl = document.getElementById('other-needs-list');
+        const tbody = document.getElementById('other-needs-tbody');
         const filtered = getFilteredOtherNeeds();
         const countEl = document.getElementById('other-needs-results-count');
         if (countEl) countEl.textContent = filtered.length + ' result' + (filtered.length !== 1 ? 's' : '');
+
+        // Update priority pill counts
+        const allFlat = getAllOtherNeedsFlat();
+        const urgCounts = { critical: 0, high: 0, medium: 0, low: 0 };
+        allFlat.forEach(({ need: n }) => {
+            const u = n.urgency || 'medium';
+            if (urgCounts[u] !== undefined) urgCounts[u]++;
+        });
+        document.querySelectorAll('#other-needs-pri-pills .on-pri-pill').forEach(btn => {
+            const urg = btn.getAttribute('data-urg');
+            const baseLabel = urg === 'critical' ? 'Critical' : urg === 'high' ? 'High' : urg === 'medium' ? 'Medium' : urg === 'low' ? 'Low' : 'All';
+            const count = urg ? (urgCounts[urg] || 0) : allFlat.length;
+            btn.innerHTML = '';
+            if (urg && urg !== '') {
+                const dot = document.createElement('span');
+                dot.className = 'on-dot on-dot-' + urg;
+                btn.appendChild(dot);
+            }
+            btn.appendChild(document.createTextNode(baseLabel + ' (' + count + ')'));
+        });
+
         if (!filtered.length) {
-            const totalCards = otherNeedsData.reduce((sum, o) => sum + (o.top_needs || []).length, 0);
-            listEl.innerHTML = '<div class="empty-state"><p>' + (totalCards ? 'No needs match your filters.' : 'No needs from other organizations at the moment.') + '</p></div>';
+            const totalCards = allFlat.length;
+            tbody.innerHTML = '<tr><td colspan="4"><div class="empty-state"><p>' + (totalCards ? 'No needs match your filters.' : 'No needs from other organizations at the moment.') + '</p></div></td></tr>';
             return;
         }
-        listEl.innerHTML = filtered.map(({ org, need: n }) => {
+        tbody.innerHTML = filtered.map(({ org, need: n }) => {
             const urg = n.urgency || 'medium';
-            const hasCrit = urg === 'critical';
-            const hasHigh = urg === 'high';
-            return `
-            <div class="other-need-card ${hasCrit ? 'has-critical' : hasHigh ? 'has-high' : ''}">
-                <div class="other-need-org">${escHtml(org.name)}</div>
-                <div class="other-need-item">Needs <strong>${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)}</strong> of <strong>${escHtml(n.item_name)}</strong></div>
-                <div class="other-need-meta">
-                    <span class="badge badge-${escHtml(urg)}">${escHtml(urg)}</span>
-                    ${n.notes ? `<span class="ms-1">${escHtml(n.notes)}</span>` : ''}
-                    <span class="ms-1">${timeAgo(n.created_at)}</span>
-                </div>
-                <div style="margin-top:.6rem;display:flex;gap:.5rem">
-                    <button class="btn-action-primary" onclick="startCrossOrgChatWith('${escHtml(org.id)}')">Offer to help</button>
-                </div>
-            </div>`;
+            const received = Number(n.quantity_received) || 0;
+            const needed = Number(n.quantity_needed) || 1;
+            const total = received + needed;
+            const pct = total > 0 ? Math.round((received / total) * 100) : 0;
+            const catLabel = (n.category || 'other').replace(/_/g, ' ');
+            const catDisplay = catLabel.charAt(0).toUpperCase() + catLabel.slice(1);
+            return `<tr class="on-row">
+                <td><span class="on-badge-pri badge-${urg}">${escHtml(urg)}</span></td>
+                <td>
+                    <div class="on-req-title">${escHtml(n.item_name)}</div>
+                    <div class="on-req-meta">
+                        <span class="on-req-orgname">${escHtml(org.name)}</span>
+                        <span class="on-bullet">·</span>
+                        <span>${escHtml(String(n.quantity_needed))} ${escHtml(n.unit)} needed</span>
+                        ${n.notes ? `<span class="on-note">${escHtml(n.notes)}</span>` : ''}
+                        <span>${timeAgo(n.created_at)}</span>
+                    </div>
+                </td>
+                <td><span class="on-cat-badge">${escHtml(catDisplay)}</span></td>
+                <td>
+                    <div class="on-progress-wrap">
+                        <div class="on-progress-text">
+                            <span>${received}/${total}</span>
+                            <span class="on-pct">${pct}%</span>
+                        </div>
+                        <div class="on-progress-track"><div class="on-progress-fill" style="width:${pct}%;background:var(--color-primary)"></div></div>
+                        <button class="btn-action-primary btn-sm" style="margin-top:6px" onclick="startCrossOrgChatWith('${escHtml(org.id)}')">Offer to help</button>
+                    </div>
+                </td>
+            </tr>`;
         }).join('');
     }
 
@@ -1526,15 +1588,35 @@
         renderOtherNeeds();
     }
 
+    function initOtherNeedsPills() {
+        if (window._otherNeedsPillsInit) return;
+        window._otherNeedsPillsInit = true;
+        document.querySelectorAll('#other-needs-cat-pills .on-cat-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#other-needs-cat-pills .on-cat-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyOtherNeedsFilters();
+            });
+        });
+        document.querySelectorAll('#other-needs-pri-pills .on-pri-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#other-needs-pri-pills .on-pri-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                applyOtherNeedsFilters();
+            });
+        });
+    }
+
     async function loadOtherNeeds() {
-        const listEl = document.getElementById('other-needs-list');
+        const tbody = document.getElementById('other-needs-tbody');
         try {
             const res = await pub.orgsWithNeeds();
             const allOrgs = res.data || [];
             otherNeedsData = allOrgs.filter(o => o.id !== currentUser.orgId && o.top_needs && o.top_needs.length > 0);
+            initOtherNeedsPills();
             renderOtherNeeds();
         } catch (err) {
-            listEl.innerHTML = `<div class="inline-notice error">${escHtml(err.message)}</div>`;
+            tbody.innerHTML = `<tr><td colspan="4"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
     }
 

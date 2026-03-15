@@ -725,7 +725,7 @@ select.form-control {
   transition: all .14s; white-space: nowrap; font-family: var(--font-sans);
 }
 .on-cat-pill:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-lt); }
-.on-cat-pill.active { background: #111827; color: #fff; border-color: #111827; }
+.on-cat-pill.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
 
 /* Priority filter bar */
 .on-priority-bar {
@@ -743,6 +743,7 @@ select.form-control {
 }
 .on-pri-pill:hover { background: var(--color-bg-secondary); color: var(--color-text); }
 .on-pri-pill.active { background: var(--color-bg-secondary); color: var(--color-text); border-color: var(--color-border); }
+.on-pri-pill[data-urg=""].active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
 .on-dot {
   display: inline-block; width: 8px; height: 8px;
   border-radius: 50%; flex-shrink: 0;
