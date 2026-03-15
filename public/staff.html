@@ -480,6 +480,7 @@
             <div class="form-group">
                 <label class="form-label" for="inv-item-name">Item name <span class="req">*</span></label>
                 <input type="text" id="inv-item-name" class="form-control" placeholder="e.g. Shelf-stable milk">
+                <div class="form-error">Please enter an item name.</div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="inv-category">Category <span class="req">*</span></label>
@@ -491,10 +492,12 @@
                     <option value="goods">Goods</option>
                     <option value="other">Other</option>
                 </select>
+                <div class="form-error">Please select a category.</div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="inv-quantity">Quantity <span class="req">*</span></label>
                 <input type="number" id="inv-quantity" class="form-control" min="0" value="0">
+                <div class="form-error">Please enter a quantity (0 or more).</div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="inv-threshold">Low stock threshold</label>
@@ -536,6 +539,7 @@
         <div class="form-group">
             <label class="form-label" for="need-item-name">Item needed <span class="req">*</span></label>
             <input type="text" id="need-item-name" class="form-control" placeholder="e.g. Sleeping bags">
+            <div class="form-error">Please enter the item needed.</div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem">
             <div class="form-group">
@@ -550,6 +554,7 @@
                     <option value="goods">Household Goods</option>
                     <option value="other">Other</option>
                 </select>
+                <div class="form-error">Please select a category.</div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="need-urgency">Urgency <span class="req">*</span></label>
@@ -598,12 +603,13 @@
 <div id="add-as-need-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:1rem">
     <div class="card" style="width:100%;max-width:360px">
         <div class="card-header">
-            <h3>Add as need</h3>
+            <h3>Request</h3>
             <button class="btn btn-ghost btn-sm" onclick="closeModal('add-as-need-modal')">Close</button>
         </div>
         <p class="text-sm text-muted" style="margin:0 0 .75rem 0">How many <strong id="add-need-item-name"></strong> do you need?</p>
         <div class="form-group">
             <input type="number" id="add-need-qty" class="form-control" min="1" placeholder="e.g. 10" value="1">
+            <div class="form-error">Please enter a quantity of at least 1.</div>
         </div>
         <input type="hidden" id="add-need-item-id">
         <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
@@ -623,6 +629,7 @@
         <p class="text-sm text-muted" style="margin:0 0 .75rem 0">Enter how many of <strong id="fulfill-item-name"></strong> you received (max <span id="fulfill-max-qty"></span>):</p>
         <div class="form-group">
             <input type="number" id="fulfill-amount" class="form-control" min="1" placeholder="e.g. 2">
+            <div class="form-error">Please enter a quantity of at least 1.</div>
         </div>
         <input type="hidden" id="fulfill-need-id">
         <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
@@ -659,6 +666,7 @@
             <select id="cross-org-select" class="form-control">
                 <option value="">Loading organizations...</option>
             </select>
+            <div class="form-error">Please select an organization.</div>
         </div>
         <div style="display:flex;gap:.75rem;margin-top:1rem;justify-content:flex-end">
             <button class="btn btn-ghost" onclick="closeModal('cross-org-modal')">Cancel</button>
@@ -678,6 +686,7 @@
         <div class="form-group">
             <label class="form-label">Quantity to request</label>
             <input type="number" id="surplus-request-qty" class="form-control" min="1" value="1">
+            <div class="form-error">Please enter a quantity of at least 1.</div>
         </div>
         <div class="form-group">
             <label class="form-label">Notes (optional)</label>
@@ -1060,7 +1069,7 @@
                 <td>
                     <div class="gap-row" style="display:flex;gap:.5rem;align-items:center">
                         <button class="btn-action" onclick="openEditInventory('${escHtml(item.id)}')">Manage</button>
-                        <button class="btn-action-primary" onclick="openAddAsNeedModal('${escHtml(item.id)}', '${escHtml(item.item_name).replace(/'/g, "\\'")}')">Add as need</button>
+                        <button class="btn-action-primary" onclick="openAddAsNeedModal('${escHtml(item.id)}', '${escHtml(item.item_name).replace(/'/g, "\\'")}')">Request</button>
                     </div>
                 </td>
             </tr>`;
@@ -1115,8 +1124,11 @@
 
     async function submitAddAsNeed() {
         const itemId = document.getElementById('add-need-item-id').value;
-        const qty = parseInt(document.getElementById('add-need-qty').value, 10);
-        if (!itemId || !qty || qty < 1) return;
+        const qtyEl = document.getElementById('add-need-qty');
+        clearFormErrors(document.getElementById('add-as-need-modal'));
+        if (!validateNumberMin(qtyEl, 1, 'Please enter a quantity of at least 1.')) return;
+        if (!itemId) return;
+        const qty = parseInt(qtyEl.value, 10);
         const item = inventoryData.find(i => i.id === itemId);
         if (!item) return;
         try {
@@ -1154,9 +1166,16 @@
 
     async function saveInventoryItem() {
         const editId = document.getElementById('inv-edit-id').value;
-        const itemName = document.getElementById('inv-item-name').value.trim();
-        const category = document.getElementById('inv-category').value;
-        if (!itemName || !category) { toast('Item name and category are required.', 'error'); return; }
+        const itemNameEl = document.getElementById('inv-item-name');
+        const categoryEl = document.getElementById('inv-category');
+        const qtyEl = document.getElementById('inv-quantity');
+        clearFormErrors(document.getElementById('inventory-modal-body'));
+        let valid = validateRequired(itemNameEl, 'Please enter an item name.');
+        valid = validateRequired(categoryEl, 'Please select a category.') && valid;
+        valid = validateNumberMin(qtyEl, 0, 'Please enter a quantity (0 or more).') && valid;
+        if (!valid) return;
+        const itemName = itemNameEl.value.trim();
+        const category = categoryEl.value;
 
         const data = {
             item_name: itemName,
@@ -1306,9 +1325,14 @@
 
     async function saveNeed() {
         const editId = document.getElementById('need-edit-id').value;
-        const item = document.getElementById('need-item-name').value.trim();
-        const cat = document.getElementById('need-category').value;
-        if (!item || !cat) return;
+        const itemEl = document.getElementById('need-item-name');
+        const catEl = document.getElementById('need-category');
+        clearFormErrors(document.getElementById('need-modal'));
+        let valid = validateRequired(itemEl, 'Please enter the item needed.');
+        valid = validateRequired(catEl, 'Please select a category.') && valid;
+        if (!valid) return;
+        const item = itemEl.value.trim();
+        const cat = catEl.value;
 
         const data = {
             item_name: item,
@@ -1346,8 +1370,11 @@
 
     async function submitFulfillAmount() {
         const id = document.getElementById('fulfill-need-id').value;
-        const amount = parseInt(document.getElementById('fulfill-amount').value, 10);
-        if (!amount || amount <= 0) return;
+        const amountEl = document.getElementById('fulfill-amount');
+        clearFormErrors(document.getElementById('fulfill-amount-modal'));
+        if (!validateNumberMin(amountEl, 1, 'Please enter a quantity of at least 1.')) return;
+        if (!id) return;
+        const amount = parseInt(amountEl.value, 10);
         try {
             await staff.receiveNeed(id, amount);
             closeModal('fulfill-amount-modal');
@@ -1658,8 +1685,10 @@
     }
 
     async function startCrossOrgChat() {
-        const orgId = document.getElementById('cross-org-select').value;
-        if (!orgId) { toast('Please select an organization.', 'error'); return; }
+        const orgEl = document.getElementById('cross-org-select');
+        clearFormErrors(orgEl?.closest('.card'));
+        if (!validateRequired(orgEl, 'Please select an organization.')) return;
+        const orgId = orgEl.value;
         try {
             const res = await staff.startCrossOrgThread(orgId);
             closeModal('cross-org-modal');
@@ -1735,6 +1764,9 @@
     }
 
     async function submitSurplusRequest() {
+        const qtyEl = document.getElementById('surplus-request-qty');
+        clearFormErrors(document.getElementById('surplus-request-modal'));
+        if (!validateNumberMin(qtyEl, 1, 'Please enter a quantity of at least 1.')) return;
         const btn = document.getElementById('surplus-request-btn');
         btn.disabled = true;
         try {
@@ -1987,6 +2019,7 @@
     function openModal(id) {
         const el = document.getElementById(id);
         el.style.display = 'flex';
+        if (typeof attachValidationClear === 'function') attachValidationClear(el);
         setTimeout(() => el.querySelector('.card')?.focus?.(), 50);
     }
     function closeModal(id) {

@@ -120,15 +120,69 @@ window.escHtml = function (str) {
         .replace(/"/g, '&quot;');
 };
 
-// ---- Form field validation helper ----
-window.validateField = function (inputEl, message) {
-    const errEl = inputEl.parentElement.querySelector('.form-error');
-    if (!inputEl.value.trim()) {
-        inputEl.classList.add('error');
-        if (errEl) { errEl.textContent = message; errEl.classList.add('visible'); }
+// ---- Form field validation helpers ----
+window.showFieldError = function (inputEl, message) {
+    if (!inputEl) return;
+    inputEl.classList.add('error');
+    let errEl = inputEl.parentElement?.querySelector('.form-error');
+    if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.className = 'form-error';
+        inputEl.parentElement?.appendChild(errEl);
+    }
+    errEl.textContent = message || 'This field is required.';
+    errEl.classList.add('visible');
+};
+
+window.clearFieldError = function (inputEl) {
+    if (!inputEl) return;
+    inputEl.classList.remove('error');
+    const errEl = inputEl.parentElement?.querySelector('.form-error');
+    if (errEl) errEl.classList.remove('visible');
+};
+
+window.clearFormErrors = function (formEl) {
+    if (!formEl) return;
+    (formEl.querySelectorAll?.('input, select, textarea') || []).forEach(el => {
+        window.clearFieldError(el);
+    });
+};
+
+window.validateRequired = function (inputEl, message) {
+    if (!inputEl) return false;
+    const val = (inputEl.value || '').toString().trim();
+    const isEmpty = !val || (inputEl.type === 'number' && (isNaN(parseFloat(val)) || parseFloat(val) < (parseFloat(inputEl.min) || 0)));
+    if (isEmpty) {
+        window.showFieldError(inputEl, message || 'This field is required.');
         return false;
     }
-    inputEl.classList.remove('error');
-    if (errEl) errEl.classList.remove('visible');
+    window.clearFieldError(inputEl);
     return true;
+};
+
+window.validateNumberMin = function (inputEl, min, message) {
+    if (!inputEl) return false;
+    const n = parseFloat(inputEl.value);
+    if (isNaN(n) || n < min) {
+        window.showFieldError(inputEl, message || `Please enter a number of at least ${min}.`);
+        return false;
+    }
+    window.clearFieldError(inputEl);
+    return true;
+};
+
+// Attach input/change listeners to clear errors when user types
+window.attachValidationClear = function (formEl) {
+    if (!formEl) return;
+    formEl.querySelectorAll?.('input, select, textarea').forEach(el => {
+        if (el.dataset.validationClearAttached) return;
+        el.dataset.validationClearAttached = '1';
+        const handler = () => window.clearFieldError(el);
+        el.addEventListener('input', handler);
+        el.addEventListener('change', handler);
+    });
+};
+
+window.validateField = function (inputEl, message) {
+    return window.validateRequired(inputEl, message);
 };

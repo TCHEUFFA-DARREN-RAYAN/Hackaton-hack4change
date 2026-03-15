@@ -102,10 +102,12 @@
         <div class="form-group">
           <label class="form-label" for="email">Email address</label>
           <input type="email" id="email" class="form-control" placeholder="you@organization.ca" required autocomplete="email" autofocus>
+          <div class="form-error">Please enter your email address.</div>
         </div>
         <div class="form-group">
           <label class="form-label" for="password">Password</label>
           <input type="password" id="password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+          <div class="form-error">Please enter your password.</div>
         </div>
         <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login">Sign in</button>
       </form>
@@ -140,9 +142,14 @@
 
     async function handleLogin(e) {
       e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      if (!email || !password) { showError('Please enter your email and password.'); return; }
+      const emailEl = document.getElementById('email');
+      const passEl = document.getElementById('password');
+      clearFormErrors(document.getElementById('login-form'));
+      let valid = validateRequired(emailEl, 'Please enter your email address.');
+      valid = validateRequired(passEl, 'Please enter your password.') && valid;
+      if (!valid) return;
+      const email = emailEl.value.trim();
+      const password = passEl.value;
 
       const btn = document.getElementById('btn-login');
       btn.disabled = true;

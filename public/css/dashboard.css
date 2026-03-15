@@ -362,6 +362,9 @@ tbody tr:hover { background: var(--color-bg); }
   -webkit-appearance: none; appearance: none;
 }
 .form-control:focus { border-color: var(--color-primary); box-shadow: 0 0 0 2px rgba(37,99,235,.12); }
+.form-control.error { border-color: var(--color-critical); box-shadow: 0 0 0 2px rgba(220,38,38,.15); }
+.form-error { font-size: .78rem; color: var(--color-critical); margin-top: .3rem; display: none; }
+.form-error.visible { display: block; }
 select.form-control {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239CA3AF' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
