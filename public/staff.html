@@ -1275,7 +1275,14 @@
             await loadNeeds();
             renderDashboard();
         } catch (err) {
-            throw err;
+            const modal = document.getElementById('add-as-need-modal');
+            const old = modal.querySelector('.form-server-error');
+            if (old) old.remove();
+            const errorEl = document.createElement('div');
+            errorEl.className = 'form-server-error';
+            errorEl.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:10px 14px;border-radius:6px;font-size:.8125rem;margin-bottom:12px;border:1px solid #FECACA';
+            errorEl.textContent = err.message || 'Failed to add need.';
+            modal.querySelector('.card').insertBefore(errorEl, modal.querySelector('.card').querySelector('.form-group') || modal.querySelector('.card').firstChild);
         }
     }
 
@@ -1328,7 +1335,14 @@
             await loadInventory();
             renderDashboard();
         } catch (err) {
-            toast(err.message || 'Failed to save item.', 'error');
+            const modal = document.getElementById('inventory-modal-body');
+            const errDiv = modal.querySelector('.form-server-error');
+            if (errDiv) errDiv.remove();
+            const errorEl = document.createElement('div');
+            errorEl.className = 'form-server-error';
+            errorEl.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:10px 14px;border-radius:6px;font-size:.8125rem;margin-bottom:12px;border:1px solid #FECACA';
+            errorEl.textContent = err.message || 'Failed to save item.';
+            modal.insertBefore(errorEl, modal.firstChild);
         } finally {
             btn.disabled = false;
         }
@@ -1535,7 +1549,15 @@
             await loadInventory();
             renderDashboard();
         } catch (err) {
-            throw err;
+            const modal = document.getElementById('need-modal');
+            const old = modal.querySelector('.form-server-error');
+            if (old) old.remove();
+            const errorEl = document.createElement('div');
+            errorEl.className = 'form-server-error';
+            errorEl.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:10px 14px;border-radius:6px;font-size:.8125rem;margin-bottom:12px;border:1px solid #FECACA';
+            errorEl.textContent = err.message || 'Failed to save need.';
+            const cardBody = modal.querySelector('.card');
+            if (cardBody) cardBody.insertBefore(errorEl, cardBody.querySelector('.form-group'));
         } finally {
             btn.disabled = false;
         }
