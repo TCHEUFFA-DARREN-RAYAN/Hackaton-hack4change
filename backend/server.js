@@ -129,6 +129,12 @@ const start = async () => {
         process.exit(1);
     }
 
+    // Ensure quantity_received column exists (safe to run repeatedly)
+    try {
+        await promisePool.query('ALTER TABLE needs ADD COLUMN quantity_received INT NOT NULL DEFAULT 0');
+        logger.info('Added quantity_received column to needs table');
+    } catch (_) { /* column already exists — safe to ignore */ }
+
     const http = require('http');
     const { Server: SocketIO } = require('socket.io');
     const httpServer = http.createServer(app);

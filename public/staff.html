@@ -12,7 +12,6 @@
 <body>
 
 <div id="topbar">
-    <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Open menu">&#9776;</button>
     <div class="topbar-brand">
         <img src="/assets/images/logo.png" alt="Common Ground">
         <span>GMHSC Network</span>
@@ -22,7 +21,6 @@
         <button class="btn btn-outline btn-sm" onclick="handleLogout()">Sign out</button>
     </div>
 </div>
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileMenu()"></div>
 
 <div id="app">
     <aside id="sidebar" aria-label="Organization navigation">
@@ -77,28 +75,28 @@
 
         <!-- Dashboard -->
         <div id="section-dashboard">
-            <div style="margin-bottom:16px">
-                <h2 style="font-size:1rem;font-weight:600;color:var(--color-text)" id="dashboard-welcome">Overview</h2>
-                <p style="font-size:.8125rem;color:var(--color-text-muted);margin-top:2px" id="dashboard-hero-org">Organization summary</p>
+            <div class="dashboard-hero">
+                <h2>Welcome back</h2>
+                <p id="dashboard-hero-org">Your organization overview</p>
             </div>
             <div class="metrics-row" id="dashboard-metrics">
                 <div class="metric-card">
-                    <div class="metric-label">Total Donors</div>
+                    <div class="metric-label"><span class="metric-icon">👥</span>Total users</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">Unique contributors</div>
+                    <div class="metric-sub">Staff & volunteers</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-label">Open Needs</div>
+                <div class="metric-card accent-primary">
+                    <div class="metric-label"><span class="metric-icon">📌</span>Open needs</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
                     <div class="metric-sub">Needs to fulfill</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-label">Inventory</div>
+                <div class="metric-card accent-accent">
+                    <div class="metric-label"><span class="metric-icon">📦</span>Available resources</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
                     <div class="metric-sub">Items in stock</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-label">Pending Donations</div>
+                <div class="metric-card accent-high">
+                    <div class="metric-label"><span class="metric-icon">💝</span>Pending donations</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
                     <div class="metric-sub">Awaiting confirmation</div>
                 </div>
@@ -164,7 +162,7 @@
         <!-- Inventory -->
         <div id="section-inventory" style="display:none">
             <div id="inv-low-alert" class="alert alert-low" style="display:none;margin-bottom:1rem">
-                <span class="alert-icon" style="font-size:1rem;font-weight:700;color:var(--color-high)">!</span>
+                <span class="alert-icon">&#128276;</span>
                 <div>
                     <strong id="inv-low-count">0</strong> items running low:
                     <span id="inv-low-list" class="text-sm"></span>
@@ -468,7 +466,6 @@
     </div>
 </div>
 
-<script src="/socket.io/socket.io.js"></script>
 <script src="/js/api.js"></script>
 <script src="/js/utils.js"></script>
 <script>
@@ -487,7 +484,7 @@
 
         document.getElementById('nav-org-name').textContent = currentUser.orgName || '';
         document.getElementById('org-subtitle').textContent = currentUser.orgName || '';
-        document.getElementById('dashboard-hero-org').textContent = currentUser.orgName || 'Organization summary';
+        document.getElementById('dashboard-hero-org').textContent = currentUser.orgName || 'Your organization overview';
 
         const invSearch = document.getElementById('inv-search');
         if (invSearch) invSearch.addEventListener('input', () => { invSearchQuery = invSearch.value.trim().toLowerCase(); applyInventoryFilters(); });
@@ -528,24 +525,24 @@
 
         document.getElementById('dashboard-metrics').innerHTML = `
             <div class="metric-card">
-                <div class="metric-label">Total Donors</div>
+                <div class="metric-label"><span class="metric-icon">👥</span>Total donors</div>
                 <div class="metric-value">${totalDonors}</div>
-                <div class="metric-sub">Unique contributors</div>
+                <div class="metric-sub">unique contributors</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Open Needs</div>
+            <div class="metric-card accent-primary">
+                <div class="metric-label"><span class="metric-icon">📌</span>Open needs</div>
                 <div class="metric-value">${openNeeds}</div>
-                <div class="metric-sub">Needs to fulfill</div>
+                <div class="metric-sub">needs to fulfill</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Inventory</div>
+            <div class="metric-card accent-accent">
+                <div class="metric-label"><span class="metric-icon">📦</span>Available stock</div>
                 <div class="metric-value">${itemsInStock}</div>
-                <div class="metric-sub">Items in stock</div>
+                <div class="metric-sub">items in inventory</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Pending Donations</div>
+            <div class="metric-card accent-high">
+                <div class="metric-label"><span class="metric-icon">💝</span>Pending donations</div>
                 <div class="metric-value">${pendingDonations}</div>
-                <div class="metric-sub">Awaiting receipt</div>
+                <div class="metric-sub">awaiting receipt</div>
             </div>`;
 
         renderTrendChart();
@@ -636,7 +633,7 @@
             listEl.innerHTML = expiringData.length > 5 ? text + ` (and ${expiringData.length - 5} more)` : text;
             alertEl.style.display = 'block';
             if (dashList) dashList.innerHTML = expiringData.slice(0, 5).map(i => `
-                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .85rem;background:var(--color-bg-secondary);border:1px solid var(--color-border);border-radius:6px;margin-bottom:.4rem">
+                <div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .85rem;background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;margin-bottom:.4rem">
                     <span class="text-sm"><strong>${escHtml(i.quantity)} ${escHtml(i.unit)}</strong> of ${escHtml(i.item_name)}</span>
                     <span class="text-xs text-muted">expires ${formatDate(i.expiry_date)}</span>
                 </div>`).join('');
@@ -724,7 +721,7 @@
         if (countEl) countEl.textContent = filtered.length + ' result' + (filtered.length !== 1 ? 's' : '');
 
         if (!filtered.length) {
-            tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
             return;
         }
         const UNIT_DISPLAY = { items: 'items', boxes: 'boxes', kg: 'kg', packs: 'packs' };
@@ -868,7 +865,7 @@
     function renderNeeds() {
         const tbody = document.getElementById('needs-tbody');
         if (!needsData.length) {
-            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No active needs posted</h3><p>Post a need to let donors and the network know what your organization requires.</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No active needs posted</h3><p>Post a need to let donors and the network know what your organization requires.</p></div></td></tr>`;
             return;
         }
         tbody.innerHTML = needsData.map(n => `
@@ -1019,7 +1016,7 @@
     function renderDonations(donations) {
         const tbody = document.getElementById('donations-tbody');
         if (!donations.length) {
-            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><h3>No incoming donations</h3><p>Donations matched to your organization will appear here.</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No incoming donations</h3><p>Donations matched to your organization will appear here.</p></div></td></tr>`;
             return;
         }
         tbody.innerHTML = donations.map(d => `
@@ -1238,7 +1235,7 @@
         }
 
         if (cards.length === 0) {
-            container.innerHTML = '<div class="activity-empty" style="grid-column:1/-1;padding:1.5rem">No action items at the moment.</div>';
+            container.innerHTML = '<div class="activity-empty" style="grid-column:1/-1;padding:1.5rem">No action items at the moment. Great work!</div>';
         } else {
             container.innerHTML = cards.join('');
         }
@@ -1333,32 +1330,12 @@
         modal.addEventListener('click', e => { if (e.target === modal) closeModal(modal.id); });
     });
 
-    function toggleMobileMenu() {
-        document.getElementById('sidebar').classList.toggle('open');
-        document.getElementById('sidebar-overlay').classList.toggle('open');
-    }
-
     async function handleLogout() {
         try { await auth.logout(); } catch {}
         window.location.href = '/login';
     }
 
     init();
-
-    if (typeof io !== 'undefined') {
-        const socket = io();
-        socket.on('donation:new', function (data) {
-            toast('New donation: ' + (data.item_name || 'Unknown item'), 'info');
-            loadDonations();
-        });
-        socket.on('need:new', function (data) {
-            if (data.org_name) toast(data.org_name + ' posted a new need: ' + (data.item_name || ''), 'info');
-        });
-        socket.on('need:fulfilled', function () {
-            loadNeeds();
-            renderDashboard();
-        });
-    }
 </script>
 
 </body>

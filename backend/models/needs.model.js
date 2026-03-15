@@ -75,6 +75,25 @@ class NeedsModel {
         return this.findById(id);
     }
 
+    static async recordReceipt(id, orgId, amount) {
+        const need = await this.findById(id);
+        if (!need || need.org_id !== orgId) return null;
+        const newReceived = (Number(need.quantity_received) || 0) + amount;
+        const newNeeded = Math.max(0, (Number(need.quantity_needed) || 0) - amount);
+        if (newNeeded <= 0) {
+            await promisePool.query(
+                `UPDATE needs SET quantity_received = ?, quantity_needed = 0, fulfilled = 1, fulfilled_at = NOW() WHERE id = ? AND org_id = ?`,
+                [newReceived, id, orgId]
+            );
+        } else {
+            await promisePool.query(
+                `UPDATE needs SET quantity_received = ?, quantity_needed = ? WHERE id = ? AND org_id = ?`,
+                [newReceived, newNeeded, id, orgId]
+            );
+        }
+        return this.findById(id);
+    }
+
     static async markFulfilled(id, orgId) {
         await promisePool.query(
             `UPDATE needs SET fulfilled = 1, fulfilled_at = NOW() WHERE id = ? AND org_id = ?`,

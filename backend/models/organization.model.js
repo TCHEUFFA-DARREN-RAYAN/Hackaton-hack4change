@@ -21,6 +21,8 @@ class OrganizationModel {
         const [orgs] = await promisePool.query(`SELECT * FROM organizations ORDER BY name ASC`);
         const [needs] = await promisePool.query(
             `SELECT n.*,
+                IFNULL(n.quantity_received, 0) AS quantity_received,
+                (n.quantity_needed + IFNULL(n.quantity_received, 0)) AS quantity_original,
                 CASE n.urgency WHEN 'critical' THEN 4 WHEN 'high' THEN 3 WHEN 'medium' THEN 2 ELSE 1 END AS urgency_rank
              FROM needs n
              WHERE n.fulfilled = 0

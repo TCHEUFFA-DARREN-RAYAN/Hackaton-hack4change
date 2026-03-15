@@ -151,6 +151,45 @@ router.post('/needs/:id/fulfill', async (req, res) => {
     }
 });
 
+// Log receipt: increment quantity_received, reduce quantity_needed
+router.post('/needs/:id/receive', async (req, res) => {
+    try {
+        const amount = parseInt(req.body.amount, 10);
+        if (!amount || amount <= 0) {
+            return res.status(400).json({ success: false, message: 'amount must be a positive integer' });
+        }
+        const need = await NeedsModel.recordReceipt(req.params.id, req.user.orgId, amount);
+        if (!need) return res.status(404).json({ success: false, message: 'Need not found' });
+        const io = req.app.get('io');
+        if (io && need.fulfilled) io.emit('need:fulfilled', { org_name: req.user.orgName });
+        res.json({ success: true, data: need });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to record receipt' });
+    }
+});
+
+// Send a fulfillment offer message to another org's channel
+router.post('/fulfill-offer', async (req, res) => {
+    try {
+        const { targetOrgId, message } = req.body;
+        if (!targetOrgId || !message) {
+            return res.status(400).json({ success: false, message: 'targetOrgId and message are required' });
+        }
+        const thread = await ChatThreadModel.findOrCreateOrgChannel(targetOrgId);
+        const msg = await ChatMessageModel.create({
+            thread_id: thread.id,
+            sender_type: 'staff',
+            sender_id: req.user.id,
+            content: message.trim()
+        });
+        res.json({ success: true, data: msg });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Failed to send offer' });
+    }
+});
+
 router.delete('/needs/:id', async (req, res) => {
     try {
         const ok = await NeedsModel.delete(req.params.id, req.user.orgId);
