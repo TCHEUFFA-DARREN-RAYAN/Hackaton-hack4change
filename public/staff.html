@@ -176,8 +176,7 @@
             </div>
             <div class="section">
                 <div class="section-header inv-section-header">
-                    <h2 class="inv-org-title" id="inv-org-title"></h2>
-                    <div class="inv-toolbar-right">
+                    <div class="inv-toolbar-right" style="flex:1">
                         <div class="inv-search">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                             <input type="search" id="inv-search" placeholder="Search items..." autocomplete="off" aria-label="Search inventory">
@@ -922,8 +921,6 @@
         try {
             const res = await staff.inventory();
             inventoryData = res.data || [];
-            const orgTitle = document.getElementById('inv-org-title');
-            if (orgTitle) orgTitle.textContent = 'Inventory';
             renderInventory();
             renderLowAlert();
         } catch (err) {

@@ -53,11 +53,15 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(cookieParser(process.env.COOKIE_SECRET || 'commonground-dev-secret'));
 
-app.use(rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
-    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 200,
-    message: { success: false, message: 'Too many requests' }
-}));
+// Skip rate limiting in development to avoid blocking refreshes; set DISABLE_RATE_LIMIT=1 to disable in any env
+const rateLimitDisabled = process.env.DISABLE_RATE_LIMIT === '1' || process.env.NODE_ENV !== 'production';
+if (!rateLimitDisabled) {
+    app.use(rateLimit({
+        windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+        max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 200,
+        message: { success: false, message: 'Too many requests' }
+    }));
+}
 
 app.use(setSecurityHeaders);
 app.use(sanitizeInput);
