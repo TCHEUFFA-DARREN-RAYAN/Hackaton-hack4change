@@ -10,52 +10,51 @@
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/i18n.js"></script>
     <style>
-        .donate-page { position: relative; min-height: 100vh; }
-        .donate-video-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
-        .donate-video-bg video {
-            position: absolute; min-width: 100%; min-height: 100%;
-            object-fit: cover; object-position: center;
+        .donate-page {
+            min-height: 100vh; display: flex; flex-direction: column;
+            background:linear-gradient(160deg, #92a5f1 0%, #EEF2FF 40%, #92a5f1 100%);
         }
-        .donate-video-bg .overlay { position: absolute; inset: 0; background: rgba(0,0,0,.35); z-index: 1; }
-        .donate-content { position: relative; z-index: 10; min-height: 100vh; }
+        .donate-content { display: flex; flex-direction: column; flex: 1; }
 
         .donate-content .site-nav {
-            background: rgba(255,255,255,.88);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            background: rgba(255,255,255,.85);
             border-bottom-color: rgba(0,0,0,.08);
         }
+        .donate-content .site-nav .nav-brand span,
+        .donate-content .site-nav .nav-links a,
+        .donate-content .site-nav .nav-actions a { color: #1e1b4b; }
+        .donate-content .site-nav .btn-ghost { border-color: rgba(30,27,75,.3); color: #1e1b4b; }
+        .donate-content .site-nav .btn-ghost:hover { background: rgba(30,27,75,.08); }
 
-        .donate-content .step-form-wrap .card {
-            background: rgba(255,255,255,.82);
-            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255,255,255,.5);
-            box-shadow: 0 4px 24px rgba(0,0,0,.12);
+        /* Outer centering area */
+        .donate-main {
+            flex: 1; display: flex;
+            flex-direction: column; align-items: center; justify-content: center;
+            padding: 3rem 1.25rem 4rem;
         }
-        .donate-content .step-form-wrap h1,
-        .donate-content .step-form-wrap h2,
-        .donate-content .step-form-wrap .form-label { color: var(--color-text); }
-        .donate-content .step-form-wrap h1,
-        .donate-content .step-form-wrap h2 { text-shadow: 0 1px 3px rgba(255,255,255,.95); }
-        .donate-content .step-form-wrap .form-control {
-            background: rgba(255,255,255,.92);
-            border-color: rgba(0,0,0,.14);
-            color: var(--color-text);
+
+        /* White wrapper card — mirrors give-wrapper-card */
+        .donate-wrapper-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 3rem 2.5rem 2.75rem;
+            max-width: 740px;
+            width: 100%;
+            box-shadow: 0 8px 40px rgba(0,0,0,.10);
         }
-        .donate-content .step-form-wrap .form-control::placeholder { color: var(--color-text-muted); opacity: .9; }
-        .donate-content .step-form-wrap .confirm-box {
-            background: rgba(232,248,236,.85);
-            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-        }
-        .donate-content .step-form-wrap .inline-notice {
-            background: rgba(255,255,255,.85);
-            backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+
+        .donate-wrapper-card h1 { color: var(--color-text); }
+        .donate-wrapper-card .card {
+            background: #f8f8f8;
+            border: 1px solid rgba(0,0,0,.07);
+            box-shadow: none;
         }
 
         /* Need picker */
         .need-pick-btn {
             display: flex; align-items: center; gap: .65rem;
             padding: .6rem .85rem;
-            background: rgba(255,255,255,.7);
+            background: #fff;
             border: 1.5px solid var(--color-border);
             border-radius: var(--radius-sm);
             cursor: pointer; text-align: left;
@@ -69,14 +68,12 @@
         .need-pick-qty  { font-size: .8rem; color: var(--color-text-muted); white-space: nowrap; }
 
         @media (max-width: 768px) {
-            .donate-content .step-form-wrap .card { background: rgba(255,255,255,.88); }
-            .donate-content .step-form-wrap { padding: 1rem .75rem 2rem; margin: 1rem auto; }
-            .donate-content .form-grid { grid-template-columns: 1fr !important; }
+            .donate-wrapper-card { padding: 2rem 1.25rem 2rem; border-radius: 16px; }
+            .donate-main .form-grid { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 480px) {
-            .donate-content .step-form-wrap { padding: .75rem .5rem 1.5rem; }
-            .donate-content .step-form-wrap h1 { font-size: 1.35rem; }
-            .donate-content .step-form-wrap h2 { font-size: 1.1rem; }
+            .donate-wrapper-card h1 { font-size: 1.35rem; }
+            .donate-wrapper-card h2 { font-size: 1.1rem; }
             .step-nav { flex-wrap: wrap; gap: .5rem; }
             .step-nav .btn { flex: 1 1 auto; min-width: 100px; }
         }
@@ -85,12 +82,6 @@
 <body>
 
 <div class="donate-page">
-    <div class="donate-video-bg">
-        <video id="donate-video" autoplay loop muted playsinline>
-            <source src="/assets/videos/community/donations/businessman-sharing-food.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-    </div>
     <div class="donate-content">
 
         <nav class="site-nav">
@@ -107,7 +98,9 @@
             </div>
         </nav>
 
-        <div class="step-form-wrap">
+        <div class="donate-main">
+        <div class="donate-wrapper-card">
+            <div class="step-form-wrap">
             <h1 style="margin-bottom:.35rem" data-i18n="donateTitle">Make a donation</h1>
             <p class="text-muted text-sm" style="margin-bottom:1.75rem" data-i18n="donateSubtitle">Your donation will be matched to the organization with the greatest need.</p>
 
@@ -230,6 +223,8 @@
                 </div>
             </div>
         </div>
+        </div><!-- /.donate-wrapper-card -->
+        </div><!-- /.donate-main -->
 
     </div>
 </div>
@@ -248,20 +243,6 @@
         clothing: 'clothing', bedding: 'bedding', food: 'food', hygiene: 'hygiene',
         baby_supplies: 'baby_supplies', goods: 'goods', furniture: 'furniture', other: 'other'
     };
-    const STEP_VIDEOS = [
-        '/assets/videos/community/donations/businessman-sharing-food.mp4',
-        '/assets/videos/community/donations/young-man-helping-homeless.mp4',
-        '/assets/videos/community/food-bank/volunteer-bread-hungry.mp4'
-    ];
-
-    function setVideo(idx) {
-        const vid = document.getElementById('donate-video');
-        if (vid && STEP_VIDEOS[idx]) {
-            vid.querySelector('source').src = STEP_VIDEOS[idx];
-            vid.load(); vid.play().catch(() => {});
-        }
-    }
-
     // --- Step navigation ---
 
     function goToStep(step) {
@@ -273,7 +254,6 @@
         const panel = document.getElementById(`step-${step}`);
         panel.style.display = '';
         panel.classList.add('active');
-        setVideo(step - 1);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -383,7 +363,6 @@
         const confirm = document.getElementById('step-confirm');
         confirm.style.display = '';
         confirm.classList.add('active');
-        setVideo(2);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -446,10 +425,7 @@
 
     loadOrganizations();
     setActiveNav();
-    setVideo(0);
 </script>
 
-    </div>
-</div>
 </body>
 </html>

@@ -10,17 +10,9 @@
     <link rel="stylesheet" href="/css/style.css">
     <script src="/js/i18n.js"></script>
     <style>
-        .give-page { position: relative; min-height: 100vh; display: flex; flex-direction: column; }
-
-        .give-video-bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
-        .give-video-bg video {
-            position: absolute; min-width: 100%; min-height: 100%;
-            object-fit: cover; object-position: center;
-        }
-        .give-video-bg .overlay {
-            position: absolute; inset: 0;
-            background: linear-gradient(160deg, rgba(0,0,0,.52) 0%, rgba(0,0,0,.38) 100%);
-            z-index: 1;
+        .give-page {
+            position: relative; min-height: 100vh; display: flex; flex-direction: column;
+            background: linear-gradient(160deg, #92a5f1 0%, #EEF2FF 40%, #92a5f1 100%);
         }
 
         .give-content {
@@ -30,15 +22,14 @@
 
         /* Nav */
         .give-content .site-nav {
-            background: rgba(255,255,255,.12);
-            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-            border-bottom-color: rgba(255,255,255,.15);
+            background: rgba(255,255,255,.85);
+            border-bottom-color: rgba(0,0,0,.08);
         }
         .give-content .site-nav .nav-brand span,
         .give-content .site-nav .nav-links a,
-        .give-content .site-nav .nav-actions a { color: #fff; }
-        .give-content .site-nav .btn-ghost { border-color: rgba(255,255,255,.35); color: #fff; }
-        .give-content .site-nav .btn-ghost:hover { background: rgba(255,255,255,.15); }
+        .give-content .site-nav .nav-actions a { color: #1e1b4b; }
+        .give-content .site-nav .btn-ghost { border-color: rgba(30,27,75,.3); color: #1e1b4b; }
+        .give-content .site-nav .btn-ghost:hover { background: rgba(30,27,75,.08); }
 
         /* Main layout */
         .give-main {
@@ -48,23 +39,32 @@
             text-align: center;
         }
 
+        /* Wrapper card */
+        .give-wrapper-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 3rem 2.5rem 2.75rem;
+            max-width: 740px;
+            width: 100%;
+            box-shadow: 0 8px 40px rgba(0,0,0,.15);
+        }
+
         .give-eyebrow {
-            font-size: .8rem; font-weight: 700; letter-spacing: .1em;
-            text-transform: uppercase; color: rgba(255,255,255,.65);
-            margin-bottom: .65rem;
+            font-size: .78rem; font-weight: 700; letter-spacing: .1em;
+            text-transform: uppercase; color: #7C3AED;
+            margin-bottom: .6rem;
         }
 
         .give-heading {
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 700; color: #fff;
-            line-height: 1.15; margin-bottom: .75rem;
-            text-shadow: 0 2px 12px rgba(0,0,0,.3);
+            font-size: clamp(1.8rem, 4.5vw, 2.5rem);
+            font-weight: 700; color: #1A2332;
+            line-height: 1.15; margin-bottom: .65rem;
         }
 
         .give-subtext {
-            font-size: 1.05rem; color: rgba(255,255,255,.82);
-            max-width: 540px; line-height: 1.6;
-            margin: 0 auto 2.75rem;
+            font-size: 1rem; color: #4B5C6F;
+            max-width: 500px; line-height: 1.6;
+            margin: 0 auto 2.25rem;
         }
 
         /* Choice cards */
@@ -73,26 +73,18 @@
             grid-template-columns: 1fr 1fr;
             gap: 1.25rem;
             width: 100%;
-            max-width: 680px;
         }
 
         .give-card {
-            background: rgba(255,255,255,.13);
-            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-            border: 1.5px solid rgba(255,255,255,.22);
             border-radius: 16px;
             padding: 2rem 1.5rem 1.75rem;
             cursor: pointer;
             text-decoration: none;
             display: flex; flex-direction: column; align-items: center;
-            transition: background .2s, border-color .2s, transform .18s;
-            color: #fff;
+            transition: box-shadow .2s, transform .18s;
+            text-align: center;
         }
-        .give-card:hover {
-            background: rgba(255,255,255,.22);
-            border-color: rgba(255,255,255,.45);
-            transform: translateY(-3px);
-        }
+        .give-card:hover { transform: translateY(-3px); }
         .give-card:active { transform: translateY(0); }
 
         .give-card-icon {
@@ -102,12 +94,12 @@
         }
 
         .give-card-title {
-            font-size: 1.2rem; font-weight: 700;
-            color: #fff; margin-bottom: .45rem;
+            font-size: 1.15rem; font-weight: 700;
+            margin-bottom: .45rem;
         }
 
         .give-card-desc {
-            font-size: .88rem; color: rgba(255,255,255,.75);
+            font-size: .86rem;
             line-height: 1.55; text-align: center;
         }
 
@@ -115,46 +107,61 @@
             margin-top: 1.25rem;
             display: inline-block;
             font-size: .88rem; font-weight: 600;
-            padding: .5rem 1.1rem;
+            padding: .5rem 1.2rem;
             border-radius: 999px;
-            border: 1.5px solid rgba(255,255,255,.5);
+            border: none;
+            transition: background .15s, box-shadow .15s;
+        }
+
+        /* Money card - white with black text */
+        .give-card.money {
+            background: #fff;
+            border: 1px solid #E2E8F0;
+            color: #1A2332;
+            box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        }
+        .give-card.money:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+        .give-card.money .give-card-icon { color: #64748B; }
+        .give-card.money .give-card-title { color: #1A2332; }
+        .give-card.money .give-card-desc { color: #64748B; }
+        .give-card.money .give-card-cta {
+            background: #1A2332; color: #fff;
+        }
+        .give-card.money:hover .give-card-cta { background: #0f1419; }
+
+        /* Resources card - blue */
+        .give-card.resources {
+            background: #4F46E5;
+            border: 1px solid #4338CA;
             color: #fff;
-            transition: background .15s, border-color .15s;
+            box-shadow: 0 2px 8px rgba(79,70,229,.3);
         }
-        .give-card:hover .give-card-cta {
-            background: rgba(255,255,255,.2);
-            border-color: #fff;
+        .give-card.resources:hover { box-shadow: 0 6px 24px rgba(79,70,229,.4); }
+        .give-card.resources .give-card-icon { color: rgba(255,255,255,.7); }
+        .give-card.resources .give-card-title { color: #fff; }
+        .give-card.resources .give-card-desc { color: rgba(255,255,255,.8); }
+        .give-card.resources .give-card-cta {
+            background: #fff; color: #4F46E5;
         }
+        .give-card.resources:hover .give-card-cta { background: #EEF2FF; }
 
-        /* Highlight the resources card slightly */
-        .give-card.primary {
-            background: rgba(0,122,255,.3);
-            border-color: rgba(0,122,255,.55);
-        }
-        .give-card.primary:hover {
-            background: rgba(0,122,255,.45);
-            border-color: rgba(0,122,255,.8);
-        }
-        .give-card.primary .give-card-cta {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
-        }
-
-        /* If org context is shown */
+        /* Org context */
         .give-org-context {
-            margin-bottom: 2rem;
-            background: rgba(255,255,255,.14);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,.22);
+            margin-bottom: 1.75rem;
+            background: #fff;
+            border: 1px solid #E2E8F0;
             border-radius: 10px;
-            padding: .65rem 1.1rem;
-            font-size: .9rem; color: rgba(255,255,255,.9);
+            padding: .6rem 1.1rem;
+            font-size: .9rem; color: #4B5C6F;
             display: none;
+            width: fit-content;
+            margin-left: auto; margin-right: auto;
         }
-        .give-org-context strong { color: #fff; }
+        .give-org-context strong { color: #1A2332; }
 
         @media (max-width: 520px) {
-            .give-choices { grid-template-columns: 1fr; max-width: 360px; }
+            .give-wrapper-card { padding: 2rem 1.25rem 2rem; }
+            .give-choices { grid-template-columns: 1fr; }
             .give-card { padding: 1.5rem 1.25rem 1.35rem; }
         }
     </style>
@@ -162,13 +169,6 @@
 <body>
 
 <div class="give-page">
-    <div class="give-video-bg">
-        <video autoplay loop muted playsinline>
-            <source src="/assets/videos/community/donations/businessman-sharing-food.mp4" type="video/mp4">
-        </video>
-        <div class="overlay"></div>
-    </div>
-
     <div class="give-content">
         <nav class="site-nav">
             <div class="nav-inner">
@@ -184,40 +184,38 @@
         </nav>
 
         <div class="give-main">
-            <div class="give-eyebrow">CommonGround</div>
-            <h1 class="give-heading">How would you like to help?</h1>
-            <p class="give-subtext">Every contribution makes a difference. Choose the way that works best for you.</p>
+            <div class="give-wrapper-card">
+                <div class="give-eyebrow">CommonGround</div>
+                <h1 class="give-heading">How would you like to help?</h1>
+                <p class="give-subtext">Every contribution makes a difference. Choose the way that works best for you.</p>
 
-            <div class="give-org-context" id="org-context">
-                Donating to: <strong id="org-context-name"></strong>
-            </div>
+                <div class="give-org-context" id="org-context">
+                    Donating to: <strong id="org-context-name"></strong>
+                </div>
 
-            <div class="give-choices">
+                <div class="give-choices">
+                    <a href="#" class="give-card money" id="money-card" onclick="handleMoney(event)">
+                        <div class="give-card-icon" style="font-size:1.5rem">$</div>
+                        <div class="give-card-title">Give Money</div>
+                        <div class="give-card-desc">Make a financial contribution. Funds go directly to organizations to purchase what they need most.</div>
+                        <span class="give-card-cta">Donate funds &rarr;</span>
+                    </a>
 
-                <!-- Donate money -->
-                <a href="#" class="give-card" id="money-card" onclick="handleMoney(event)">
-                    <div class="give-card-icon" style="font-size:1.5rem;color:var(--color-text-muted)">$</div>
-                    <div class="give-card-title">Give Money</div>
-                    <div class="give-card-desc">Make a financial contribution. Funds go directly to organizations to purchase what they need most.</div>
-                    <span class="give-card-cta">Donate funds &rarr;</span>
-                </a>
-
-                <!-- Donate resources -->
-                <a href="/donate" class="give-card primary" id="resources-card">
-                    <div class="give-card-icon" style="font-size:1.25rem;color:var(--color-text-muted)">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
-                    </div>
-                    <div class="give-card-title">Give Resources</div>
-                    <div class="give-card-desc">Donate clothing, food, hygiene products, bedding, or other essential items directly to a shelter.</div>
-                    <span class="give-card-cta">Donate items &rarr;</span>
-                </a>
-
+                    <a href="/donate" class="give-card resources" id="resources-card">
+                        <div class="give-card-icon" style="font-size:1.25rem">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
+                        </div>
+                        <div class="give-card-title">Give Resources</div>
+                        <div class="give-card-desc">Donate clothing, food, hygiene products, bedding, or other essential items directly to a shelter.</div>
+                        <span class="give-card-cta">Donate items &rarr;</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Money modal — simple info screen since no payment system is wired up -->
+<!-- Money modal -->
 <div id="money-modal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem">
     <div style="background:#fff;border-radius:16px;max-width:440px;width:100%;padding:2rem;box-shadow:0 8px 40px rgba(0,0,0,.2);position:relative">
         <button onclick="closeMoney()" style="position:absolute;top:.75rem;right:.85rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--color-text-muted)">&times;</button>
@@ -247,16 +245,12 @@
 <script>
     i18n.apply();
 
-    // Preserve ?org= param when navigating to donate
     const urlParams   = new URLSearchParams(window.location.search);
     const prefilledOrg = urlParams.get('org');
 
     if (prefilledOrg) {
-        // Update the resources card link to carry the org param
         const resourcesCard = document.getElementById('resources-card');
         resourcesCard.href = '/donate?org=' + encodeURIComponent(prefilledOrg);
-
-        // Show org context pill if we can get the name
         loadOrgName(prefilledOrg);
     }
 
@@ -273,8 +267,7 @@
 
     function handleMoney(e) {
         e.preventDefault();
-        const modal = document.getElementById('money-modal');
-        modal.style.display = 'flex';
+        document.getElementById('money-modal').style.display = 'flex';
     }
 
     function closeMoney() {
