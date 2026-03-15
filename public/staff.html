@@ -1123,8 +1123,12 @@
                 if (!allowed.includes(item.category)) return false;
             }
             if (invStatusFilter) {
-                if (invStatusFilter === 'low' && item.status !== 'low') return false;
-                if (invStatusFilter === 'available' && item.status !== 'available' && item.status !== 'surplus') return false;
+                const s = (item.status || '').toLowerCase();
+                if (invStatusFilter === 'low') {
+                    if (s !== 'low' && s !== 'critical') return false;
+                } else if (invStatusFilter === 'available') {
+                    if (s !== 'available' && s !== 'surplus') return false;
+                }
             }
             if (invSearchQuery) {
                 const match = (item.item_name || '').toLowerCase().includes(invSearchQuery) ||
@@ -1195,8 +1199,8 @@
             tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
             return;
         }
-        const statusLabel = s => s === 'low' ? 'Low' : 'In stock';
-        const statusBadgeClass = s => s === 'low' ? 'badge-status-low' : 'badge-status-available';
+        const statusLabel = s => (s === 'low' || s === 'critical') ? (s === 'critical' ? 'Critical' : 'Low') : 'In stock';
+        const statusBadgeClass = s => (s === 'low' || s === 'critical') ? (s === 'critical' ? 'badge-status-low' : 'badge-status-low') : 'badge-status-available';
         tbody.innerHTML = filtered.map((item, idx) => {
             const current = Number(item.quantity) || 0;
             const rowClass = idx % 2 === 1 ? 'inv-row-alt' : '';
