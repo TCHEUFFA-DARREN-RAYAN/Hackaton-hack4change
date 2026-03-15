@@ -213,7 +213,6 @@
                             <tr>
                                 <th class="sortable-th" data-sort="item_name" onclick="toggleInvSort('item_name')">Item <span class="sort-chevron" id="sort-icon-item_name">&#9662;</span></th>
                                 <th class="sortable-th" data-sort="quantity" onclick="toggleInvSort('quantity')">Qty <span class="sort-chevron" id="sort-icon-quantity">&#9662;</span></th>
-                                <th class="sortable-th" data-sort="unit" onclick="toggleInvSort('unit')">Unit <span class="sort-chevron" id="sort-icon-unit">&#9662;</span></th>
                                 <th class="sortable-th" data-sort="status" onclick="toggleInvSort('status')">Status <span class="sort-chevron" id="sort-icon-status">&#9662;</span></th>
                                 <th class="sortable-th" data-sort="expiry_date" onclick="toggleInvSort('expiry_date')">Expiry <span class="sort-chevron" id="sort-icon-expiry_date">&#9662;</span></th>
                                 <th class="sortable-th" data-sort="updated_at" onclick="toggleInvSort('updated_at')">Updated <span class="sort-chevron" id="sort-icon-updated_at">&#9662;</span></th>
@@ -841,7 +840,7 @@
             renderInventory();
             renderLowAlert();
         } catch (err) {
-            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="7"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
+            document.getElementById('inventory-tbody').innerHTML = `<tr><td colspan="6"><div class="inline-notice error">${escHtml(err.message)}</div></td></tr>`;
         }
     }
 
@@ -960,20 +959,17 @@
         updateSortIndicators();
 
         if (!filtered.length) {
-            tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
             return;
         }
-        const UNIT_DISPLAY = { items: 'items', boxes: 'boxes', kg: 'kg', packs: 'packs' };
         const statusLabel = s => s === 'low' ? 'Low' : 'In stock';
         const statusBadgeClass = s => s === 'low' ? 'badge-status-low' : 'badge-status-available';
         tbody.innerHTML = filtered.map((item, idx) => {
-            const unit = UNIT_DISPLAY[item.unit] || item.unit || 'items';
             const current = Number(item.quantity) || 0;
             const rowClass = idx % 2 === 1 ? 'inv-row-alt' : '';
             return `<tr class="${rowClass}">
                 <td><strong>${escHtml(item.item_name)}</strong></td>
                 <td><strong>${escHtml(String(current))}</strong></td>
-                <td>${escHtml(unit)}</td>
                 <td><span class="badge ${statusBadgeClass(item.status)}">${escHtml(statusLabel(item.status))}</span></td>
                 <td>${item.expiry_date ? formatDate(item.expiry_date) : '<span class="text-muted">—</span>'}</td>
                 <td>${item.updated_at ? formatDate(item.updated_at) : '<span class="text-muted">—</span>'}</td>
