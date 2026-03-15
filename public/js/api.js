@@ -89,6 +89,7 @@ const coordinator = {
     chatThreads:          ()        => api('/coordinator/chat/threads'),
     chatMessages:         (threadId)=> api(`/coordinator/chat/threads/${threadId}/messages`),
     createDirectThread:   (staffId) => api('/coordinator/chat/threads', { method: 'POST', body: JSON.stringify({ staff_id: staffId }) }),
+    createOrgThread:      (orgId)   => api('/coordinator/chat/threads', { method: 'POST', body: JSON.stringify({ org_id: orgId }) }),
     sendChatMessage:      (threadId, content) => api(`/coordinator/chat/threads/${threadId}/messages`, { method: 'POST', body: JSON.stringify({ content }) })
 };
 

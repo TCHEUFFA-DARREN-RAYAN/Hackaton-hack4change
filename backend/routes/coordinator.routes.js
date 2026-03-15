@@ -202,6 +202,21 @@ router.patch('/donations/:id/status', async (req, res) => {
         const { status } = req.body;
         const donation = await DonationModel.updateStatus(req.params.id, status);
         if (!donation) return res.status(404).json({ success: false, message: 'Donation not found or invalid status' });
+
+        if (status === 'confirmed' && donation.matched_org_id) {
+            try {
+                await InventoryModel.addQuantityForNeed(
+                    donation.matched_org_id,
+                    donation.item_name,
+                    donation.category || 'other',
+                    donation.unit || 'items',
+                    Number(donation.quantity) || 1
+                );
+            } catch (invErr) {
+                logger.error('Failed to auto-add donation to inventory', { error: invErr.message });
+            }
+        }
+
         res.json({ success: true, data: donation });
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });
@@ -633,14 +648,19 @@ router.get('/chat/threads/:id/messages', [
 });
 
 router.post('/chat/threads', [
-    body('staff_id').optional().isUUID().withMessage('Valid staff ID required for direct chat')
+    body('staff_id').optional().isUUID().withMessage('Valid staff ID required for direct chat'),
+    body('org_id').optional().isUUID().withMessage('Valid org ID required for org channel chat')
 ], handleValidation, async (req, res) => {
     try {
-        const { staff_id } = req.body;
-        if (!staff_id) {
-            return res.status(400).json({ success: false, message: 'staff_id is required to create direct chat' });
+        const { staff_id, org_id } = req.body;
+        let thread;
+        if (org_id) {
+            thread = await ChatThreadModel.findOrCreateOrgChannel(org_id);
+        } else if (staff_id) {
+            thread = await ChatThreadModel.findOrCreateDirectThread(staff_id);
+        } else {
+            return res.status(400).json({ success: false, message: 'staff_id or org_id is required' });
         }
-        const thread = await ChatThreadModel.findOrCreateDirectThread(staff_id);
         res.status(201).json({ success: true, data: thread });
     } catch (err) {
         logger.error(err.message || 'Request failed', { error: err.message });

@@ -63,10 +63,10 @@
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17V7m0 10l-4-4m4 4l4-4"/><path d="M17 7v10m0-10l4 4m-4-4l-4 4"/></svg>
                 <span data-i18n="coord.transfers">Transfers</span>
             </a></li>
-            <li><a href="#" data-section="chat" onclick="showSection('chat', this)" style="position:relative">
+            <li><a href="#" data-section="chat" onclick="showSection('chat', this)" style="position:relative" id="nav-chats-link">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 <span data-i18n="nav.chats">Chat</span>
-                <span id="chat-unread-badge" style="display:none;position:absolute;top:6px;right:10px;min-width:18px;height:18px;padding:0 5px;background:#ef4444;color:#fff;border-radius:9px;font-size:.65rem;font-weight:700;line-height:18px;text-align:center"></span>
+                <span class="nav-unread-dot" id="chat-unread-dot" style="display:none"></span>
             </a></li>
             <li><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
@@ -90,11 +90,6 @@
 
         <!-- Dashboard section -->
         <div id="section-overview">
-            <div class="dashboard-hero">
-                <h2>Network Dashboard</h2>
-                <p id="overview-updated">Loading...</p>
-            </div>
-
             <div class="metrics-row metrics-row-5" id="overview-metrics">
                 <div class="metric-card">
                     <div class="metric-label"><span class="metric-icon">🏢</span>Organizations</div>
@@ -131,9 +126,7 @@
                 </div>
                 <div class="pipeline" id="pipeline-stages">
                     <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Pending</div></div>
-                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Matched</div></div>
                     <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Confirmed</div></div>
-                    <div class="pipeline-stage"><div class="stage-count skeleton" style="height:1.7rem;width:40px;margin:0 auto"></div><div class="stage-label">Delivered</div></div>
                 </div>
             </div>
 
@@ -161,16 +154,6 @@
                 </div>
             </div>
 
-            <!-- AI Insights -->
-            <div class="card" style="margin-top:16px">
-                <div class="card-header">
-                    <h3>AI Network Intelligence</h3>
-                    <a href="#" onclick="showSection('insights', document.querySelector('[data-section=insights]'));return false" class="btn btn-ghost btn-sm">Full analysis</a>
-                </div>
-                <div id="overview-insights-body">
-                    <div class="skeleton skeleton-block" style="height:60px;margin-bottom:.5rem"></div>
-                </div>
-            </div>
         </div>
 
         <!-- Organizations section -->
@@ -241,9 +224,9 @@
                     </select>
                 </div>
                 <div class="inv-dropdown-wrap">
-                    <label class="inv-dropdown-label">Urgency</label>
+                    <label class="inv-dropdown-label">Priority</label>
                     <select id="needs-urgency-filter" class="form-control inv-dropdown" onchange="applyNeedsFilters()">
-                        <option value="">All urgency levels</option>
+                        <option value="">All priority levels</option>
                         <option value="critical">Critical</option>
                         <option value="high">High</option>
                         <option value="medium">Medium</option>
@@ -259,8 +242,8 @@
                             <th class="sortable-th" onclick="toggleNeedsSort('org_name')">Organization <span class="sort-chevron" id="cn-sort-org_name">&#9662;</span></th>
                             <th class="sortable-th" onclick="toggleNeedsSort('item_name')">Item Needed <span class="sort-chevron" id="cn-sort-item_name">&#9662;</span></th>
                             <th class="sortable-th" onclick="toggleNeedsSort('category')">Category <span class="sort-chevron" id="cn-sort-category">&#9662;</span></th>
-                            <th class="sortable-th" onclick="toggleNeedsSort('quantity_needed')">Qty <span class="sort-chevron" id="cn-sort-quantity_needed">&#9662;</span></th>
-                            <th class="sortable-th" onclick="toggleNeedsSort('urgency')">Urgency <span class="sort-chevron" id="cn-sort-urgency">&#9662;</span></th>
+                            <th>Qty</th>
+                            <th class="sortable-th" onclick="toggleNeedsSort('urgency')">Priority <span class="sort-chevron" id="cn-sort-urgency">&#9662;</span></th>
                             <th class="sortable-th" onclick="toggleNeedsSort('created_at')">Posted <span class="sort-chevron" id="cn-sort-created_at">&#9662;</span></th>
                         </tr>
                     </thead>
@@ -280,11 +263,9 @@
                         <input type="search" id="coord-don-search" class="don-search-input" placeholder="Search by item, donor or organization..." autocomplete="off">
                     </div>
                     <div class="don-pills" id="coord-don-status-pills">
-                        <button class="don-pill active" data-status="">All</button>
-                        <button class="don-pill" data-status="pending">Pending</button>
-                        <button class="don-pill" data-status="matched">Matched</button>
+                        <button class="don-pill active" data-status="pending">Pending</button>
                         <button class="don-pill" data-status="confirmed">Confirmed</button>
-                        <button class="don-pill" data-status="delivered">Delivered</button>
+                        <button class="don-pill" data-status="">All</button>
                     </div>
                     <button class="don-export-btn" onclick="exportCoordDonationsExcel()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -301,7 +282,7 @@
                                 <th>Email</th>
                                 <th>Phone</th>
                                 <th>Matched To</th>
-                                <th class="don-sortable" onclick="sortCoordDonations('status')">Status <span class="sort-chevron" id="cd-sort-status">&#9662;</span></th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody id="donations-tbody">
@@ -454,7 +435,7 @@
                 </div>
             </div>
             <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem">
-                <select id="staff-org-filter" class="form-control" style="max-width:240px" onchange="loadStaff()">
+                <select id="staff-org-filter" class="form-control" style="min-width:200px;max-width:100%" onchange="loadStaff()">
                     <option value="">All organizations</option>
                 </select>
             </div>
@@ -732,12 +713,12 @@
         <div class="card-header">
             <div>
                 <h3 style="margin:0;font-size:.9375rem;font-weight:600">Start a Conversation</h3>
-                <p style="margin:2px 0 0;font-size:.8125rem;color:var(--color-text-muted)">Select a staff member to message</p>
+                <p style="margin:2px 0 0;font-size:.8125rem;color:var(--color-text-muted)">Select an organization to message</p>
             </div>
             <button class="btn btn-ghost btn-sm" onclick="closeOrgChatPicker()">Close</button>
         </div>
         <div style="padding:10px 16px;border-bottom:1px solid var(--color-border-lt)">
-            <input id="org-chat-picker-search" type="text" class="form-control" placeholder="Search staff or organization..." oninput="filterOrgChatList()" autocomplete="off" readonly>
+            <input id="org-chat-picker-search" type="text" class="form-control" placeholder="Search organizations..." oninput="filterOrgChatList()" autocomplete="off" readonly>
         </div>
         <div id="org-chat-picker-list" style="overflow-y:auto;flex:1;padding:6px 0"></div>
     </div>
@@ -831,6 +812,7 @@
 
     async function loadOverviewInsights() {
         const body = document.getElementById('overview-insights-body');
+        if (!body) return;
         try {
             const res = await aiApi.networkInsights();
             const d = res.data;
@@ -879,7 +861,6 @@
             const res = await coordinator.overview();
             overviewData = res.data;
             renderOverviewMetrics(overviewData);
-            document.getElementById('overview-updated').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString('en-CA', { hour: '2-digit', minute: '2-digit' });
             await Promise.all([loadCriticalNeeds(), loadExpiring()]);
         } catch (err) {
             document.getElementById('overview-metrics').innerHTML = `<div class="inline-notice error">${escHtml(err.message)}</div>`;
@@ -889,27 +870,27 @@
     function renderOverviewMetrics(data) {
         const d = data.donations;
         document.getElementById('overview-metrics').innerHTML = `
-            <div class="metric-card">
+            <div class="metric-card" style="border-top:3px solid #6366f1">
                 <div class="metric-label"><span class="metric-icon">🏢</span>Organizations</div>
                 <div class="metric-value">${data.total_orgs}</div>
                 <div class="metric-sub">GMHSC Network</div>
             </div>
-            <div class="metric-card accent-primary">
+            <div class="metric-card" style="border-top:3px solid #f59e0b">
                 <div class="metric-label"><span class="metric-icon">📌</span>Active Needs</div>
                 <div class="metric-value">${data.active_needs}</div>
                 <div class="metric-sub">Unfulfilled across network</div>
             </div>
-            <div class="metric-card accent-high">
+            <div class="metric-card" style="border-top:3px solid #ef4444">
                 <div class="metric-label"><span class="metric-icon">🚨</span>Critical</div>
                 <div class="metric-value">${data.critical_needs}</div>
                 <div class="metric-sub">Require immediate action</div>
             </div>
-            <div class="metric-card accent-accent">
+            <div class="metric-card" style="border-top:3px solid #10b981">
                 <div class="metric-label"><span class="metric-icon">💝</span>Pending Donations</div>
                 <div class="metric-value">${d.pending}</div>
-                <div class="metric-sub">Awaiting matching</div>
+                <div class="metric-sub">Awaiting confirmation</div>
             </div>
-            <div class="metric-card">
+            <div class="metric-card" style="border-top:3px solid #2563eb">
                 <div class="metric-label"><span class="metric-icon">⏰</span>Expiring Soon</div>
                 <div class="metric-value">${data.expiring_soon || 0}</div>
                 <div class="metric-sub">Within 30 days</div>
@@ -917,9 +898,7 @@
 
         document.getElementById('pipeline-stages').innerHTML = `
             <div class="pipeline-stage"><div class="stage-count">${d.pending}</div><div class="stage-label">Pending</div></div>
-            <div class="pipeline-stage"><div class="stage-count">${d.matched}</div><div class="stage-label">Matched</div></div>
-            <div class="pipeline-stage"><div class="stage-count">${d.confirmed}</div><div class="stage-label">Confirmed</div></div>
-            <div class="pipeline-stage"><div class="stage-count">${d.delivered}</div><div class="stage-label">Delivered</div></div>`;
+            <div class="pipeline-stage"><div class="stage-count">${d.confirmed + (d.delivered || 0)}</div><div class="stage-label">Confirmed</div></div>`;
     }
 
     async function loadCriticalNeeds() {
@@ -1092,7 +1071,7 @@
         tbody.innerHTML = allStaffData.map(s => `
             <tr>
                 <td><strong>${escHtml(s.first_name)} ${escHtml(s.last_name)}</strong></td>
-                <td>${escHtml(s.email)}</td>
+                <td><a href="mailto:${escHtml(s.email)}" style="color:var(--color-primary);text-decoration:none">${escHtml(s.email)}</a></td>
                 <td>${escHtml(s.org_name || '—')}</td>
                 <td><span class="badge badge-${escHtml(s.status)}">${escHtml(s.status)}</span></td>
                 <td class="text-sm text-muted">${formatDate(s.created_at)}</td>
@@ -1313,9 +1292,8 @@
 
     async function openOrgChatPicker() {
         try {
-            const res = await coordinator.staff({});
-            // Exclude coordinators — only show staff members
-            _orgChatPickerData = (res.data || []).filter(s => s.role === 'staff');
+            if (!allOrgsData.length) await loadOrgs();
+            _orgChatPickerData = allOrgsData;
             const searchEl = document.getElementById('org-chat-picker-search');
             searchEl.removeAttribute('readonly');
             searchEl.value = '';
@@ -1323,7 +1301,7 @@
             document.getElementById('org-chat-picker-modal').classList.add('modal-open');
             setTimeout(() => searchEl.focus(), 50);
         } catch (err) {
-            toast('Failed to load staff members.', 'error');
+            toast('Failed to load organizations.', 'error');
         }
     }
 
@@ -1337,22 +1315,22 @@
     function filterOrgChatList() {
         const q = (document.getElementById('org-chat-picker-search').value || '').toLowerCase();
         const list = document.getElementById('org-chat-picker-list');
-        const filtered = _orgChatPickerData.filter(s =>
-            (`${s.first_name} ${s.last_name}`).toLowerCase().includes(q) ||
-            (s.org_name || '').toLowerCase().includes(q) ||
-            (s.email || '').toLowerCase().includes(q)
+        const filtered = _orgChatPickerData.filter(o =>
+            (o.name || '').toLowerCase().includes(q) ||
+            (o.type || '').toLowerCase().includes(q) ||
+            (o.address || '').toLowerCase().includes(q)
         );
-        list.innerHTML = filtered.map(s => `
-            <div style="padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--color-border-lt)" onclick="startCoordStaffChat('${escHtml(s.id)}')">
-                <div class="text-sm" style="font-weight:600">${escHtml(s.first_name)} ${escHtml(s.last_name)}</div>
-                <div class="text-xs text-muted">${escHtml(s.org_name || '')}${s.role ? ' · ' + escHtml(s.role) : ''}</div>
-            </div>`).join('') || '<div class="text-sm text-muted" style="padding:16px">No staff members found</div>';
+        list.innerHTML = filtered.map(o => `
+            <div style="padding:10px 16px;cursor:pointer;border-bottom:1px solid var(--color-border-lt);transition:background .15s" onmouseover="this.style.background='var(--color-bg)'" onmouseout="this.style.background=''" onclick="startCoordOrgChat('${escHtml(o.id)}')">
+                <div class="text-sm" style="font-weight:600">${escHtml(o.name)}</div>
+                <div class="text-xs text-muted">${escHtml(o.type || '')}${o.address ? ' · ' + escHtml(o.address) : ''}</div>
+            </div>`).join('') || '<div class="text-sm text-muted" style="padding:16px">No organizations found</div>';
     }
 
-    async function startCoordStaffChat(staffId) {
+    async function startCoordOrgChat(orgId) {
         closeOrgChatPicker();
         try {
-            const res = await coordinator.createDirectThread(staffId);
+            const res = await coordinator.createOrgThread(orgId);
             await loadCoordChatThreads();
             const threadId = res.data?.id;
             if (threadId) selectCoordThread(threadId);
@@ -1463,15 +1441,13 @@
     function updateCoordDonPillCounts() {
         const counts = {
             '': allDonationsData.length,
-            'pending':   allDonationsData.filter(d => d.status === 'pending').length,
-            'matched':   allDonationsData.filter(d => d.status === 'matched').length,
-            'confirmed': allDonationsData.filter(d => d.status === 'confirmed').length,
-            'delivered': allDonationsData.filter(d => d.status === 'delivered').length
+            'pending':   allDonationsData.filter(d => d.status === 'pending' || d.status === 'matched').length,
+            'confirmed': allDonationsData.filter(d => d.status === 'confirmed' || d.status === 'delivered').length
         };
-        const labels = { '': 'All', 'pending': 'Pending', 'matched': 'Matched', 'confirmed': 'Confirmed', 'delivered': 'Delivered' };
+        const labels = { '': 'All', 'pending': 'Pending', 'confirmed': 'Confirmed' };
         document.querySelectorAll('#coord-don-status-pills .don-pill').forEach(btn => {
             const s = btn.getAttribute('data-status');
-            btn.textContent = `${labels[s]} (${counts[s] ?? 0})`;
+            btn.textContent = `${labels[s] || s} (${counts[s] ?? 0})`;
         });
     }
 
@@ -1483,7 +1459,8 @@
         const search = (document.getElementById('coord-don-search')?.value || '').toLowerCase().trim();
         const statusF = getCoordDonStatusFilter();
         return allDonationsData.filter(d => {
-            if (statusF && d.status !== statusF) return false;
+            if (statusF === 'pending' && d.status !== 'pending' && d.status !== 'matched') return false;
+            if (statusF === 'confirmed' && d.status !== 'confirmed' && d.status !== 'delivered') return false;
             if (search) {
                 return (d.item_name || '').toLowerCase().includes(search) ||
                        (d.donor_name || '').toLowerCase().includes(search) ||
@@ -1519,7 +1496,6 @@
     function renderDonations() {
         const tbody = document.getElementById('donations-tbody');
         let donations = getCoordFilteredDonations();
-        // Sort
         if (_coordDonSort.field) {
             donations = [...donations].sort((a, b) => {
                 let va = a[_coordDonSort.field] ?? '', vb = b[_coordDonSort.field] ?? '';
@@ -1532,37 +1508,33 @@
             tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><p>No donations match the current filter.</p></div></td></tr>`;
             return;
         }
-        const STATUS_LABELS = { pending: 'Pending', matched: 'Matched', confirmed: 'Confirmed', delivered: 'Delivered' };
         tbody.innerHTML = donations.map(d => {
             const st = d.status || 'pending';
-            return `<tr>
+            const isPending = (st === 'pending' || st === 'matched');
+            const rowStyle = isPending ? '' : 'style="opacity:.65"';
+            const statusCol = isPending
+                ? `<button class="btn btn-primary btn-sm btn-resolve" onclick="resolveCoordDonation('${escHtml(d.id)}')">Resolved</button>`
+                : `<span class="badge badge-confirmed" style="background:#ECFDF5;color:#065F46;padding:4px 10px;border-radius:4px;font-size:.75rem;font-weight:600">Confirmed</span>`;
+            return `<tr ${rowStyle}>
                 <td><strong>${escHtml(d.item_name)}</strong></td>
                 <td>${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</td>
                 <td><span class="don-donor-name">${escHtml(d.donor_name)}</span></td>
                 <td><a class="don-contact-link" href="mailto:${escHtml(d.donor_email)}">${escHtml(d.donor_email)}</a></td>
                 <td>${d.donor_phone ? `<a class="don-contact-link" href="tel:${escHtml(d.donor_phone)}">${escHtml(d.donor_phone)}</a>` : '<span class="text-muted">—</span>'}</td>
                 <td>${d.matched_org_name ? `<strong>${escHtml(d.matched_org_name)}</strong>` : '<span class="text-muted">Unmatched</span>'}</td>
-                <td>
-                    <select class="don-status-select don-status-${escHtml(st)}" onchange="updateCoordDonationStatus('${escHtml(d.id)}', this.value)" ${st === 'delivered' ? 'disabled' : ''}>
-                        <option value="pending"   ${st === 'pending'   ? 'selected' : ''}>Pending</option>
-                        <option value="matched"   ${st === 'matched'   ? 'selected' : ''}>Matched</option>
-                        <option value="confirmed" ${st === 'confirmed' ? 'selected' : ''}>Confirmed</option>
-                        <option value="delivered" ${st === 'delivered' ? 'selected' : ''}>Delivered</option>
-                    </select>
-                </td>
+                <td>${statusCol}</td>
             </tr>`;
         }).join('');
     }
 
-    async function updateCoordDonationStatus(id, status) {
-        if (!status) return;
+    async function resolveCoordDonation(id) {
         try {
-            await coordinator.updateDonationStatus(id, status);
-            toast('Donation status updated.', 'success');
+            await coordinator.updateDonationStatus(id, 'confirmed');
+            toast('Donation confirmed and added to inventory.', 'success');
             allDonationsData = [];
             await loadDonations();
         } catch (err) {
-            toast(err.message || 'Failed to update status.', 'error');
+            toast(err.message || 'Failed to resolve donation.', 'error');
             await loadDonations();
         }
     }
@@ -1948,24 +1920,54 @@
 
     async function loadCoordChatThreads() {
         try {
+            if (!allOrgsData.length) await loadOrgs();
             const res = await coordinator.chatThreads();
             coordChatThreads = res.data || [];
             const list = document.getElementById('coord-threads-list');
             const otherName = t => (t.staff_first_name && t.staff_last_name) ? `${t.staff_first_name} ${t.staff_last_name}` : (t.org_name || t.peer_org_name || 'Unknown');
-            list.innerHTML = coordChatThreads.map(t => {
-                const isUnread = _unreadThreadIds.has(t.id);
-                return `
-                <div class="coord-thread-item ${selectedCoordThread === t.id ? 'active' : ''}" data-thread-id="${escHtml(t.id)}" onclick="selectCoordThread('${escHtml(t.id)}')">
-                    <div class="coord-thread-avatar" style="position:relative">
-                        ${otherName(t).charAt(0).toUpperCase()}
-                        ${isUnread ? '<span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#ef4444;border-radius:50%;border:2px solid #fff"></span>' : ''}
-                    </div>
-                    <div class="coord-thread-info">
-                        <div class="coord-thread-name" style="${isUnread ? 'font-weight:700' : ''}">${escHtml(otherName(t))}</div>
-                        <div class="coord-thread-preview">${escHtml(t.last_preview || t.org_name || '')}</div>
-                    </div>
-                </div>`;
-            }).join('') || '<div class="text-sm text-muted" style="padding:12px">No conversations yet.</div>';
+
+            const orgThreadMap = {};
+            coordChatThreads.forEach(t => {
+                if (t.org_id) orgThreadMap[t.org_id] = t;
+            });
+
+            let html = '';
+
+            // Threads with messages first (sorted by recency, already sorted from backend)
+            if (coordChatThreads.length) {
+                coordChatThreads.forEach(t => {
+                    const isUnread = _unreadThreadIds.has(t.id);
+                    html += `
+                    <div class="coord-thread-item ${selectedCoordThread === t.id ? 'active' : ''}" data-thread-id="${escHtml(t.id)}" onclick="selectCoordThread('${escHtml(t.id)}')">
+                        <div class="coord-thread-avatar" style="position:relative">
+                            ${otherName(t).charAt(0).toUpperCase()}
+                            ${isUnread ? '<span style="position:absolute;top:-3px;right:-3px;width:10px;height:10px;background:#ef4444;border-radius:50%;border:2px solid var(--color-surface)"></span>' : ''}
+                        </div>
+                        <div class="coord-thread-info">
+                            <div class="coord-thread-name" style="${isUnread ? 'font-weight:700' : ''}">${escHtml(otherName(t))}</div>
+                            <div class="coord-thread-preview">${escHtml(t.type === 'org_channel' ? 'Organization channel' : t.type === 'direct' ? 'Direct message' : t.type === 'cross_org' ? 'Cross-org' : '')}</div>
+                        </div>
+                    </div>`;
+                });
+            }
+
+            // All organizations that don't have a thread yet
+            const orgsWithoutThread = allOrgsData.filter(o => !orgThreadMap[o.id]);
+            if (orgsWithoutThread.length) {
+                html += `<div style="padding:8px 14px;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--color-text-muted);border-top:1px solid var(--color-border-lt);margin-top:4px">All Organizations</div>`;
+                orgsWithoutThread.forEach(o => {
+                    html += `
+                    <div class="coord-thread-item" style="cursor:pointer" onclick="startCoordOrgChat('${escHtml(o.id)}')">
+                        <div class="coord-thread-avatar">${(o.name || '?').charAt(0).toUpperCase()}</div>
+                        <div class="coord-thread-info">
+                            <div class="coord-thread-name">${escHtml(o.name)}</div>
+                            <div class="coord-thread-preview text-muted" style="font-size:.75rem">Tap to start conversation</div>
+                        </div>
+                    </div>`;
+                });
+            }
+
+            list.innerHTML = html || '<div class="text-sm text-muted" style="padding:12px">No organizations found.</div>';
         } catch (err) {
             document.getElementById('coord-threads-list').innerHTML = '<div class="text-sm text-muted" style="padding:12px">Failed to load</div>';
         }
@@ -2072,15 +2074,8 @@
     let _unreadThreadIds = new Set();
 
     function _updateChatBadge() {
-        const badge = document.getElementById('chat-unread-badge');
-        if (!badge) return;
-        const count = _unreadThreadIds.size;
-        if (count > 0) {
-            badge.textContent = count > 99 ? '99+' : count;
-            badge.style.display = 'inline-block';
-        } else {
-            badge.style.display = 'none';
-        }
+        const dot = document.getElementById('chat-unread-dot');
+        if (dot) dot.style.display = _unreadThreadIds.size > 0 ? 'inline-block' : 'none';
     }
 
     function _markThreadRead(threadId) {

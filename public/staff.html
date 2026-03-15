@@ -916,22 +916,22 @@
         const pendingDonations = donationsData.filter(d => d.status === 'matched' || d.status === 'pending').length;
 
         document.getElementById('dashboard-metrics').innerHTML = `
-            <div class="metric-card">
+            <div class="metric-card" style="border-top:3px solid #6366f1">
                 <div class="metric-label"><span class="metric-icon">👥</span>Total donors</div>
                 <div class="metric-value">${totalDonors}</div>
                 <div class="metric-sub">unique contributors</div>
             </div>
-            <div class="metric-card accent-primary">
+            <div class="metric-card" style="border-top:3px solid #f59e0b">
                 <div class="metric-label"><span class="metric-icon">📌</span>Open needs</div>
                 <div class="metric-value">${openNeeds}</div>
                 <div class="metric-sub">needs to fulfill</div>
             </div>
-            <div class="metric-card accent-accent">
+            <div class="metric-card" style="border-top:3px solid #2563eb">
                 <div class="metric-label"><span class="metric-icon">📦</span>Available stock</div>
                 <div class="metric-value">${itemsInStock}</div>
                 <div class="metric-sub">items in inventory</div>
             </div>
-            <div class="metric-card accent-high">
+            <div class="metric-card" style="border-top:3px solid #10b981">
                 <div class="metric-label"><span class="metric-icon">💝</span>Pending donations</div>
                 <div class="metric-value">${pendingDonations}</div>
                 <div class="metric-sub">awaiting receipt</div>

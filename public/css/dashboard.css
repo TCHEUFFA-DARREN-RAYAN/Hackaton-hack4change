@@ -172,7 +172,13 @@ body {
   background: var(--color-surface);
   border: 1px solid var(--color-border-lt);
   border-radius: var(--dash-radius);
-  padding: 16px 18px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  transition: box-shadow .2s, transform .2s;
+}
+.metric-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  transform: translateY(-1px);
 }
 .stat-card .stat-label, .metric-card .metric-label {
   font-size: .6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;
@@ -322,17 +328,17 @@ thead th.sortable-th--active {
 }
 .sort-chevron {
   display: inline-block; vertical-align: middle;
-  width: 12px; height: 12px; margin-left: 4px;
-  opacity: .3; transition: opacity .12s, transform .15s;
+  margin-left: 4px; font-size: .85rem;
+  opacity: .5; transition: opacity .12s, transform .15s, color .12s;
   flex-shrink: 0;
 }
-thead th.sortable-th:hover .sort-chevron { opacity: .65; }
-.sort-chevron--active { opacity: 1 !important; color: var(--color-primary); }
+thead th.sortable-th:hover .sort-chevron { opacity: .85; }
+.sort-chevron--active { opacity: 1 !important; color: var(--color-primary); font-weight: 700; }
 .sort-chevron--asc { transform: rotate(180deg); }
 .sort-chevron--desc { transform: rotate(0deg); }
-tbody td { padding: 10px 12px; border-bottom: 1px solid var(--color-border-lt); vertical-align: middle; }
+tbody td { padding: 11px 12px; border-bottom: 1px solid var(--color-border-lt); vertical-align: middle; }
 tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover { background: var(--color-bg); }
+tbody tr:hover { background: var(--color-bg); transition: background .15s; }
 .gap-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 
 /* ── Badges ───────────────────────────────────────────────── */
@@ -1533,6 +1539,8 @@ select.form-control {
   --color-medium-bg: #422006;
   --color-low: #10B981;
   --color-low-bg: #022c22;
+  --color-surplus: #3B82F6;
+  --color-surplus-bg: #172554;
   --color-text: #F1F5F9;
   --color-text-muted: #94A3B8;
   --color-text-light: #64748B;
@@ -1541,6 +1549,7 @@ select.form-control {
   --color-bg: #000000;
   --color-bg-secondary: #0F172A;
   --color-surface: #0A0A0A;
+  --color-surface-alt: #0F172A;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -1611,3 +1620,36 @@ select.form-control {
 [data-theme="dark"] .btn-action:hover { background: #1E293B; border-color: #3B82F6; color: #3B82F6; }
 [data-theme="dark"] .topbar-toggle-btn { background: #0F172A; border-color: #334155; color: #F1F5F9; }
 [data-theme="dark"] .topbar-toggle-btn:hover { background: #1E293B; border-color: #3B82F6; color: #3B82F6; }
+
+/* ── Resolve button (donations) ───────────────────────── */
+.btn-resolve {
+  padding: 5px 14px; font-size: .75rem; font-weight: 600;
+  border-radius: 5px; cursor: pointer;
+  color: #fff; background: var(--color-primary); border: none;
+  transition: background .15s, transform .1s;
+}
+.btn-resolve:hover { background: var(--color-primary-dk); }
+.btn-resolve:active { transform: scale(.97); }
+
+/* ── Search input height match ────────────────────────── */
+.inv-filters-row .inv-search { height: 38px; }
+.inv-filters-row .inv-search input { height: 100%; }
+
+/* ── Portal header polish ─────────────────────────────── */
+.portal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+}
+.portal-header h1 { font-size: 1.15rem; font-weight: 700; }
+
+/* ── Data table polish ────────────────────────────────── */
+.data-table { width: 100%; border-collapse: collapse; }
+.table-wrap {
+  border: 1px solid var(--color-border-lt);
+  border-radius: var(--dash-radius);
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .btn-resolve { background: #3B82F6; }
+[data-theme="dark"] .btn-resolve:hover { background: #2563EB; }
