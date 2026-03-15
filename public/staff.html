@@ -2607,6 +2607,39 @@
         window.location.href = '/login';
     }
 
+    function toggleDarkMode() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        localStorage.setItem('cg-theme', isDark ? 'light' : 'dark');
+        updateDarkModeIcon();
+    }
+
+    function updateDarkModeIcon() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        document.getElementById('dm-icon-moon').style.display = isDark ? 'none' : 'block';
+        document.getElementById('dm-icon-sun').style.display = isDark ? 'block' : 'none';
+    }
+
+    function toggleLocale() {
+        const btn = document.getElementById('locale-toggle-btn');
+        const current = btn.textContent.trim();
+        btn.textContent = current === 'EN' ? 'FR' : 'EN';
+        localStorage.setItem('cg-locale', current === 'EN' ? 'fr' : 'en');
+    }
+
+    (function initTheme() {
+        const saved = localStorage.getItem('cg-theme');
+        if (saved === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        updateDarkModeIcon();
+        const locale = localStorage.getItem('cg-locale');
+        if (locale === 'fr') {
+            const btn = document.getElementById('locale-toggle-btn');
+            if (btn) btn.textContent = 'FR';
+        }
+    })();
+
     init();
 </script>
 
