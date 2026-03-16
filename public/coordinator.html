@@ -41,41 +41,41 @@
             <span class="brand-dot"></span>
             <span id="sidebar-org-name">CommonGround</span>
         </div>
-        <ul class="nav-links">
-            <li><a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">
+        <ul class="nav-links nav-draggable" id="coord-nav-links">
+            <li class="nav-item" data-section="overview" draggable="true"><a href="#" data-section="overview" class="active" onclick="showSection('overview', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 <span data-i18n="nav.dashboard">Dashboard</span>
             </a></li>
-            <li><a href="#" data-section="organizations" onclick="showSection('organizations', this)">
+            <li class="nav-item" data-section="organizations" draggable="true"><a href="#" data-section="organizations" onclick="showSection('organizations', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 <span data-i18n="coord.organizations">Organizations</span>
             </a></li>
-            <li><a href="#" data-section="staff" onclick="showSection('staff', this)">
+            <li class="nav-item" data-section="staff" draggable="true"><a href="#" data-section="staff" onclick="showSection('staff', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 <span data-i18n="coord.staff">Staff</span>
             </a></li>
-            <li><a href="#" data-section="needs" onclick="showSection('needs', this)">
+            <li class="nav-item" data-section="needs" draggable="true"><a href="#" data-section="needs" onclick="showSection('needs', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
                 <span data-i18n="coord.all_needs">All Needs</span>
             </a></li>
-            <li><a href="#" data-section="donations" onclick="showSection('donations', this)">
+            <li class="nav-item" data-section="donations" draggable="true"><a href="#" data-section="donations" onclick="showSection('donations', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 9V2"/><path d="M8 5l4-4 4 4"/></svg>
                 <span data-i18n="nav.donations">Donations</span>
             </a></li>
-            <li><a href="#" data-section="inventory" onclick="showSection('inventory', this)">
+            <li class="nav-item" data-section="inventory" draggable="true"><a href="#" data-section="inventory" onclick="showSection('inventory', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
                 <span data-i18n="nav.inventory">Inventory</span>
             </a></li>
-            <li><a href="#" data-section="transfers" onclick="showSection('transfers', this)">
+            <li class="nav-item" data-section="transfers" draggable="true"><a href="#" data-section="transfers" onclick="showSection('transfers', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17V7m0 10l-4-4m4 4l4-4"/><path d="M17 7v10m0-10l4 4m-4-4l-4 4"/></svg>
                 <span data-i18n="coord.transfers">Transfers</span>
             </a></li>
-            <li><a href="#" data-section="chat" onclick="showSection('chat', this)" style="position:relative" id="nav-chats-link">
+            <li class="nav-item" data-section="chat" draggable="true"><a href="#" data-section="chat" onclick="showSection('chat', this)" style="position:relative" id="nav-chats-link">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 <span data-i18n="nav.chats">Chat</span>
                 <span class="nav-unread-dot" id="chat-unread-dot" style="display:none"></span>
             </a></li>
-            <li><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
+            <li class="nav-item" data-section="analytics" draggable="true"><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
                 Analytics
             </a></li>
@@ -754,10 +754,45 @@
     let coordChatThreads = [];
     let selectedCoordThread = null;
 
+    const COORD_NAV_ORDER_KEY = 'cg-coord-nav-order';
+    function initCoordNavReorder() {
+        const ul = document.getElementById('coord-nav-links');
+        if (!ul) return;
+        const items = [...ul.querySelectorAll('.nav-item')];
+        const saved = localStorage.getItem(COORD_NAV_ORDER_KEY);
+        if (saved) {
+            try {
+                const order = JSON.parse(saved);
+                const bySection = new Map(items.map(li => [li.dataset.section, li]));
+                order.forEach(s => {
+                    const li = bySection.get(s);
+                    if (li) ul.appendChild(li);
+                });
+            } catch (_) {}
+        }
+        let dragged = null;
+        items.forEach(li => {
+            li.addEventListener('dragstart', e => { dragged = li; e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', li.dataset.section); li.classList.add('nav-dragging'); });
+            li.addEventListener('dragend', () => { dragged = null; li.classList.remove('nav-dragging'); });
+            li.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; if (dragged && dragged !== li) li.classList.add('nav-drag-over'); });
+            li.addEventListener('dragleave', () => li.classList.remove('nav-drag-over'));
+            li.addEventListener('drop', e => {
+                e.preventDefault();
+                li.classList.remove('nav-drag-over');
+                if (dragged && dragged !== li) {
+                    ul.insertBefore(dragged, li);
+                    const order = [...ul.querySelectorAll('.nav-item')].map(x => x.dataset.section);
+                    localStorage.setItem(COORD_NAV_ORDER_KEY, JSON.stringify(order));
+                }
+            });
+        });
+    }
+
     async function init() {
         const user = await requireAuth('coordinator');
         if (!user) return;
         currentUser = user;
+        initCoordNavReorder();
         hideAllModals();
         initAnalyticsDateRange();
         await loadOverview();

@@ -20,18 +20,6 @@
     </div>
     <div class="topbar-actions">
         <span class="text-muted" id="nav-org-name"></span>
-        <button class="topbar-bell" title="Notifications" aria-label="Notifications">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-            <span class="topbar-bell-badge">3</span>
-        </button>
-        <button class="topbar-toggle-btn" onclick="toggleLocale()" id="locale-toggle-btn" title="Switch language">EN</button>
-        <div class="theme-toggle" onclick="toggleDarkMode()" role="button" tabindex="0" id="dark-mode-btn" title="Toggle dark mode">
-            <div class="theme-toggle-thumb"></div>
-            <div class="theme-toggle-icons">
-                <div class="theme-toggle-icon theme-toggle-icon-moon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
-                <div class="theme-toggle-icon theme-toggle-icon-sun"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -44,38 +32,37 @@
         <ul class="nav-links">
             <li><a href="#" data-section="dashboard" class="active" onclick="showSection('dashboard', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                <span data-i18n="nav.dashboard">Dashboard</span>
+                Dashboard
             </a></li>
             <li><a href="#" data-section="inventory" onclick="showSection('inventory', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 14v4"/></svg>
-                <span data-i18n="nav.inventory">Inventory</span>
+                Inventory
             </a></li>
             <li><a href="#" data-section="needs" onclick="showSection('needs', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="M4.93 19.07l2.83-2.83"/><path d="M16.24 7.76l2.83-2.83"/></svg>
-                <span data-i18n="nav.your_needs">Your Needs</span>
+                Your Needs
             </a></li>
             <li><a href="#" data-section="other-needs" onclick="showSection('other-needs', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                <span data-i18n="nav.other_needs">Other Needs</span>
+                Other Needs
             </a></li>
             <li><a href="#" data-section="donations" onclick="showSection('donations', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12v10H4V12"/><rect x="2" y="9" width="20" height="12" rx="2"/><path d="M12 9V2"/><path d="M8 5l4-4 4 4"/></svg>
-                <span data-i18n="nav.donations">Donations</span>
+                Donations
             </a></li>
             <li><a href="#" data-section="analytics" onclick="showSection('analytics', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
-                <span data-i18n="nav.analytics">Analytics</span>
+                Analytics
             </a></li>
-            <li><a href="#" data-section="chats" onclick="showSection('chats', this)" id="nav-chats-link">
+            <li><a href="#" data-section="chats" onclick="showSection('chats', this)">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                <span data-i18n="nav.chats">Chats</span>
-                <span class="nav-unread-dot" id="chat-unread-dot" style="display:none"></span>
+                Chats
             </a></li>
         </ul>
         <div class="sidebar-footer">
             <button class="sidebar-signout-btn" onclick="handleLogout()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                <span data-i18n="nav.sign_out">Sign out</span>
+                Sign out
             </button>
         </div>
     </aside>
@@ -92,48 +79,58 @@
 
         <!-- Dashboard -->
         <div id="section-dashboard">
+            <div class="dashboard-hero">
+                <h2>Welcome back</h2>
+                <p id="dashboard-hero-org">Your organization overview</p>
+            </div>
             <div class="metrics-row" id="dashboard-metrics">
                 <div class="metric-card">
-                    <div class="metric-label">Total donors</div>
+                    <div class="metric-label"><span class="metric-icon">👥</span>Total users</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">Unique contributors</div>
+                    <div class="metric-sub">Staff & volunteers</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-label">Open needs</div>
+                <div class="metric-card accent-primary">
+                    <div class="metric-label"><span class="metric-icon">📌</span>Open needs</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
                     <div class="metric-sub">Needs to fulfill</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-label">Available stock</div>
+                <div class="metric-card accent-accent">
+                    <div class="metric-label"><span class="metric-icon">📦</span>Available resources</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">Items in inventory</div>
+                    <div class="metric-sub">Items in stock</div>
                 </div>
-                <div class="metric-card">
-                    <div class="metric-label">Pending donations</div>
+                <div class="metric-card accent-high">
+                    <div class="metric-label"><span class="metric-icon">💝</span>Pending donations</div>
                     <div class="metric-value skeleton" style="height:2rem;width:50px;display:inline-block"></div>
-                    <div class="metric-sub">Awaiting receipt</div>
+                    <div class="metric-sub">Awaiting confirmation</div>
                 </div>
             </div>
             <div class="dashboard-row">
                 <div class="card" id="dashboard-inventory-card">
                     <div class="card-header" style="gap:10px">
-                        <h3 data-i18n="nav.inventory">Inventory</h3>
-                        <button class="btn btn-primary btn-sm" onclick="navigateAndOpenInventory()" data-i18n="dash.add_inventory">+ Add inventory</button>
+                        <h3>Inventory</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openAddInventory()">+ Add inventory</button>
                     </div>
                     <div id="dashboard-inventory-list"></div>
                     <div class="dash-view-more-wrap">
                         <button class="dash-view-more-btn" onclick="showSection('inventory', document.querySelector('[data-section=inventory]'))">
-                            <span data-i18n="dash.view_all_inventory">View all inventory</span>
+                            View all inventory
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
                         </button>
                     </div>
                 </div>
                 <div class="card" id="dashboard-needs-card">
                     <div class="card-header" style="gap:10px">
-                        <h3 data-i18n="nav.your_needs">Your needs</h3>
-                        <button class="btn btn-primary btn-sm" onclick="navigateAndOpenNeed()" data-i18n="dash.post_a_need">+ Post a need</button>
+                        <h3>Your needs</h3>
+                        <button class="btn btn-primary btn-sm" onclick="openAddNeed()">+ Post a need</button>
                     </div>
                     <div id="dashboard-needs-list"></div>
+                    <div class="dash-view-more-wrap">
+                        <button class="dash-view-more-btn" onclick="showSection('needs', document.querySelector('[data-section=needs]'))">
+                            View all needs
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -155,7 +152,7 @@
                 <div class="inv-filters-row">
                     <div class="inv-search">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                        <input type="search" id="inv-search" placeholder="Search items..." autocomplete="off" aria-label="Search inventory" data-i18n-placeholder="placeholder.search_items">
+                        <input type="search" id="inv-search" placeholder="Search items..." autocomplete="off" aria-label="Search inventory">
                     </div>
                     <div class="inv-dropdown-wrap">
                         <label class="inv-dropdown-label">Category</label>
@@ -177,7 +174,7 @@
                         </select>
                     </div>
                     <span class="inv-results" id="inv-results-count">0 results</span>
-                    <button class="btn-action-primary" onclick="openAddInventory()" style="margin-left:auto" data-i18n="inv.add_item">+ Add item</button>
+                    <button class="btn-action-primary" onclick="openAddInventory()" style="margin-left:auto">+ Add item</button>
                 </div>
                 <div class="table-wrap">
                     <table class="data-table inv-table">
@@ -204,9 +201,9 @@
                     <div class="inv-toolbar-right" style="flex:1">
                         <button class="btn btn-fb-post" onclick="showFacebookPostPreview()">
                             <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                            <span data-i18n="needs.post_facebook">Post to Facebook</span>
+                            Post to Facebook
                         </button>
-                        <button class="btn-action-primary" onclick="openAddNeed()" data-i18n="dash.post_a_need">Post a need</button>
+                        <button class="btn-action-primary" onclick="openAddNeed()">Post a need</button>
                     </div>
                 </div>
                 <div class="inv-filters-row">
@@ -214,7 +211,7 @@
                         <label class="inv-dropdown-label">Search</label>
                         <div class="inv-search">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                            <input type="search" id="needs-search" placeholder="Search items..." autocomplete="off" aria-label="Search needs" data-i18n-placeholder="placeholder.search_items">
+                            <input type="search" id="needs-search" placeholder="Search items..." autocomplete="off" aria-label="Search needs">
                         </div>
                     </div>
                     <div class="inv-dropdown-wrap">
@@ -314,16 +311,16 @@
                 <div class="don-toolbar">
                     <div class="don-search-wrap">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                        <input type="search" id="don-search" class="don-search-input" placeholder="Search by item or donor name..." autocomplete="off" data-i18n-placeholder="placeholder.search_donor">
+                        <input type="search" id="don-search" class="don-search-input" placeholder="Search by item or donor name..." autocomplete="off">
                     </div>
                     <div class="don-pills" id="don-status-pills">
-                        <button class="don-pill" data-status="" data-i18n="don.all">All</button>
-                        <button class="don-pill active" data-status="pending" data-i18n="don.pending">Pending</button>
-                        <button class="don-pill" data-status="received" data-i18n="don.received">Received</button>
+                        <button class="don-pill active" data-status="">All</button>
+                        <button class="don-pill" data-status="pending">Pending</button>
+                        <button class="don-pill" data-status="received">Received</button>
                     </div>
                     <button class="don-export-btn" onclick="exportDonationsExcel()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        <span data-i18n="don.export">Export</span>
+                        Export
                     </button>
                 </div>
                 <div class="table-wrap">
@@ -335,7 +332,7 @@
                                 <th>Donor</th>
                                 <th>Email</th>
                                 <th>Phone</th>
-                                <th></th>
+                                <th class="don-sortable" onclick="sortDonations('status')">Status <span class="sort-chevron" id="don-sort-status">&#9662;</span></th>
                             </tr>
                         </thead>
                         <tbody id="donations-tbody"></tbody>
@@ -410,134 +407,117 @@
         <!-- Analytics -->
         <div id="section-analytics" style="display:none">
             <div class="section">
+                <!-- Section header with export button -->
                 <div class="an-section-header">
                     <div>
-                        <h2 class="an-section-title" data-i18n="analytics.overview">Analytics Overview</h2>
-                        <p class="an-section-sub" data-i18n="analytics.at_a_glance">Your organization's data at a glance</p>
+                        <h2 class="an-section-title">Analytics Overview</h2>
+                        <p class="an-section-sub">Your organization's data at a glance</p>
                     </div>
                     <button class="don-export-btn" onclick="exportAnalyticsExcel()">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        <span data-i18n="analytics.export_all">Export All Data</span>
+                        Export All Data
                     </button>
                 </div>
 
+                <!-- KPI stat row -->
                 <div class="an-kpi-row" id="an-kpi-row">
                     <div class="an-kpi-card">
-                        <div class="an-kpi-label">Total Inventory</div>
+                        <div class="an-kpi-label">Total inventory</div>
                         <div class="an-kpi-value" id="an-kpi-total">—</div>
-                        <div class="an-kpi-sub">Unique items tracked</div>
+                        <div class="an-kpi-sub">Across all categories</div>
                     </div>
                     <div class="an-kpi-card">
-                        <div class="an-kpi-label">Total Stock Units</div>
-                        <div class="an-kpi-value" id="an-kpi-stock-units">—</div>
-                        <div class="an-kpi-sub">Across all items</div>
+                        <div class="an-kpi-label">Critical / Low stock</div>
+                        <div class="an-kpi-value an-kpi-danger" id="an-kpi-critical">—</div>
+                        <div class="an-kpi-sub">Needs restocking</div>
                     </div>
                     <div class="an-kpi-card">
-                        <div class="an-kpi-label">Critical / Low</div>
-                        <div class="an-kpi-value" id="an-kpi-critical">—</div>
-                        <div class="an-kpi-sub">Items need restocking</div>
+                        <div class="an-kpi-label">Open needs</div>
+                        <div class="an-kpi-value an-kpi-warn" id="an-kpi-needs">—</div>
+                        <div class="an-kpi-sub">Posted by your org</div>
                     </div>
                     <div class="an-kpi-card">
-                        <div class="an-kpi-label">Open Needs</div>
-                        <div class="an-kpi-value" id="an-kpi-needs">—</div>
-                        <div class="an-kpi-sub">Unfulfilled requests</div>
+                        <div class="an-kpi-label">Needs fulfilled</div>
+                        <div class="an-kpi-value an-kpi-success" id="an-kpi-fulfilled">—</div>
+                        <div class="an-kpi-sub">% fully received</div>
                     </div>
                     <div class="an-kpi-card">
-                        <div class="an-kpi-label">Fulfillment Rate</div>
-                        <div class="an-kpi-value" id="an-kpi-fulfilled">—</div>
-                        <div class="an-kpi-sub">Needs fully received</div>
-                    </div>
-                    <div class="an-kpi-card">
-                        <div class="an-kpi-label">Total Donations</div>
+                        <div class="an-kpi-label">Total donations</div>
                         <div class="an-kpi-value" id="an-kpi-donations-total">—</div>
-                        <div class="an-kpi-sub">All time received</div>
+                        <div class="an-kpi-sub">All time</div>
                     </div>
                     <div class="an-kpi-card">
-                        <div class="an-kpi-label">Donation Rate</div>
-                        <div class="an-kpi-value" id="an-kpi-donation-rate">—</div>
-                        <div class="an-kpi-sub">Confirmed vs pending</div>
+                        <div class="an-kpi-label">Pending donations</div>
+                        <div class="an-kpi-value an-kpi-warn" id="an-kpi-donations">—</div>
+                        <div class="an-kpi-sub">Awaiting receipt</div>
+                    </div>
+                    <div class="an-kpi-card">
+                        <div class="an-kpi-label">Donations received</div>
+                        <div class="an-kpi-value an-kpi-success" id="an-kpi-donations-received">—</div>
+                        <div class="an-kpi-sub">Confirmed</div>
                     </div>
                 </div>
 
+                <!-- Row 1: inventory status donut + category bar -->
                 <div class="an-row-2">
                     <div class="analytics-card">
-                        <h4>Inventory by Status</h4>
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                            Inventory by status
+                        </h4>
                         <div class="an-donut-wrap">
-                            <canvas id="chart-donut-status" width="180" height="180"></canvas>
+                            <canvas id="chart-donut-status" width="200" height="200"></canvas>
                             <div class="an-donut-legend" id="an-legend-status"></div>
                         </div>
                     </div>
                     <div class="analytics-card">
-                        <h4>Inventory by Category</h4>
-                        <div style="position:relative;height:220px">
-                            <canvas id="chart-bar-category"></canvas>
-                        </div>
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                            Inventory by category
+                        </h4>
+                        <canvas id="chart-bar-category" height="200"></canvas>
                     </div>
                 </div>
 
+                <!-- Row 2: needs urgency donut + fulfillment bars -->
                 <div class="an-row-2" style="margin-top:16px">
                     <div class="analytics-card">
-                        <h4>Needs by Urgency</h4>
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            Needs by urgency
+                        </h4>
                         <div class="an-donut-wrap">
-                            <canvas id="chart-donut-urgency" width="180" height="180"></canvas>
+                            <canvas id="chart-donut-urgency" width="200" height="200"></canvas>
                             <div class="an-donut-legend" id="an-legend-urgency"></div>
                         </div>
                     </div>
                     <div class="analytics-card">
-                        <h4>Need Fulfillment Progress</h4>
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            Need fulfillment progress
+                        </h4>
                         <div id="chart-fulfillment-bars"></div>
                     </div>
                 </div>
 
+                <!-- Row 3: donations donut + donations by item bar -->
                 <div class="an-row-2" style="margin-top:16px">
                     <div class="analytics-card">
-                        <h4>Donations Pipeline</h4>
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M20 12v10H4V12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                            Donations by status
+                        </h4>
                         <div class="an-donut-wrap">
-                            <canvas id="chart-donut-donations" width="180" height="180"></canvas>
+                            <canvas id="chart-donut-donations" width="200" height="200"></canvas>
                             <div class="an-donut-legend" id="an-legend-donations"></div>
                         </div>
                     </div>
                     <div class="analytics-card">
-                        <h4>Top Donated Items</h4>
+                        <h4>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+                            Top donated items
+                        </h4>
                         <div id="chart-donation-items"></div>
-                    </div>
-                </div>
-
-                <div class="analytics-card" style="margin-top:16px">
-                    <h4>Inventory Detail</h4>
-                    <div class="table-wrap">
-                        <table class="data-table" id="analytics-inv-table">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Category</th>
-                                    <th>Qty</th>
-                                    <th>Threshold</th>
-                                    <th>Unit</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="analytics-inv-tbody"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="analytics-card" style="margin-top:16px">
-                    <h4>Needs Tracking</h4>
-                    <div class="table-wrap">
-                        <table class="data-table" id="analytics-needs-table">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Category</th>
-                                    <th>Urgency</th>
-                                    <th>Needed</th>
-                                    <th>Received</th>
-                                    <th>Progress</th>
-                                </tr>
-                            </thead>
-                            <tbody id="analytics-needs-tbody"></tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -548,21 +528,21 @@
             <div class="section">
                 <div class="section-header">
                     <div>
-                        <p class="text-sm text-muted" style="margin:0" data-i18n="chat.description">Team chat, direct messages, and cross-organization coordination.</p>
+                        <p class="text-sm text-muted" style="margin:0">Team chat, direct messages, and cross-organization coordination.</p>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="openCrossOrgModal()" data-i18n="chat.contact_org">Contact organisation</button>
+                    <button class="btn btn-primary btn-sm" onclick="openCrossOrgModal()">Contact organisation</button>
                 </div>
                 <div class="chat-layout">
                     <div class="chat-threads">
-                        <div class="chat-threads-header" data-i18n="chat.conversations">Conversations</div>
+                        <div class="chat-threads-header">Conversations</div>
                         <div id="chat-threads-list"></div>
                     </div>
                     <div class="chat-panel">
-                        <div class="chat-panel-header" id="chat-panel-title" data-i18n="chat.select_conversation">Select a conversation</div>
-                        <div class="chat-messages" id="chat-messages"><div class="chat-empty" id="chat-empty-placeholder" data-i18n="chat.select_to_view">Select a conversation to view messages</div></div>
+                        <div class="chat-panel-header" id="chat-panel-title">Select a conversation</div>
+                        <div class="chat-messages" id="chat-messages"><div class="chat-empty" id="chat-empty-placeholder">Select a conversation to view messages</div></div>
                         <div class="chat-input-wrap" id="chat-input-wrap" style="display:none">
-                            <input type="text" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChatMessage()" data-i18n-placeholder="placeholder.type_message">
-                            <button class="btn btn-primary btn-sm" onclick="sendChatMessage()" data-i18n="chat.send">Send</button>
+                            <input type="text" id="chat-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendChatMessage()">
+                            <button class="btn btn-primary btn-sm" onclick="sendChatMessage()">Send</button>
                         </div>
                     </div>
                 </div>
@@ -832,7 +812,6 @@
     let selectedThreadId = null;
     const SECTIONS = ['dashboard', 'inventory', 'needs', 'other-needs', 'donations', 'analytics', 'chats'];
     let chatPollInterval = null;
-    let _unreadThreadIds = new Set();
     let socket = null;
     let surplusData = [];
     let transfersData = [];
@@ -870,9 +849,11 @@
         currentUser = await requireAuth('staff');
         if (!currentUser) return;
 
-        document.getElementById('nav-org-name').textContent = currentUser.name || '';
+        document.getElementById('nav-org-name').textContent = currentUser.orgName || '';
         document.getElementById('sidebar-org-name').textContent = currentUser.orgName || '';
         document.getElementById('org-subtitle').textContent = currentUser.orgName || '';
+        document.getElementById('dashboard-hero-org').textContent = currentUser.orgName || 'Your organization overview';
+
         const invSearch = document.getElementById('inv-search');
         if (invSearch) invSearch.addEventListener('input', () => { invSearchQuery = invSearch.value.trim().toLowerCase(); applyInventoryFilters(); });
         const needsSearch = document.getElementById('needs-search');
@@ -883,7 +864,6 @@
         await Promise.all([loadInventory(), loadNeeds(), loadDonations(), loadExpiring()]);
         renderDashboard();
         initSocket();
-        applyLocale();
     }
 
     function showSection(name, linkEl) {
@@ -894,21 +874,17 @@
         document.querySelectorAll('#sidebar a[data-section]').forEach(a => a.classList.remove('active'));
         if (linkEl) linkEl.classList.add('active');
 
-        const pageTitle = document.getElementById('page-title');
-        pageTitle._sectionKey = name;
-        pageTitle.textContent = t('title.' + name) || name;
+        const titles = {
+            dashboard: 'Dashboard',
+            inventory: 'Inventory',
+            needs: 'Your Needs',
+            'other-needs': 'Other Needs',
+            donations: 'Donations',
+            analytics: 'Analytics',
+            chats: 'Chats'
+        };
+        document.getElementById('page-title').textContent = titles[name] || name;
 
-        // Hide the shared page-header on analytics (it has its own header)
-        const pageHeader = document.querySelector('.page-header');
-        if (pageHeader) pageHeader.style.display = name === 'analytics' ? 'none' : '';
-
-        if (name === 'donations') {
-            const pendingPill = document.querySelector('#don-status-pills .don-pill[data-status="pending"]');
-            if (pendingPill && !window._donFiltersInit) {
-                document.querySelectorAll('#don-status-pills .don-pill').forEach(b => b.classList.remove('active'));
-                pendingPill.classList.add('active');
-            }
-        }
         if (name === 'other-needs') loadOtherNeeds();
         if (name === 'analytics') renderAnalytics();
         if (name === 'chats') { loadChatThreads(); startChatPolling(); } else { stopChatPolling(); }
@@ -922,24 +898,24 @@
 
         document.getElementById('dashboard-metrics').innerHTML = `
             <div class="metric-card">
-                <div class="metric-label">Total donors</div>
+                <div class="metric-label"><span class="metric-icon">👥</span>Total donors</div>
                 <div class="metric-value">${totalDonors}</div>
-                <div class="metric-sub">Unique contributors</div>
+                <div class="metric-sub">unique contributors</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Open needs</div>
+            <div class="metric-card accent-primary">
+                <div class="metric-label"><span class="metric-icon">📌</span>Open needs</div>
                 <div class="metric-value">${openNeeds}</div>
-                <div class="metric-sub">Needs to fulfill</div>
+                <div class="metric-sub">needs to fulfill</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Available stock</div>
+            <div class="metric-card accent-accent">
+                <div class="metric-label"><span class="metric-icon">📦</span>Available stock</div>
                 <div class="metric-value">${itemsInStock}</div>
-                <div class="metric-sub">Items in inventory</div>
+                <div class="metric-sub">items in inventory</div>
             </div>
-            <div class="metric-card">
-                <div class="metric-label">Pending donations</div>
+            <div class="metric-card accent-high">
+                <div class="metric-label"><span class="metric-icon">💝</span>Pending donations</div>
                 <div class="metric-value">${pendingDonations}</div>
-                <div class="metric-sub">Awaiting receipt</div>
+                <div class="metric-sub">awaiting receipt</div>
             </div>`;
 
         renderDashboardInventory();
@@ -990,9 +966,7 @@
         const urgencyOrder = { critical: 0, high: 1, medium: 2, low: 3 };
         const sorted = [...needs].sort((a, b) => (urgencyOrder[a.urgency] || 4) - (urgencyOrder[b.urgency] || 4));
 
-        const PREVIEW = 6;
-
-        function buildNeedCard(n) {
+        const items = sorted.slice(0, 5).map(n => {
             const received = Number(n.quantity_received) || 0;
             const needed = Number(n.quantity_needed) || 0;
             const total = received + needed;
@@ -1016,27 +990,9 @@
                         <button class="btn-receive-supply btn-sm" onclick="openFulfillAmountModal('${escHtml(n.id)}', ${escHtml(String(n.quantity_needed))}, '${escHtml(n.item_name).replace(/'/g, "\\'")}')">Update</button>
                     </div>
                 </div>`;
-        }
+        });
 
-        const preview = sorted.slice(0, PREVIEW).map(buildNeedCard).join('');
-        const rest    = sorted.slice(PREVIEW).map(buildNeedCard).join('');
-        const remaining = sorted.length - PREVIEW;
-
-        let html = preview;
-        if (remaining > 0) {
-            html += `<div id="dash-needs-extra" style="display:none">${rest}</div>`;
-            html += `<button id="dash-needs-toggle" class="dash-view-more-btn" style="margin-top:.25rem" onclick="
-                var extra = document.getElementById('dash-needs-extra');
-                var btn   = document.getElementById('dash-needs-toggle');
-                var open  = extra.style.display === 'none';
-                extra.style.display = open ? '' : 'none';
-                btn.innerHTML = open
-                    ? 'Show less <svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><polyline points=\\'18 15 12 9 6 15\\'/></svg>'
-                    : 'View all ${remaining} more <svg width=\\'14\\' height=\\'14\\' viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'2\\'><polyline points=\\'9 18 15 12 9 6\\'/></svg>';
-            ">View all ${remaining} more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>`;
-        }
-
-        container.innerHTML = html;
+        container.innerHTML = items.join('');
     }
 
 
@@ -1123,12 +1079,8 @@
                 if (!allowed.includes(item.category)) return false;
             }
             if (invStatusFilter) {
-                const s = (item.status || '').toLowerCase();
-                if (invStatusFilter === 'low') {
-                    if (s !== 'low' && s !== 'critical') return false;
-                } else if (invStatusFilter === 'available') {
-                    if (s !== 'available' && s !== 'surplus') return false;
-                }
+                if (invStatusFilter === 'low' && item.status !== 'low') return false;
+                if (invStatusFilter === 'available' && item.status !== 'available' && item.status !== 'surplus') return false;
             }
             if (invSearchQuery) {
                 const match = (item.item_name || '').toLowerCase().includes(invSearchQuery) ||
@@ -1199,8 +1151,8 @@
             tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No inventory items</h3><p>${inventoryData.length ? 'No items match your filters.' : 'Add your first item to get started.'}</p></div></td></tr>`;
             return;
         }
-        const statusLabel = s => (s === 'low' || s === 'critical') ? (s === 'critical' ? 'Critical' : 'Low') : 'In stock';
-        const statusBadgeClass = s => (s === 'low' || s === 'critical') ? (s === 'critical' ? 'badge-status-low' : 'badge-status-low') : 'badge-status-available';
+        const statusLabel = s => s === 'low' ? 'Low' : 'In stock';
+        const statusBadgeClass = s => s === 'low' ? 'badge-status-low' : 'badge-status-available';
         tbody.innerHTML = filtered.map((item, idx) => {
             const current = Number(item.quantity) || 0;
             const rowClass = idx % 2 === 1 ? 'inv-row-alt' : '';
@@ -1242,16 +1194,6 @@
     }
 
     const INV_UNITS = ['items', 'boxes', 'kg', 'packs'];
-
-    function navigateAndOpenInventory() {
-        showSection('inventory', document.querySelector('[data-section=inventory]'));
-        setTimeout(() => openAddInventory(), 100);
-    }
-
-    function navigateAndOpenNeed() {
-        showSection('needs', document.querySelector('[data-section=needs]'));
-        setTimeout(() => openAddNeed(), 100);
-    }
 
     function openAddInventory() {
         document.getElementById('inventory-modal-title').textContent = 'Add inventory item';
@@ -1298,14 +1240,7 @@
             await loadNeeds();
             renderDashboard();
         } catch (err) {
-            const modal = document.getElementById('add-as-need-modal');
-            const old = modal.querySelector('.form-server-error');
-            if (old) old.remove();
-            const errorEl = document.createElement('div');
-            errorEl.className = 'form-server-error';
-            errorEl.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:10px 14px;border-radius:6px;font-size:.8125rem;margin-bottom:12px;border:1px solid #FECACA';
-            errorEl.textContent = err.message || 'Failed to add need.';
-            modal.querySelector('.card').insertBefore(errorEl, modal.querySelector('.card').querySelector('.form-group') || modal.querySelector('.card').firstChild);
+            throw err;
         }
     }
 
@@ -1358,14 +1293,7 @@
             await loadInventory();
             renderDashboard();
         } catch (err) {
-            const modal = document.getElementById('inventory-modal-body');
-            const errDiv = modal.querySelector('.form-server-error');
-            if (errDiv) errDiv.remove();
-            const errorEl = document.createElement('div');
-            errorEl.className = 'form-server-error';
-            errorEl.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:10px 14px;border-radius:6px;font-size:.8125rem;margin-bottom:12px;border:1px solid #FECACA';
-            errorEl.textContent = err.message || 'Failed to save item.';
-            modal.insertBefore(errorEl, modal.firstChild);
+            toast(err.message || 'Failed to save item.', 'error');
         } finally {
             btn.disabled = false;
         }
@@ -1572,15 +1500,7 @@
             await loadInventory();
             renderDashboard();
         } catch (err) {
-            const modal = document.getElementById('need-modal');
-            const old = modal.querySelector('.form-server-error');
-            if (old) old.remove();
-            const errorEl = document.createElement('div');
-            errorEl.className = 'form-server-error';
-            errorEl.style.cssText = 'background:#FEF2F2;color:#991B1B;padding:10px 14px;border-radius:6px;font-size:.8125rem;margin-bottom:12px;border:1px solid #FECACA';
-            errorEl.textContent = err.message || 'Failed to save need.';
-            const cardBody = modal.querySelector('.card');
-            if (cardBody) cardBody.insertBefore(errorEl, cardBody.querySelector('.form-group'));
+            throw err;
         } finally {
             btn.disabled = false;
         }
@@ -1841,35 +1761,36 @@
             tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><span class="empty-icon">&#9723;</span><h3>No donations found</h3><p>Donations to your organization will appear here.</p></div></td></tr>`;
             return;
         }
-        // Active donations first, resolved (confirmed) at the bottom
-        const active   = donations.filter(d => d.status !== 'confirmed');
-        const resolved = donations.filter(d => d.status === 'confirmed');
-        const ordered  = [...active, ...resolved];
-
-        tbody.innerHTML = ordered.map(d => {
-            const isResolved = d.status === 'confirmed';
-            const actionCell = isResolved
-                ? `<span class="badge badge-fulfilled">Received</span>`
-                : `<button class="btn btn-accent btn-sm" onclick="resolveDonation('${escHtml(d.id)}')">Mark received</button>`;
-            return `<tr class="${isResolved ? 'don-row-resolved' : ''}">
+        tbody.innerHTML = donations.map(d => {
+            // DB statuses: 'matched' = pending receipt, 'confirmed' = received
+            const statusVal = d.status === 'confirmed' ? 'received' : 'pending';
+            return `<tr>
                 <td><strong>${escHtml(d.item_name)}</strong></td>
                 <td>${escHtml(String(d.quantity))} ${escHtml(d.unit || '')}</td>
                 <td><span class="don-donor-name">${escHtml(d.donor_name)}</span></td>
                 <td><a class="don-contact-link" href="mailto:${escHtml(d.donor_email)}">${escHtml(d.donor_email)}</a></td>
                 <td>${d.donor_phone ? `<a class="don-contact-link" href="tel:${escHtml(d.donor_phone)}">${escHtml(d.donor_phone)}</a>` : '<span class="text-muted">—</span>'}</td>
-                <td>${actionCell}</td>
+                <td>
+                    <select class="don-status-select don-status-${statusVal}" onchange="updateDonationStatus('${escHtml(d.id)}', this.value)">
+                        <option value="pending" ${statusVal === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="received" ${statusVal === 'received' ? 'selected' : ''}>Received</option>
+                    </select>
+                </td>
             </tr>`;
         }).join('');
     }
 
-    async function resolveDonation(id) {
+    async function updateDonationStatus(id, newStatus) {
         try {
-            await staff.confirmDonation(id);
+            if (newStatus === 'received') {
+                await staff.confirmDonation(id);
+            } else {
+                await staff.pendingDonation(id);
+            }
             await loadDonations();
-            await loadInventory();
             renderDashboard();
         } catch (err) {
-            toast(err.message || 'Failed to resolve donation.', 'error');
+            toast(err.message || 'Failed to update donation status.', 'error');
             await loadDonations();
         }
     }
@@ -1896,14 +1817,8 @@
     }
 
     function renderAnalytics() {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        const gridColor = isDark ? '#1E293B' : '#f1f5f9';
-        const tickColor = isDark ? '#94A3B8' : '#64748b';
-        const labelColor = isDark ? '#F1F5F9' : '#374151';
-        const borderCol = isDark ? '#1E293B' : '#fff';
-
+        // --- KPI cards ---
         const total = inventoryData.length;
-        const stockUnits = inventoryData.reduce((s, i) => s + (Number(i.quantity) || 0), 0);
         const criticalLow = inventoryData.filter(i => i.status === 'critical' || i.status === 'low').length;
         const openNeeds = needsData.filter(n => !n.fulfilled).length;
         const fulfilledPct = needsData.length
@@ -1911,18 +1826,21 @@
                 const recv = Number(n.quantity_received) || 0;
                 const needed = Number(n.quantity_needed) || 1;
                 return recv >= needed;
-              }).length / needsData.length) * 100) : 0;
-        const donReceived = donationsData.filter(d => d.status === 'confirmed').length;
-        const donRate = donationsData.length ? Math.round((donReceived / donationsData.length) * 100) : 0;
+              }).length / needsData.length) * 100)
+            : 0;
+        const pendingDonations = donationsData.filter(d => d.status === 'matched' || d.status === 'pending').length;
+
+        const receivedDonations = donationsData.filter(d => d.status === 'confirmed').length;
 
         document.getElementById('an-kpi-total').textContent = total;
-        document.getElementById('an-kpi-stock-units').textContent = stockUnits.toLocaleString();
         document.getElementById('an-kpi-critical').textContent = criticalLow;
         document.getElementById('an-kpi-needs').textContent = openNeeds;
         document.getElementById('an-kpi-fulfilled').textContent = fulfilledPct + '%';
         document.getElementById('an-kpi-donations-total').textContent = donationsData.length;
-        document.getElementById('an-kpi-donation-rate').textContent = donRate + '%';
+        document.getElementById('an-kpi-donations').textContent = pendingDonations;
+        document.getElementById('an-kpi-donations-received').textContent = receivedDonations;
 
+        // --- Status donut ---
         const statusColors = { available: '#10b981', low: '#f59e0b', critical: '#ef4444', surplus: '#0ea5e9', other: '#8b5cf6' };
         const statusCounts = {};
         inventoryData.forEach(i => { statusCounts[i.status] = (statusCounts[i.status] || 0) + 1; });
@@ -1935,17 +1853,19 @@
         if (ctxDs) {
             _anCharts.donutStatus = new Chart(ctxDs, {
                 type: 'doughnut',
-                data: { labels: statusLabels.map(l => l.charAt(0).toUpperCase() + l.slice(1)), datasets: [{ data: statusVals, backgroundColor: statusBg, borderWidth: 2, borderColor: borderCol, hoverOffset: 6 }] },
-                options: { cutout: '65%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } }, animation: { animateRotate: true } }
+                data: { labels: statusLabels.map(l => l.charAt(0).toUpperCase() + l.slice(1)), datasets: [{ data: statusVals, backgroundColor: statusBg, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
+                options: { cutout: '62%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } }, animation: { animateRotate: true } }
             });
+            // Custom legend
             document.getElementById('an-legend-status').innerHTML = statusLabels.map((l, i) =>
                 `<div class="an-legend-item"><span class="an-legend-dot" style="background:${statusBg[i]}"></span><span>${escHtml(l.charAt(0).toUpperCase() + l.slice(1))}</span><span class="an-legend-val">${statusVals[i]}</span></div>`
             ).join('');
         }
 
+        // --- Category bar chart ---
         const catColors = ['#10b981', '#0ea5e9', '#f59e0b', '#8b5cf6', '#ef4444', '#0f766e', '#64748b'];
         const categoryCounts = {};
-        inventoryData.forEach(i => { categoryCounts[i.category] = (categoryCounts[i.category] || 0) + (Number(i.quantity) || 0); });
+        inventoryData.forEach(i => { categoryCounts[i.category] = (categoryCounts[i.category] || 0) + 1; });
         const catLabels = Object.keys(categoryCounts).map(l => l.charAt(0).toUpperCase() + l.slice(1));
         const catVals = Object.values(categoryCounts);
         const catBg = catLabels.map((_, i) => catColors[i % catColors.length]);
@@ -1955,15 +1875,16 @@
         if (ctxBc) {
             _anCharts.barCategory = new Chart(ctxBc, {
                 type: 'bar',
-                data: { labels: catLabels, datasets: [{ label: 'Quantity', data: catVals, backgroundColor: catBg, borderRadius: 6, borderSkipped: false }] },
+                data: { labels: catLabels, datasets: [{ data: catVals, backgroundColor: catBg, borderRadius: 5, borderSkipped: false }] },
                 options: {
-                    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x} units` } } },
-                    scales: { x: { grid: { color: gridColor }, ticks: { font: { size: 11 }, color: tickColor } }, y: { grid: { display: false }, ticks: { font: { size: 11, weight: 500 }, color: labelColor } } }
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x} items` } } },
+                    scales: { x: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 12 }, color: '#64748b', stepSize: 1 } }, y: { grid: { display: false }, ticks: { font: { size: 12 }, color: '#374151' } } }
                 }
             });
         }
 
+        // --- Urgency donut ---
         const urgColors = { critical: '#ef4444', high: '#f97316', medium: '#f59e0b', low: '#10b981' };
         const urgCounts = {};
         needsData.forEach(n => { const u = n.urgency || 'medium'; urgCounts[u] = (urgCounts[u] || 0) + 1; });
@@ -1977,8 +1898,8 @@
             if (urgVals.length) {
                 _anCharts.donutUrgency = new Chart(ctxDu, {
                     type: 'doughnut',
-                    data: { labels: urgLabels.map(l => l.charAt(0).toUpperCase() + l.slice(1)), datasets: [{ data: urgVals, backgroundColor: urgBg, borderWidth: 2, borderColor: borderCol, hoverOffset: 6 }] },
-                    options: { cutout: '65%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } } }
+                    data: { labels: urgLabels.map(l => l.charAt(0).toUpperCase() + l.slice(1)), datasets: [{ data: urgVals, backgroundColor: urgBg, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
+                    options: { cutout: '62%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } }, animation: { animateRotate: true } }
                 });
                 document.getElementById('an-legend-urgency').innerHTML = urgLabels.map((l, i) =>
                     `<div class="an-legend-item"><span class="an-legend-dot" style="background:${urgBg[i]}"></span><span>${escHtml(l.charAt(0).toUpperCase() + l.slice(1))}</span><span class="an-legend-val">${urgVals[i]}</span></div>`
@@ -1988,28 +1909,32 @@
             }
         }
 
+        // --- Fulfillment progress bars ---
         const fbEl = document.getElementById('chart-fulfillment-bars');
         if (fbEl) {
-            const unfulfilled = needsData.filter(n => !n.fulfilled);
-            if (!unfulfilled.length) {
-                fbEl.innerHTML = '<p class="analytics-empty">No active needs.</p>';
+            if (!needsData.length) {
+                fbEl.innerHTML = '<p class="analytics-empty">No needs data yet.</p>';
             } else {
-                const sorted = [...unfulfilled].sort((a, b) => (Number(b.quantity_needed) || 0) - (Number(a.quantity_needed) || 0)).slice(0, 10);
+                const sorted = [...needsData].sort((a, b) => (Number(b.quantity_needed) || 0) - (Number(a.quantity_needed) || 0)).slice(0, 8);
                 fbEl.innerHTML = sorted.map(n => {
                     const recv = Number(n.quantity_received) || 0;
-                    const total = recv + (Number(n.quantity_needed) || 1);
-                    const pct = Math.min(100, Math.round((recv / total) * 100));
-                    const barColor = urgColors[n.urgency] || '#94a3b8';
+                    const needed = Number(n.quantity_needed) || 1;
+                    const pct = Math.min(100, Math.round((recv / needed) * 100));
+                    const urg = n.urgency || 'medium';
+                    const barColor = urgColors[urg] || '#94a3b8';
                     return `<div class="chart-bar" style="margin-bottom:10px">
                         <span class="chart-bar-label" style="flex:0 0 130px;font-size:.8rem" title="${escHtml(n.item_name)}">${escHtml(n.item_name.length > 18 ? n.item_name.slice(0,17)+'…' : n.item_name)}</span>
                         <div class="chart-bar-track" style="flex:1"><div class="chart-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
-                        <span class="chart-bar-pct" style="flex:0 0 50px;font-size:.75rem;color:${tickColor};text-align:right">${recv}/${total}</span>
+                        <span class="chart-bar-pct" style="flex:0 0 44px;font-size:.8rem;color:#64748b;text-align:right">${pct}%</span>
                     </div>`;
                 }).join('');
             }
         }
 
+        // --- Donations donut ---
+        const donStatusColors = { pending: '#f59e0b', received: '#10b981' };
         const donPending = donationsData.filter(d => d.status !== 'confirmed').length;
+        const donReceived = donationsData.filter(d => d.status === 'confirmed').length;
         const donDonutLabels = ['Pending', 'Received'];
         const donDonutVals = [donPending, donReceived];
         const donDonutBg = ['#f59e0b', '#10b981'];
@@ -2020,8 +1945,8 @@
             if (donationsData.length) {
                 _anCharts.donutDonations = new Chart(ctxDd, {
                     type: 'doughnut',
-                    data: { labels: donDonutLabels, datasets: [{ data: donDonutVals, backgroundColor: donDonutBg, borderWidth: 2, borderColor: borderCol, hoverOffset: 6 }] },
-                    options: { cutout: '65%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } } }
+                    data: { labels: donDonutLabels, datasets: [{ data: donDonutVals, backgroundColor: donDonutBg, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }] },
+                    options: { cutout: '62%', plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}` } } }, animation: { animateRotate: true } }
                 });
                 document.getElementById('an-legend-donations').innerHTML = donDonutLabels.map((l, i) =>
                     `<div class="an-legend-item"><span class="an-legend-dot" style="background:${donDonutBg[i]}"></span><span>${escHtml(l)}</span><span class="an-legend-val">${donDonutVals[i]}</span></div>`
@@ -2031,6 +1956,7 @@
             }
         }
 
+        // --- Top donated items bar ---
         const donItemEl = document.getElementById('chart-donation-items');
         if (donItemEl) {
             if (!donationsData.length) {
@@ -2040,52 +1966,13 @@
                 donationsData.forEach(d => { itemTotals[d.item_name] = (itemTotals[d.item_name] || 0) + (Number(d.quantity) || 1); });
                 const sorted = Object.entries(itemTotals).sort((a, b) => b[1] - a[1]).slice(0, 8);
                 const maxVal = sorted[0]?.[1] || 1;
-                donItemEl.innerHTML = sorted.map(([name, qty]) => {
+                donItemEl.innerHTML = sorted.map(([name, qty], i) => {
                     const pct = Math.round((qty / maxVal) * 100);
                     return `<div class="chart-bar" style="margin-bottom:10px">
                         <span class="chart-bar-label" style="flex:0 0 130px;font-size:.8rem" title="${escHtml(name)}">${escHtml(name.length > 18 ? name.slice(0,17)+'…' : name)}</span>
                         <div class="chart-bar-track" style="flex:1"><div class="chart-bar-fill" style="width:${pct}%;background:#0ea5e9"></div></div>
-                        <span class="chart-bar-value" style="flex:0 0 36px;font-size:.8rem;color:${tickColor};text-align:right">${qty}</span>
+                        <span class="chart-bar-value" style="flex:0 0 36px;font-size:.8rem;color:#64748b;text-align:right">${qty}</span>
                     </div>`;
-                }).join('');
-            }
-        }
-
-        const invTbody = document.getElementById('analytics-inv-tbody');
-        if (invTbody) {
-            if (!inventoryData.length) {
-                invTbody.innerHTML = '<tr><td colspan="6" class="analytics-empty">No inventory data.</td></tr>';
-            } else {
-                invTbody.innerHTML = inventoryData.map(i => `<tr>
-                    <td><strong>${escHtml(i.item_name)}</strong></td>
-                    <td>${escHtml(i.category)}</td>
-                    <td>${escHtml(String(i.quantity))}</td>
-                    <td>${escHtml(String(i.target_quantity || 0))}</td>
-                    <td>${escHtml(i.unit || '')}</td>
-                    <td><span class="badge badge-${i.status === 'low' ? 'high' : i.status === 'critical' ? 'critical' : 'low'}">${escHtml(i.status)}</span></td>
-                </tr>`).join('');
-            }
-        }
-
-        const needsTbody = document.getElementById('analytics-needs-tbody');
-        if (needsTbody) {
-            const activeNeeds = needsData.filter(n => !n.fulfilled);
-            if (!activeNeeds.length) {
-                needsTbody.innerHTML = '<tr><td colspan="6" class="analytics-empty">No active needs.</td></tr>';
-            } else {
-                needsTbody.innerHTML = activeNeeds.map(n => {
-                    const recv = Number(n.quantity_received) || 0;
-                    const total = recv + (Number(n.quantity_needed) || 1);
-                    const pct = Math.min(100, Math.round((recv / total) * 100));
-                    const barColor = urgColors[n.urgency] || '#94a3b8';
-                    return `<tr>
-                        <td><strong>${escHtml(n.item_name)}</strong></td>
-                        <td>${escHtml(n.category)}</td>
-                        <td><span class="badge badge-${escHtml(n.urgency)}">${escHtml(n.urgency)}</span></td>
-                        <td>${escHtml(String(n.quantity_needed))}</td>
-                        <td>${recv}</td>
-                        <td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:6px;background:var(--color-border-lt);border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${barColor};border-radius:3px"></div></div><span style="font-size:.75rem;color:var(--color-text-muted);min-width:32px;text-align:right">${pct}%</span></div></td>
-                    </tr>`;
                 }).join('');
             }
         }
@@ -2152,14 +2039,12 @@
                 const icon = getThreadIcon(t);
                 const label = getThreadLabel(t);
                 const avatarClass = t.type === 'cross_org' ? 'cross-org' : t.type === 'org_channel' ? 'org-channel' : '';
-                const isUnread = _unreadThreadIds.has(t.id);
-                return `<div class="chat-thread-item ${t.id === selectedThreadId ? 'active' : ''} ${isUnread ? 'unread' : ''}" id="thread-${t.id}" onclick="selectThread('${t.id}')">
+                return `<div class="chat-thread-item ${t.id === selectedThreadId ? 'active' : ''}" id="thread-${t.id}" onclick="selectThread('${t.id}')">
                     <div class="chat-thread-avatar ${avatarClass}">${escHtml(icon)}</div>
                     <div class="chat-thread-info">
-                        <div class="chat-thread-name" style="${isUnread ? 'font-weight:700' : ''}">${escHtml(name)}</div>
+                        <div class="chat-thread-name">${escHtml(name)}</div>
                         <div class="chat-thread-preview">${escHtml(label)}</div>
                     </div>
-                    ${isUnread ? '<span class="thread-unread-dot"></span>' : ''}
                 </div>`;
             }).join('');
         } catch (err) {
@@ -2178,9 +2063,6 @@
         document.getElementById('chat-input-wrap').style.display = 'flex';
         document.getElementById('chat-input').value = '';
         await loadChatMessages();
-        _unreadThreadIds.delete(id);
-        updateUnreadBadge();
-        loadChatThreads();
     }
 
     async function loadChatMessages() {
@@ -2302,22 +2184,11 @@
         }
     }
 
-    function updateUnreadBadge() {
-        const dot = document.getElementById('chat-unread-dot');
-        if (dot) dot.style.display = _unreadThreadIds.size > 0 ? 'inline-block' : 'none';
-    }
-
     function initSocket() {
         try {
             socket = io({ transports: ['websocket', 'polling'] });
             socket.on('chat:newMessage', (data) => {
-                if (data && data.threadId === selectedThreadId) {
-                    loadChatMessages();
-                } else if (data && data.threadId) {
-                    _unreadThreadIds.add(data.threadId);
-                    updateUnreadBadge();
-                    loadChatThreads();
-                }
+                if (data && data.threadId === selectedThreadId) loadChatMessages();
             });
             socket.on('need:new', () => { loadNeeds(); loadOtherNeeds(); });
             socket.on('need:fulfilled', () => { loadNeeds(); loadOtherNeeds(); });
@@ -2634,113 +2505,6 @@
         try { await auth.logout(); } catch {}
         window.location.href = '/login';
     }
-
-    function toggleDarkMode() {
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
-        localStorage.setItem('cg-theme', isDark ? 'light' : 'dark');
-        updateDarkModeIcon();
-    }
-
-    function updateDarkModeIcon() {
-        // CSS handles icon state via [data-theme] selectors
-    }
-
-    const _translations = {
-        en: {
-            'nav.dashboard': 'Dashboard', 'nav.inventory': 'Inventory', 'nav.your_needs': 'My Needs',
-            'nav.other_needs': 'Urgent Needs', 'nav.donations': 'Donations', 'nav.analytics': 'Analytics',
-            'nav.chats': 'Chats', 'nav.sign_out': 'Sign out',
-            'dash.total_users': 'Total users', 'dash.staff_volunteers': 'Staff & volunteers',
-            'dash.open_needs': 'Open needs', 'dash.needs_to_fulfill': 'Needs to fulfill',
-            'dash.available_resources': 'Available resources', 'dash.items_in_stock': 'Items in stock',
-            'dash.pending_donations': 'Pending donations', 'dash.awaiting_confirmation': 'Awaiting confirmation',
-            'dash.add_inventory': '+ Add inventory', 'dash.view_all_inventory': 'View all inventory',
-            'dash.post_a_need': '+ Post a need', 'dash.view_all_needs': 'View all needs',
-            'inv.add_item': '+ Add item',
-            'needs.post_facebook': 'Post to Facebook',
-            'don.all': 'All', 'don.pending': 'Pending', 'don.received': 'Received', 'don.export': 'Export',
-            'analytics.overview': 'Analytics Overview', 'analytics.at_a_glance': "Your organization's data at a glance",
-            'analytics.export_all': 'Export All Data',
-            'chat.description': 'Team chat, direct messages, and cross-organization coordination.',
-            'chat.contact_org': 'Contact organisation', 'chat.conversations': 'Conversations',
-            'chat.select_conversation': 'Select a conversation', 'chat.select_to_view': 'Select a conversation to view messages',
-            'chat.send': 'Send',
-            'title.dashboard': 'Dashboard', 'title.inventory': 'Inventory', 'title.needs': 'My Needs',
-            'title.other-needs': 'Urgent Needs', 'title.donations': 'Donations', 'title.analytics': 'Analytics',
-            'title.chats': 'Chats',
-            'placeholder.search_items': 'Search items...', 'placeholder.search_donor': 'Search by item or donor name...',
-            'placeholder.type_message': 'Type a message...'
-        },
-        fr: {
-            'nav.dashboard': 'Tableau de bord', 'nav.inventory': 'Inventaire', 'nav.your_needs': 'Mes besoins',
-            'nav.other_needs': 'Besoins urgents', 'nav.donations': 'Dons', 'nav.analytics': 'Analytique',
-            'nav.chats': 'Discussions', 'nav.sign_out': 'Déconnexion',
-            'dash.total_users': 'Total utilisateurs', 'dash.staff_volunteers': 'Personnel et bénévoles',
-            'dash.open_needs': 'Besoins ouverts', 'dash.needs_to_fulfill': 'Besoins à combler',
-            'dash.available_resources': 'Ressources disponibles', 'dash.items_in_stock': 'Articles en stock',
-            'dash.pending_donations': 'Dons en attente', 'dash.awaiting_confirmation': 'En attente de confirmation',
-            'dash.add_inventory': '+ Ajouter inventaire', 'dash.view_all_inventory': 'Voir tout l\'inventaire',
-            'dash.post_a_need': '+ Publier un besoin', 'dash.view_all_needs': 'Voir tous les besoins',
-            'inv.add_item': '+ Ajouter un article',
-            'needs.post_facebook': 'Publier sur Facebook',
-            'don.all': 'Tous', 'don.pending': 'En attente', 'don.received': 'Reçus', 'don.export': 'Exporter',
-            'analytics.overview': 'Aperçu analytique', 'analytics.at_a_glance': 'Les données de votre organisme en un coup d\'œil',
-            'analytics.export_all': 'Exporter toutes les données',
-            'chat.description': 'Discussion d\'équipe, messages directs et coordination inter-organismes.',
-            'chat.contact_org': 'Contacter un organisme', 'chat.conversations': 'Conversations',
-            'chat.select_conversation': 'Sélectionner une conversation', 'chat.select_to_view': 'Sélectionnez une conversation pour voir les messages',
-            'chat.send': 'Envoyer',
-            'title.dashboard': 'Tableau de bord', 'title.inventory': 'Inventaire', 'title.needs': 'Vos besoins',
-            'title.other-needs': 'Besoins urgents', 'title.donations': 'Dons', 'title.analytics': 'Analytique',
-            'title.chats': 'Discussions',
-            'placeholder.search_items': 'Rechercher des articles...', 'placeholder.search_donor': 'Rechercher par article ou nom du donateur...',
-            'placeholder.type_message': 'Écrire un message...'
-        }
-    };
-
-    let _currentLocale = 'en';
-
-    function t(key) {
-        return (_translations[_currentLocale] && _translations[_currentLocale][key]) || (_translations.en[key]) || key;
-    }
-
-    function applyLocale() {
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            const val = t(key);
-            if (val) el.textContent = val;
-        });
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-            el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
-        });
-        const pageTitle = document.getElementById('page-title');
-        if (pageTitle && pageTitle._sectionKey) {
-            pageTitle.textContent = t('title.' + pageTitle._sectionKey);
-        }
-    }
-
-    function toggleLocale() {
-        _currentLocale = _currentLocale === 'en' ? 'fr' : 'en';
-        const btn = document.getElementById('locale-toggle-btn');
-        btn.textContent = _currentLocale === 'en' ? 'EN' : 'FR';
-        localStorage.setItem('cg-locale', _currentLocale);
-        applyLocale();
-    }
-
-    (function initTheme() {
-        const saved = localStorage.getItem('cg-theme');
-        if (saved === 'dark') {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-        updateDarkModeIcon();
-        const locale = localStorage.getItem('cg-locale');
-        if (locale === 'fr') {
-            _currentLocale = 'fr';
-            const btn = document.getElementById('locale-toggle-btn');
-            if (btn) btn.textContent = 'FR';
-        }
-    })();
 
     init();
 </script>
